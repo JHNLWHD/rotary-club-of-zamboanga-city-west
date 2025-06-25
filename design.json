@@ -1,0 +1,329 @@
+{
+  "designSystem": {
+    "name": "Charity/NGO Website Design System",
+    "type": "humanitarian_organization",
+    "aesthetic": "clean_modern_compassionate",
+    
+    "colorPalette": {
+      "primary": {
+        "main": "#2B8065",
+        "description": "Deep teal/green - trust, growth, stability",
+        "usage": ["buttons", "headers", "accent_elements"]
+      },
+      "secondary": {
+        "main": "#F4B942",
+        "description": "Warm yellow/gold - hope, positivity, energy",
+        "usage": ["call_to_action", "highlights", "icons"]
+      },
+      "neutral": {
+        "white": "#FFFFFF",
+        "light_gray": "#F8F9FA",
+        "medium_gray": "#6C757D",
+        "dark_gray": "#343A40",
+        "usage": ["backgrounds", "text", "borders"]
+      },
+      "supporting": {
+        "soft_blue": "#E3F2FD",
+        "light_green": "#E8F5E8",
+        "cream": "#FFF8E1"
+      }
+    },
+
+    "typography": {
+      "hierarchy": {
+        "h1": {
+          "size": "48-56px",
+          "weight": "700-800",
+          "line_height": "1.2",
+          "usage": "hero_titles"
+        },
+        "h2": {
+          "size": "36-42px",
+          "weight": "600-700",
+          "line_height": "1.3",
+          "usage": "section_headers"
+        },
+        "h3": {
+          "size": "24-28px",
+          "weight": "600",
+          "line_height": "1.4",
+          "usage": "card_titles"
+        },
+        "body": {
+          "size": "16-18px",
+          "weight": "400",
+          "line_height": "1.6",
+          "usage": "general_content"
+        },
+        "small": {
+          "size": "14px",
+          "weight": "400",
+          "line_height": "1.5",
+          "usage": "captions_metadata"
+        }
+      },
+      "style": "sans_serif_modern",
+      "characteristics": ["readable", "friendly", "professional"]
+    },
+
+    "layoutStructure": {
+      "grid": {
+        "type": "12_column_responsive",
+        "breakpoints": {
+          "mobile": "320px-768px",
+          "tablet": "768px-1024px",
+          "desktop": "1024px+"
+        },
+        "max_width": "1200px",
+        "gutters": "20-40px"
+      },
+      
+      "spacing": {
+        "section_padding": "80-120px vertical",
+        "element_margin": "24-48px",
+        "card_padding": "32-40px",
+        "button_padding": "12-16px vertical, 24-32px horizontal"
+      }
+    },
+
+    "componentLibrary": {
+      "navigation": {
+        "type": "horizontal_top_bar",
+        "style": "clean_minimal",
+        "elements": ["logo", "menu_items", "cta_button"],
+        "behavior": "sticky_on_scroll",
+        "mobile": "hamburger_menu"
+      },
+
+      "hero_section": {
+        "layout": "split_content_image",
+        "content_position": "left",
+        "image_position": "right",
+        "background": "light_neutral_or_gradient",
+        "elements": [
+          "compelling_headline",
+          "supporting_description",
+          "primary_cta_button",
+          "trust_indicators"
+        ]
+      },
+
+      "cards": {
+        "style": "clean_minimal_shadow",
+        "variants": [
+          {
+            "type": "service_card",
+            "elements": ["icon", "title", "description", "cta_link"],
+            "layout": "vertical_stack"
+          },
+          {
+            "type": "story_card",
+            "elements": ["image", "title", "excerpt", "read_more"],
+            "layout": "image_top_content_bottom"
+          },
+          {
+            "type": "team_card",
+            "elements": ["profile_image", "name", "role", "description"],
+            "layout": "centered_vertical"
+          }
+        ],
+        "styling": {
+          "border_radius": "8-12px",
+          "shadow": "subtle_drop_shadow",
+          "hover_effect": "lift_and_shadow_increase"
+        }
+      },
+
+      "buttons": {
+        "primary": {
+          "background": "primary_color",
+          "text": "white",
+          "border_radius": "6-8px",
+          "hover": "darker_shade",
+          "usage": "main_actions"
+        },
+        "secondary": {
+          "background": "transparent",
+          "text": "primary_color",
+          "border": "primary_color",
+          "hover": "filled_primary",
+          "usage": "secondary_actions"
+        },
+        "text": {
+          "background": "transparent",
+          "text": "primary_color",
+          "underline": "on_hover",
+          "usage": "links_and_tertiary_actions"
+        }
+      },
+
+      "statistics_section": {
+        "layout": "centered_grid",
+        "style": "large_numbers_with_labels",
+        "elements": ["number", "description", "optional_icon"],
+        "visual_treatment": "prominent_typography"
+      },
+
+      "testimonials": {
+        "layout": "carousel_or_grid",
+        "elements": ["quote", "author_image", "author_name", "author_role"],
+        "style": "card_based_with_quotation_marks"
+      },
+
+      "gallery": {
+        "type": "image_grid",
+        "layout": "masonry_or_uniform_grid",
+        "hover_effects": "overlay_with_caption",
+        "modal": "lightbox_popup"
+      },
+
+      "newsletter_signup": {
+        "layout": "inline_form",
+        "style": "minimal_clean",
+        "elements": ["email_input", "submit_button", "privacy_note"],
+        "visual_treatment": "contained_section_with_background"
+      }
+    },
+
+    "visualElements": {
+      "imagery": {
+        "style": "authentic_documentary",
+        "characteristics": ["real_people", "candid_moments", "diverse_representation"],
+        "treatment": "natural_lighting_warm_tones",
+        "formats": ["hero_images", "card_thumbnails", "profile_photos", "gallery_images"]
+      },
+
+      "icons": {
+        "style": "line_icons_or_minimal_filled",
+        "weight": "medium",
+        "usage": ["service_indicators", "feature_highlights", "navigation_elements"],
+        "color": "primary_or_secondary_palette"
+      },
+
+      "illustrations": {
+        "style": "simple_geometric_friendly",
+        "usage": ["section_dividers", "empty_states", "decorative_elements"],
+        "color": "brand_palette_consistent"
+      }
+    },
+
+    "sectionTypes": [
+      {
+        "name": "hero_banner",
+        "purpose": "primary_value_proposition",
+        "layout": "full_width_split_content",
+        "background": "light_or_subtle_pattern"
+      },
+      {
+        "name": "services_overview",
+        "purpose": "showcase_main_offerings",
+        "layout": "three_or_four_column_grid",
+        "style": "icon_card_grid"
+      },
+      {
+        "name": "impact_statistics",
+        "purpose": "demonstrate_credibility",
+        "layout": "horizontal_stat_blocks",
+        "style": "large_numbers_prominent"
+      },
+      {
+        "name": "success_stories",
+        "purpose": "social_proof_emotional_connection",
+        "layout": "alternating_content_image",
+        "style": "narrative_focused"
+      },
+      {
+        "name": "team_introduction",
+        "purpose": "build_trust_humanize_organization",
+        "layout": "grid_of_profile_cards",
+        "style": "professional_friendly"
+      },
+      {
+        "name": "latest_news_updates",
+        "purpose": "show_active_engagement",
+        "layout": "three_column_article_preview",
+        "style": "clean_blog_cards"
+      },
+      {
+        "name": "call_to_action",
+        "purpose": "convert_visitors_to_supporters",
+        "layout": "centered_content_prominent_button",
+        "background": "primary_color_or_image_overlay"
+      }
+    ],
+
+    "interactionPatterns": {
+      "hover_effects": {
+        "cards": "subtle_lift_shadow_increase",
+        "buttons": "color_darken_slight_scale",
+        "images": "overlay_with_caption_or_zoom"
+      },
+      
+      "transitions": {
+        "duration": "300ms",
+        "easing": "ease_in_out",
+        "properties": ["transform", "box_shadow", "opacity", "color"]
+      },
+
+      "loading_states": {
+        "style": "skeleton_screens_or_spinners",
+        "color": "neutral_palette"
+      }
+    },
+
+    "responsiveDesign": {
+      "approach": "mobile_first",
+      "breakpoint_behavior": {
+        "mobile": {
+          "layout": "single_column_stack",
+          "navigation": "hamburger_menu",
+          "cards": "full_width",
+          "text": "larger_for_readability"
+        },
+        "tablet": {
+          "layout": "two_column_where_appropriate",
+          "navigation": "condensed_horizontal",
+          "cards": "two_per_row"
+        },
+        "desktop": {
+          "layout": "multi_column_optimized",
+          "navigation": "full_horizontal_menu",
+          "cards": "three_or_four_per_row"
+        }
+      }
+    },
+
+    "accessibilityFeatures": {
+      "color_contrast": "WCAG_AA_compliant",
+      "focus_indicators": "visible_outline_on_keyboard_navigation",
+      "alt_text": "descriptive_for_all_images",
+      "semantic_html": "proper_heading_hierarchy",
+      "keyboard_navigation": "full_site_accessibility"
+    },
+
+    "contentStrategy": {
+      "tone": ["compassionate", "trustworthy", "inspiring", "professional"],
+      "messaging_hierarchy": [
+        "emotional_connection",
+        "credibility_proof",
+        "clear_value_proposition",
+        "specific_call_to_action"
+      ],
+      "content_types": [
+        "impact_stories",
+        "statistical_evidence",
+        "team_profiles",
+        "organizational_updates",
+        "donor_testimonials"
+      ]
+    },
+
+    "technicalImplementation": {
+      "framework_compatibility": ["React", "Vue", "Angular", "Vanilla_JS"],
+      "css_approach": "utility_first_or_component_based",
+      "image_optimization": "responsive_images_with_srcset",
+      "performance": "fast_loading_optimized_for_mobile",
+      "seo": "semantic_markup_meta_optimization"
+    }
+  }
+}

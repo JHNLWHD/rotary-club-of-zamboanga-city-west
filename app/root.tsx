@@ -5,11 +5,13 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLocation,
 } from "react-router";
 
 import type { Route } from "./+types/root";
 import stylesheet from "./app.css?url";
 import { Provider } from "./components/ui/provider";
+import { GlobalLayout } from "./components/ui/global-layout";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -44,9 +46,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  const location = useLocation();
+  const isIndexPage = location.pathname === "/";
+
   return (
     <Provider>
-      <Outlet />
+      {isIndexPage ? (
+        <Outlet />
+      ) : (
+        <GlobalLayout>
+          <Outlet />
+        </GlobalLayout>
+      )}
     </Provider>
   );
 }
