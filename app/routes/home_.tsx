@@ -316,34 +316,20 @@ export default function Home() {
                 through meaningful community engagement strategies in Zamboanga City, Philippines.
               </Text>
               
-              <Flex direction={{ base: "column", sm: "row" }} gap={4} mb={8}>
-                <ButtonLink 
-                  href="/membership"
+              <Flex direction={{ base: "column", sm: "row" }} gap={4} mb={8} justify="flex-start">
+                <Link
+                  href="/service-projects"
                   bg="brand.500"
                   color="white"
+                  fontWeight="bold"
                   px={8}
                   py={4}
-                  fontSize="md"
-                  fontWeight="bold"
                   borderRadius="full"
                   _hover={{ bg: "brand.600", transform: "translateY(-2px)" }}
-                  transition="all 0.2s"
-                  boxShadow="sm"
-                >
-                  Join Our Volunteers
-                </ButtonLink>
-                <Link
-                  href="#projects"
-                  border="2px solid"
-                  borderColor="gray.300"
-                  color="gray.700"
-                  fontWeight="bold"
-                  px={8}
-                  py={4}
-                  borderRadius="full"
-                  _hover={{ bg: "white", borderColor: "brand.500", color: "brand.500" }}
                   style={{ display: 'inline-block', textAlign: 'center', textDecoration: 'none' }}
                   transition="all 0.2s"
+                  boxShadow="sm"
+                  fontSize="md"
                 >
                   Learn About Our Projects
                 </Link>
@@ -361,7 +347,7 @@ export default function Home() {
                   <Heart size={28} />
                 </Box>
                 <Text fontSize="sm" color="gray.500" ml={2} fontWeight="medium">
-                  Join Our Volunteers
+                  Service Above Self
                 </Text>
               </Flex>
             </Box>
@@ -411,7 +397,7 @@ export default function Home() {
 
           {/* Three Column Cards */}
           <SimpleGrid columns={{ base: 1, md: 3 }} gap={8}>
-            {/* Become a Volunteer */}
+            {/* Partner with Us */}
             <Box 
               as="article" 
               bg="white" 
@@ -456,11 +442,11 @@ export default function Home() {
                   <Users size={40} color="#3182CE" />
                 </Box>
                 <Heading as="h3" fontSize="xl" color="gray.900" mb={4} fontWeight="bold">
-                  Become a Volunteer
+                  Partner with Us
                 </Heading>
                 <Text color="gray.600" lineHeight="relaxed" mb={6}>
-                  Join our dedicated team of Rotarians and make a meaningful impact in Zamboanga City. 
-                  Together, we create lasting change through service above self.
+                  Connect with our Rotary club to explore partnership opportunities and collaborative 
+                  projects that create meaningful impact in Zamboanga City and beyond.
                 </Text>
               </Box>
             </Box>
@@ -807,12 +793,12 @@ export default function Home() {
             </Text>
           </Heading>
           <Text fontSize={{ base: "lg", md: "xl" }} mb={10} maxW="600px" mx="auto" lineHeight="relaxed" opacity={0.9} color="black">
-            Become a Rotarian and make a lasting difference in Zamboanga City! Together, we can create positive change in our community.
+            Connect with Rotary Club of Zamboanga City West and discover how we can work together to create positive change in our community.
           </Text>
           
           <Flex direction={{ base: "column", sm: "row" }} gap={4} justify="center" align="center">
             <ButtonLink 
-              href="/membership" 
+              href="/contact" 
               bg="white" 
               color="gray.800" 
               _hover={{ bg: "gray.100", transform: "translateY(-2px)", color: "gray.900" }}
@@ -825,9 +811,9 @@ export default function Home() {
               transition="all 0.3s"
               border="2px solid"
               borderColor="gray.200"
-              aria-label="Apply for Rotary membership in Zamboanga City"
+              aria-label="Contact Rotary Club of Zamboanga City West"
             >
-              Apply for Membership
+              Contact Us Today
             </ButtonLink>
             <Link
               href="/about"
