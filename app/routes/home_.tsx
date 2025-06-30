@@ -87,37 +87,37 @@ const serviceAreas = [
   { 
     title: "Peacebuilding and Conflict Prevention", 
     desc: "Promoting peace and understanding in our community.", 
-    icon: "https://img.icons8.com/color/96/dove--v1.png",
+    icon: "/areas-of-focus/AOF_peace_color_no_title.png",
     color: "blue.500"
   },
   { 
     title: "Disease Prevention and Treatment", 
     desc: "Health outreach and medical assistance programs.", 
-    icon: "https://img.icons8.com/color/96/stethoscope.png",
+    icon: "/areas-of-focus/AOF_disease_color_no_title.png",
     color: "red.500"
   },
   { 
     title: "Water, Sanitation, and Hygiene", 
     desc: "Clean water and sanitation for all communities.", 
-    icon: "https://img.icons8.com/color/96/drop-of-water.png",
+    icon: "/areas-of-focus/AOF_water_color_no_title.png",
     color: "cyan.500"
   },
   { 
     title: "Maternal and Child Health", 
     desc: "Supporting mothers and children's wellbeing.", 
-    icon: "https://img.icons8.com/color/96/mother.png",
+    icon: "/areas-of-focus/AOF_maternal_color_no_title.png",
     color: "purple.500"
   },
   { 
     title: "Basic Education and Literacy", 
     desc: "Education programs and literacy initiatives.", 
-    icon: "https://img.icons8.com/color/96/book-and-pencil.png",
+    icon: "/areas-of-focus/AOF_education_color_no_title.png",
     color: "orange.500"
   },
   { 
     title: "Community Economic Development", 
     desc: "Empowering local livelihoods and economic growth.", 
-    icon: "https://img.icons8.com/color/96/money-bag.png",
+    icon: "/areas-of-focus/AOF_economic_color_no_title.png",
     color: "teal.500"
   },
 ];
@@ -615,58 +615,66 @@ export default function Home() {
           </Text>
         </Box>
 
-        <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} gap={8}>
+        <SimpleGrid columns={{ base: 2, sm: 2, md: 3 }} gap={8}>
           {serviceAreas.map((area) => (
             <Box 
               key={area.title} 
               textAlign="center" 
-              p={6} 
-              bg="white" 
-              borderRadius="xl" 
-              boxShadow="sm" 
-              _hover={{ boxShadow: "sm", transform: "translateY(-4px)" }} 
+              _hover={{ transform: "translateY(-6px)" }} 
               transition="all 0.3s"
-              border="2px solid"
-              borderColor="gray.100"
             >
+              {/* Circular Icon Container */}
               <Box 
-                bg={`${area.color.split('.')[0]}.50`}
                 borderRadius="full" 
-                w={20} 
-                h={20} 
+                w={{ base: "120px", md: "140px", lg: "160px" }}
+                h={{ base: "120px", md: "140px", lg: "160px" }}
                 display="flex" 
                 alignItems="center" 
                 justifyContent="center" 
                 mx="auto" 
-                mb={6}
-                border="3px solid"
+                mb={4}
+                bg="white"
+                border="4px solid"
                 borderColor={area.color}
+                boxShadow="lg"
+                _hover={{ 
+                  transform: "scale(1.05)", 
+                  boxShadow: "xl",
+                  borderColor: `${area.color.split('.')[0]}.600`
+                }}
+                transition="all 0.3s"
                 position="relative"
+                overflow="hidden"
               >
                 <Image 
                   src={area.icon} 
                   alt={`${area.title} - Rotary service area in Zamboanga City`} 
-                  boxSize="50px" 
+                  boxSize={{ base: "60px", md: "70px", lg: "80px" }}
+                  objectFit="contain"
                   onError={(e) => { 
-                    (e.target as HTMLImageElement).src = "https://via.placeholder.com/50"; 
+                    (e.target as HTMLImageElement).src = "https://via.placeholder.com/80"; 
                   }} 
                 />
               </Box>
-              <Heading as="h3" size="md" color="gray.900" mb={3} fontWeight="bold" lineHeight="shorter">
-                {area.title}
-              </Heading>
-              <Text color="gray.600" mb={4} lineHeight="relaxed">
-                {area.desc}
-              </Text>
-              <Link 
-                href="/service-projects" 
-                color={area.color} 
-                fontWeight="bold" 
-                _hover={{ textDecoration: "underline", color: `${area.color.split('.')[0]}.600` }}
-                fontSize="sm"
-              >
-                Learn More →
-              </Link>
+              
+              {/* Title and Description */}
+              <Box maxW="200px" mx="auto">
+                <Heading as="h3" size={{ base: "sm", md: "md" }} color="gray.900" mb={2} fontWeight="bold" lineHeight="shorter">
+                  {area.title}
+                </Heading>
+                <Text color="gray.600" fontSize={{ base: "xs", md: "sm" }} lineHeight="relaxed" mb={3}>
+                  {area.desc}
+                </Text>
+                <Link 
+                  href="/service-projects" 
+                  color={area.color} 
+                  fontWeight="bold" 
+                  _hover={{ textDecoration: "underline", color: `${area.color.split('.')[0]}.600` }}
+                  fontSize="xs"
+                >
+                  Learn More →
+                </Link>
+              </Box>
             </Box>
           ))}
         </SimpleGrid>
