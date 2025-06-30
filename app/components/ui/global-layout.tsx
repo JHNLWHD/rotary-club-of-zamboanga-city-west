@@ -1,16 +1,21 @@
 import { Box, Flex, Button, Link, Spacer, Image, Text } from "@chakra-ui/react";
 import type { ReactNode } from "react";
 import { useState } from "react";
-import { MapPin, Phone, Mail, Clock, Facebook } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Facebook, ChevronDown } from "lucide-react";
+import { Menu } from "./menu";
 
-const navLinks = [
-  { label: "Home", href: "/home" },
-  { label: "About", href: "/about" },
+const aboutUsLinks = [
+  { label: "Club Leadership", href: "/about/leadership" },
+  { label: "History", href: "/about/history" },
+  { label: "The Rotary Foundation Giving", href: "/about/foundation-giving" },
+  { label: "Calendar of Activities", href: "/about/calendar" },
+  { label: "Contact Us", href: "/contact" },
+];
+
+const mainNavLinks = [
+  { label: "Home", href: "/" },
+  { label: "The Fortress", href: "/the-fortress" },
   { label: "Service Projects", href: "/service-projects" },
-  { label: "Membership", href: "/membership" },
-  { label: "News & Events", href: "/news-events" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "Contact", href: "/contact" },
 ];
 
 function ButtonLink({ href, children, ...props }: { href: string; children: React.ReactNode; [key: string]: any }) {
@@ -50,11 +55,11 @@ function TopBar() {
 
 function CtaCard() {
   return (
-    <Flex align="center" bg="gold.100" borderRadius="md" px={3} py={3} gap={2} minW="170px">
-      <Image src="https://img.icons8.com/fluency/32/heart-with-arrow.png" alt="Volunteer" boxSize="22px" />
+    <Flex align="center" bg="gold.100" borderRadius="md" px={2} py={2} gap={2} minW="140px">
+      <Image src="https://img.icons8.com/fluency/32/heart-with-arrow.png" alt="Volunteer" boxSize="18px" />
       <Box>
-        <Text fontSize="10px" color="gray.700" lineHeight={1.1}>Join Us Now</Text>
-        <Text fontWeight="bold" color="brand.500" fontSize="13px" lineHeight={1.1}>Become a Volunteer</Text>
+        <Text fontSize="9px" color="gray.700" lineHeight={1.1}>Join Us Now</Text>
+        <Text fontWeight="bold" color="brand.500" fontSize="11px" lineHeight={1.1}>Become a Volunteer</Text>
       </Box>
     </Flex>
   );
@@ -70,6 +75,7 @@ function HamburgerIcon() {
 
 export function GlobalLayout({ children }: { children: ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [aboutUsMenuOpen, setAboutUsMenuOpen] = useState(false);
 
   return (
     <Flex direction="column" minHeight="100vh">
@@ -77,44 +83,148 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
       <TopBar />
       {/* Main Header/Nav */}
       <Box as="header" bg="white" boxShadow="sm" position="sticky" top={0} zIndex={10} borderBottom="1px solid #E2E8F0">
-        <Flex align="center" px={{ base: 4, md: 12 }} height={20}>
+        <Flex align="center" px={{ base: 4, md: 12 }} height={20} gap={4}>
           {/* Logo and Club Name (left) */}
-          <Flex align="center" gap={2} minW="0">
+          <Flex align="center" gap={2} minW="0" flex="0 0 auto" maxW={{ base: "180px", md: "280px" }}>
             <Image
               src="/logo.png"
               alt="Rotary Club of Zamboanga City West Logo"
-              width={{ base: '100px', md: '140px' }}
+              width={{ base: '80px', md: '120px' }}
               height="auto"
               objectFit="contain"
+              flexShrink={0}
             />
-            <Box fontWeight="bold" fontSize={{ base: "md", md: "xl" }} color="brand.500" ml={2} whiteSpace="nowrap" display="flex" alignItems="center" height="100%">
-              Rotary Club of Zamboanga City
+            <Box 
+              fontWeight="bold" 
+              fontSize={{ base: "xs", md: "sm" }} 
+              color="brand.500" 
+              overflow="hidden"
+              display="flex" 
+              alignItems="center" 
+              height="100%"
+              lineHeight={1.2}
+            >
+              <Box>
+                <Box>Rotary Club of</Box>
+                <Box>Zamboanga City West</Box>
+              </Box>
             </Box>
           </Flex>
+          
           {/* Nav Links (center) */}
-          <Flex align="center" gap={5} flex={1} justify="center" minW={0} display={{ base: "none", md: "flex" }}>
-            {navLinks.map((link) => (
+          <Flex align="center" gap={3} flex={1} justify="center" minW={0} display={{ base: "none", lg: "flex" }}>
+            {/* Home Link */}
+            <Link
+              href="/"
+              fontWeight="medium"
+              color="gray.700"
+              fontSize="sm"
+              px={2}
+              py={2}
+              borderRadius="md"
+              _hover={{ color: "brand.500", bg: "gray.100" }}
+              style={{ transition: 'background 0.2s' }}
+              textAlign="center"
+              whiteSpace="nowrap"
+              minW="auto"
+            >
+              Home
+            </Link>
+            
+            {/* About Us Dropdown */}
+            <Box
+              position="relative"
+              onMouseEnter={() => setAboutUsMenuOpen(true)}
+              onMouseLeave={() => setAboutUsMenuOpen(false)}
+            >
+              <Menu.Root open={aboutUsMenuOpen} onOpenChange={(details) => setAboutUsMenuOpen(details.open)}>
+                <Menu.Trigger
+                  asChild
+                >
+                  <Button
+                    variant="ghost"
+                    fontWeight="medium"
+                    color="gray.700"
+                    fontSize="sm"
+                    px={2}
+                    py={2}
+                    borderRadius="md"
+                    _hover={{ color: "brand.500", bg: "gray.100" }}
+                    transition="all 0.2s"
+                    minW="auto"
+                  >
+                    About Us <ChevronDown size={14} style={{ marginLeft: '4px' }} />
+                  </Button>
+                </Menu.Trigger>
+                <Menu.Content
+                  bg="white"
+                  border="1px solid"
+                  borderColor="gray.200"
+                  boxShadow="lg"
+                  borderRadius="lg"
+                  py={2}
+                  minW="220px"
+                  position="absolute"
+                  top="100%"
+                  left={0}
+                  mt={1}
+                  zIndex={50}
+                >
+                  {aboutUsLinks.map((link) => (
+                    <Menu.Item
+                      key={link.href}
+                      value={link.href}
+                      asChild
+                    >
+                      <Link 
+                        href={link.href} 
+                        px={4}
+                        py={3}
+                        fontSize="sm"
+                        fontWeight="medium"
+                        color="gray.700"
+                        _hover={{ bg: "gray.50", color: "brand.500" }}
+                        _focus={{ bg: "gray.50", color: "brand.500" }}
+                        transition="all 0.2s"
+                        textDecoration="none"
+                        display="block"
+                      >
+                        {link.label}
+                      </Link>
+                    </Menu.Item>
+                  ))}
+                </Menu.Content>
+              </Menu.Root>
+            </Box>
+
+            {/* Other Nav Links */}
+            {mainNavLinks.slice(1).map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 fontWeight="medium"
                 color="gray.700"
                 fontSize="sm"
-                px={3}
+                px={2}
                 py={2}
                 borderRadius="md"
                 _hover={{ color: "brand.500", bg: "gray.100" }}
                 style={{ transition: 'background 0.2s' }}
                 textAlign="center"
+                whiteSpace="nowrap"
+                minW="auto"
               >
                 {link.label}
               </Link>
             ))}
           </Flex>
+          
           {/* Right CTAs */}
-          <Flex align="center" gap={3} display={{ base: "none", md: "flex" }}>
+          <Flex align="center" gap={2} flex="0 0 auto" display={{ base: "none", lg: "flex" }}>
             <CtaCard />
-            <ButtonLink href="/donate" bg="brand.500" color="white" _hover={{ bg: "brand.700" }} py={3}>Donate Now</ButtonLink>
+            <ButtonLink href="/donate" bg="brand.500" color="white" _hover={{ bg: "brand.700" }} py={3} fontSize="sm">
+              Donate Now
+            </ButtonLink>
           </Flex>
           {/* Hamburger for mobile */}
           <Button
@@ -134,13 +244,42 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <Box bg="white" boxShadow="md" px={6} py={4} display={{ md: "none" }}>
-            {navLinks.map((link) => (
+            {/* About Us Section */}
+            <Box mb={4}>
+              <Text fontWeight="bold" color="gray.900" mb={2} fontSize="sm" textTransform="uppercase" letterSpacing="wider">
+                About Us
+              </Text>
+              {aboutUsLinks.map((link) => (
+                <Box key={link.href} mb={2} ml={2}>
+                  <Link 
+                    href={link.href} 
+                    fontWeight="medium" 
+                    color="gray.600" 
+                    fontSize="sm"
+                    _hover={{ color: "brand.500" }} 
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                </Box>
+              ))}
+            </Box>
+            
+            {/* Other Nav Links */}
+            {mainNavLinks.map((link) => (
               <Box key={link.href} mb={2}>
-                <Link href={link.href} fontWeight="medium" color="gray.700" _hover={{ color: "brand.500" }} onClick={() => setMobileMenuOpen(false)}>
+                <Link 
+                  href={link.href} 
+                  fontWeight="medium" 
+                  color="gray.700" 
+                  _hover={{ color: "brand.500" }} 
+                  onClick={() => setMobileMenuOpen(false)}
+                >
                   {link.label}
                 </Link>
               </Box>
             ))}
+            
             <CtaCard />
             <ButtonLink href="/donate" w="full" mt={2} py={3} onClick={() => setMobileMenuOpen(false)}>
               Donate Now
@@ -211,18 +350,41 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
                   Quick Links
                 </Text>
                 <Flex direction="column" gap={3}>
-                  {navLinks.map((link) => (
+                  {/* About Us Links */}
+                  <Text fontSize="xs" fontWeight="bold" color="gray.300" textTransform="uppercase" letterSpacing="wider">
+                    About Us
+                  </Text>
+                  {aboutUsLinks.map((link) => (
                     <Link
                       key={link.href}
                       href={link.href}
                       color="gray.300"
                       fontSize="sm"
+                      ml={2}
                       _hover={{ color: "brand.400", textDecoration: "none" }}
                       transition="color 0.2s"
                     >
                       {link.label}
                     </Link>
                   ))}
+                  
+                  {/* Main Nav Links */}
+                  <Box mt={4}>
+                    {mainNavLinks.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        color="gray.300"
+                        fontSize="sm"
+                        display="block"
+                        mb={3}
+                        _hover={{ color: "brand.400", textDecoration: "none" }}
+                        transition="color 0.2s"
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                  </Box>
                 </Flex>
               </Box>
 
