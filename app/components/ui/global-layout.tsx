@@ -1,7 +1,7 @@
 import { Box, Flex, Button, Link, Spacer, Image, Text } from "@chakra-ui/react";
 import type { ReactNode } from "react";
 import { useState } from "react";
-import { MapPin, Phone, Mail, Clock, Facebook, ChevronDown } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Facebook, ChevronDown, Heart } from "lucide-react";
 import { Menu } from "./menu";
 
 const aboutUsLinks = [
@@ -42,12 +42,23 @@ function TopBar() {
   return (
     <Flex bg="gray.50" color="gray.700" fontSize="xs" px={{ base: 2, md: 12 }} py={2} align="center" justify="space-between" borderBottom="1px solid #E2E8F0">
       <Flex gap={2} align="center">
-        <Link href="https://www.facebook.com/RCZCwest" target="_blank" rel="noopener noreferrer"><Image src="https://img.icons8.com/ios-filled/18/6C757D/facebook-new.png" alt="Facebook" /></Link>
+        <Link href="https://www.facebook.com/RCZCwest" target="_blank" rel="noopener noreferrer">
+          <Facebook size={18} color="#6C757D" />
+        </Link>
       </Flex>
       <Flex gap={7} align="center" display={{ base: "none", md: "flex" }}>
-        <Flex gap={1} align="center"><Image src="https://img.icons8.com/ios-filled/14/6C757D/marker.png" alt="Address" />914 Grand Astoria Hotel, Zamboanga City</Flex>
-        <Flex gap={1} align="center"><Image src="https://img.icons8.com/ios-filled/14/6C757D/phone.png" alt="Phone" />0926 430 4580</Flex>
-        <Flex gap={1} align="center"><Image src="https://img.icons8.com/ios-filled/14/6C757D/clock--v1.png" alt="Time" />Thu 7:00 PM</Flex>
+        <Flex gap={1} align="center">
+          <MapPin size={14} color="#6C757D" />
+          914 Grand Astoria Hotel, Zamboanga City
+        </Flex>
+        <Flex gap={1} align="center">
+          <Mail size={14} color="#6C757D" />
+          rotaryzcwest@gmail.com
+        </Flex>
+        <Flex gap={1} align="center">
+          <Clock size={14} color="#6C757D" />
+          Tue 6:00 PM
+        </Flex>
       </Flex>
     </Flex>
   );
@@ -56,7 +67,7 @@ function TopBar() {
 function CtaCard() {
   return (
     <Flex align="center" bg="gold.100" borderRadius="md" px={2} py={2} gap={2} minW="140px">
-      <Image src="https://img.icons8.com/fluency/32/heart-with-arrow.png" alt="Volunteer" boxSize="18px" />
+      <Heart size={18} color="#D69E2E" fill="#D69E2E" />
       <Box>
         <Text fontSize="9px" color="gray.700" lineHeight={1.1}>Join Us Now</Text>
         <Text fontWeight="bold" color="brand.500" fontSize="11px" lineHeight={1.1}>Become a Volunteer</Text>
@@ -430,10 +441,6 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
                         Zamboanga City, Philippines
                       </Text>
                     </Box>
-                  </Flex>
-                  <Flex align="center" gap={3}>
-                    <Phone size={16} color="white" style={{ flexShrink: 0 }} />
-                    <Text color="gray.300" fontSize="sm">0926 430 4580</Text>
                   </Flex>
                   <Flex align="center" gap={3}>
                     <Mail size={16} color="white" style={{ flexShrink: 0 }} />

@@ -1434,25 +1434,6 @@ export default function Home() {
                 <VStack align="start" gap={4}>
                   <Flex align="center" gap={3}>
                     <Box 
-                      bg="purple.50" 
-                      borderRadius="lg" 
-                      p={2}
-                      border="2px solid"
-                      borderColor="purple.200"
-                    >
-                      <Image src="https://img.icons8.com/ios-filled/20/805AD5/phone.png" alt="Phone" />
-                    </Box>
-                    <Box>
-                      <Text fontWeight="bold" color="gray.900" fontSize="md">
-                        0926 430 4580
-                      </Text>
-                      <Text color="gray.600" fontSize="sm">
-                        Call us during business hours
-                      </Text>
-                    </Box>
-                  </Flex>
-                  <Flex align="center" gap={3}>
-                    <Box 
                       bg="red.50" 
                       borderRadius="lg" 
                       p={2}
