@@ -1460,42 +1460,270 @@ export default function Home() {
         </Box>
       </Box>
 
-      {/* Newsletter Signup */}
-      <Box as="section" py={16} bg="gray.900" color="white" textAlign="center" id="newsletter">
-        <Heading as="h2" size="lg" mb={4}>Subscribe for Newsletter</Heading>
-        <Text mb={6}>Get the latest updates and stories from Rotary Club of Zamboanga City.</Text>
-        <Flex justify="center" gap={4} maxW="500px" mx="auto">
-          <Input placeholder="Your email address" bg="white" color="gray.900" borderRadius="md" />
-          <ButtonLink href="#" bg="gold.500" color="brand.700" _hover={{ bg: "gold.400" }}>Subscribe</ButtonLink>
-        </Flex>
-      </Box>
-
       {/* Contact & Meeting Info */}
-      <Box as="section" py={16} maxW="1000px" mx="auto" id="contact">
-        <Heading as="h2" size="xl" color="brand.500" mb={8} textAlign="center">
-          We Love to Hear from Our Happy Customers
-        </Heading>
-        <Flex direction={{ base: "column", md: "row" }} gap={12}>
-          <Box flex={1}>
-            <Heading as="h3" size="md" color="brand.500" mb={4}>Contact Us</Heading>
-            <form>
-              <Input placeholder="Name" mb={4} bg="white" borderRadius="md" />
-              <Input placeholder="Email" mb={4} bg="white" borderRadius="md" />
-              <Textarea placeholder="Your message" mb={4} bg="white" borderRadius="md" />
-              <ButtonLink href="#" type="submit">Send Message</ButtonLink>
-            </form>
+      <Box as="section" py={20} bg="gray.50" id="contact">
+        <Box maxW="1200px" mx="auto" px={{ base: 4, md: 8 }}>
+          {/* Section Header */}
+          <Box textAlign="center" mb={16}>
+            <Text 
+              fontSize="sm" 
+              fontWeight="bold" 
+              color="brand.500" 
+              letterSpacing="wider" 
+              textTransform="uppercase"
+              mb={2}
+            >
+              Contact Us
+            </Text>
+            <Heading as="h2" fontSize={{ base: "3xl", md: "4xl" }} color="gray.900" fontWeight="bold" mb={4}>
+              Get in Touch with Us
+            </Heading>
+            <Text 
+              fontSize={{ base: "md", md: "lg" }} 
+              color="gray.600" 
+              maxW="600px" 
+              mx="auto" 
+              lineHeight="relaxed"
+            >
+              Have questions about our projects or want to join our mission? We'd love to hear from you and explore how we can work together.
+            </Text>
           </Box>
-          <Box flex={1}>
-            <Heading as="h3" size="md" color="brand.500" mb={4}>Meeting Details</Heading>
-            <Text color="gray.700" mb={2}><b>Day/Time:</b> Every Thursday, 7:00 PM</Text>
-            <Text color="gray.700" mb={2}><b>Location:</b> Grand Astoria Hotel, Zamboanga City</Text>
-            <Text color="gray.700" mb={2}><b>Email:</b> rotaryzcwest@gmail.com</Text>
-            <Text color="gray.700" mb={2}><b>Phone:</b> 0926 430 4580</Text>
-            <Flex gap={4} mt={4}>
-              <Link href="https://www.facebook.com/RCZCwest" target="_blank" rel="noopener noreferrer">Facebook</Link>
-            </Flex>
-          </Box>
-        </Flex>
+
+          <Flex direction={{ base: "column", lg: "row" }} gap={12}>
+            {/* Contact Form */}
+            <Box 
+              flex={1} 
+              bg="white" 
+              borderRadius="2xl" 
+              p={8} 
+              boxShadow="sm"
+              border="1px solid"
+              borderColor="gray.100"
+            >
+              <Heading as="h3" fontSize="xl" color="gray.900" mb={6} fontWeight="bold">
+                Send us a Message
+              </Heading>
+              <form>
+                <VStack gap={4} align="stretch">
+                  <Input 
+                    placeholder="Your Name" 
+                    bg="gray.50" 
+                    color="gray.900"
+                    border="2px solid"
+                    borderColor="gray.200"
+                    borderRadius="lg"
+                    px={4}
+                    py={4}
+                    height="auto"
+                    _focus={{ 
+                      borderColor: "brand.500", 
+                      bg: "white",
+                      boxShadow: "0 0 0 1px var(--chakra-colors-brand-500)"
+                    }}
+                    _hover={{ borderColor: "gray.300" }}
+                    _placeholder={{ color: "gray.500" }}
+                  />
+                  <Input 
+                    placeholder="Your Email Address" 
+                    type="email"
+                    bg="gray.50" 
+                    color="gray.900"
+                    border="2px solid"
+                    borderColor="gray.200"
+                    borderRadius="lg"
+                    px={4}
+                    py={4}
+                    height="auto"
+                    _focus={{ 
+                      borderColor: "brand.500", 
+                      bg: "white",
+                      boxShadow: "0 0 0 1px var(--chakra-colors-brand-500)"
+                    }}
+                    _hover={{ borderColor: "gray.300" }}
+                    _placeholder={{ color: "gray.500" }}
+                  />
+                  <Textarea 
+                    placeholder="Tell us about your inquiry or how you'd like to get involved..." 
+                    bg="gray.50" 
+                    color="gray.900"
+                    border="2px solid"
+                    borderColor="gray.200"
+                    borderRadius="lg"
+                    px={4}
+                    py={4}
+                    rows={5}
+                    resize="vertical"
+                    _focus={{ 
+                      borderColor: "brand.500", 
+                      bg: "white",
+                      boxShadow: "0 0 0 1px var(--chakra-colors-brand-500)"
+                    }}
+                    _hover={{ borderColor: "gray.300" }}
+                    _placeholder={{ color: "gray.500" }}
+                  />
+                  <ButtonLink 
+                    href="#" 
+                    type="submit"
+                    bg="brand.500"
+                    color="white"
+                    _hover={{ bg: "brand.600", transform: "translateY(-1px)" }}
+                    borderRadius="lg"
+                    px={8}
+                    py={4}
+                    fontSize="md"
+                    fontWeight="bold"
+                    w="full"
+                    textAlign="center"
+                    transition="all 0.2s"
+                    boxShadow="sm"
+                  >
+                    Send Message
+                  </ButtonLink>
+                </VStack>
+              </form>
+            </Box>
+
+            {/* Meeting & Contact Details */}
+            <Box flex={1} display="flex" flexDirection="column" gap={6}>
+              {/* Meeting Information Card */}
+              <Box 
+                bg="white" 
+                borderRadius="2xl" 
+                p={8} 
+                boxShadow="sm"
+                border="1px solid"
+                borderColor="gray.100"
+              >
+                <Heading as="h3" fontSize="xl" color="gray.900" mb={6} fontWeight="bold">
+                  Join Our Weekly Meetings
+                </Heading>
+                <VStack align="start" gap={4}>
+                  <Flex align="center" gap={3}>
+                    <Box 
+                      bg="blue.50" 
+                      borderRadius="lg" 
+                      p={2}
+                      border="2px solid"
+                      borderColor="blue.200"
+                    >
+                      <Image src="https://img.icons8.com/ios-filled/20/3182CE/calendar.png" alt="Calendar" />
+                    </Box>
+                    <Box>
+                      <Text fontWeight="bold" color="gray.900" fontSize="md">
+                        Every Thursday
+                      </Text>
+                      <Text color="gray.600" fontSize="sm">
+                        7:00 PM - 9:00 PM
+                      </Text>
+                    </Box>
+                  </Flex>
+                  <Flex align="start" gap={3}>
+                    <Box 
+                      bg="green.50" 
+                      borderRadius="lg" 
+                      p={2}
+                      border="2px solid"
+                      borderColor="green.200"
+                      mt={1}
+                    >
+                      <Image src="https://img.icons8.com/ios-filled/20/38A169/marker.png" alt="Location" />
+                    </Box>
+                    <Box>
+                      <Text fontWeight="bold" color="gray.900" fontSize="md">
+                        Grand Astoria Hotel
+                      </Text>
+                      <Text color="gray.600" fontSize="sm" lineHeight="relaxed">
+                        914 Mayor Jaldon Street<br />
+                        Zamboanga City, Philippines
+                      </Text>
+                    </Box>
+                  </Flex>
+                </VStack>
+              </Box>
+
+              {/* Contact Information Card */}
+              <Box 
+                bg="white" 
+                borderRadius="2xl" 
+                p={8} 
+                boxShadow="sm"
+                border="1px solid"
+                borderColor="gray.100"
+              >
+                <Heading as="h3" fontSize="xl" color="gray.900" mb={6} fontWeight="bold">
+                  Contact Information
+                </Heading>
+                <VStack align="start" gap={4}>
+                  <Flex align="center" gap={3}>
+                    <Box 
+                      bg="purple.50" 
+                      borderRadius="lg" 
+                      p={2}
+                      border="2px solid"
+                      borderColor="purple.200"
+                    >
+                      <Image src="https://img.icons8.com/ios-filled/20/805AD5/phone.png" alt="Phone" />
+                    </Box>
+                    <Box>
+                      <Text fontWeight="bold" color="gray.900" fontSize="md">
+                        0926 430 4580
+                      </Text>
+                      <Text color="gray.600" fontSize="sm">
+                        Call us during business hours
+                      </Text>
+                    </Box>
+                  </Flex>
+                  <Flex align="center" gap={3}>
+                    <Box 
+                      bg="red.50" 
+                      borderRadius="lg" 
+                      p={2}
+                      border="2px solid"
+                      borderColor="red.200"
+                    >
+                      <Image src="https://img.icons8.com/ios-filled/20/E53E3E/email.png" alt="Email" />
+                    </Box>
+                    <Box>
+                      <Text fontWeight="bold" color="gray.900" fontSize="md">
+                        rotaryzcwest@gmail.com
+                      </Text>
+                      <Text color="gray.600" fontSize="sm">
+                        We'll respond within 24 hours
+                      </Text>
+                    </Box>
+                  </Flex>
+                  <Flex align="center" gap={3}>
+                    <Box 
+                      bg="blue.50" 
+                      borderRadius="lg" 
+                      p={2}
+                      border="2px solid"
+                      borderColor="blue.200"
+                    >
+                      <Image src="https://img.icons8.com/ios-filled/20/1877F2/facebook.png" alt="Facebook" />
+                    </Box>
+                    <Box>
+                      <Link 
+                        href="https://www.facebook.com/RCZCwest" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        fontWeight="bold" 
+                        color="blue.600" 
+                        fontSize="md"
+                        _hover={{ color: "blue.700", textDecoration: "underline" }}
+                      >
+                        @RCZCwest
+                      </Link>
+                      <Text color="gray.600" fontSize="sm">
+                        Follow us for updates
+                      </Text>
+                    </Box>
+                  </Flex>
+                </VStack>
+              </Box>
+            </Box>
+          </Flex>
+        </Box>
       </Box>
     </Box>
   );

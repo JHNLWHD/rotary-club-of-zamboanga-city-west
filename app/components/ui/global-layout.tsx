@@ -1,4 +1,4 @@
-import { Box, Flex, Button, Link, Spacer, Image, Text, Input } from "@chakra-ui/react";
+import { Box, Flex, Button, Link, Spacer, Image, Text } from "@chakra-ui/react";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { MapPin, Phone, Mail, Clock, Facebook } from "lucide-react";
@@ -281,50 +281,6 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
                     <Clock size={16} color="white" style={{ flexShrink: 0 }} />
                     <Text color="gray.300" fontSize="sm">Every Thursday, 7:00 PM</Text>
                   </Flex>
-                </Flex>
-              </Box>
-            </Flex>
-          </Box>
-        </Box>
-
-        {/* Newsletter Section */}
-        <Box bg="gray.800" py={12}>
-          <Box maxWidth="1200px" mx="auto" px={{ base: 4, md: 8 }}>
-            <Flex direction={{ base: "column", md: "row" }} align="center" justify="space-between" gap={8}>
-              <Box flex={1}>
-                <Text fontSize="xl" fontWeight="bold" color="white" mb={2}>
-                  Stay Updated
-                </Text>
-                <Text color="gray.300" fontSize="sm">
-                  Subscribe to our newsletter for the latest updates on our community projects and events.
-                </Text>
-              </Box>
-              <Box flex={1} maxW={{ base: "100%", md: "400px" }}>
-                <Flex gap={3}>
-                  <Input
-                    placeholder="Enter your email address"
-                    bg="white"
-                    color="gray.900"
-                    borderRadius="lg"
-                    px={4}
-                    py={3}
-                    fontSize="sm"
-                    flex={1}
-                    border="none"
-                    _focus={{ outline: "none", boxShadow: "0 0 0 3px rgba(66, 153, 225, 0.6)" }}
-                  />
-                  <Button
-                    bg="brand.500"
-                    color="white"
-                    _hover={{ bg: "brand.600" }}
-                    borderRadius="lg"
-                    px={6}
-                    py={3}
-                    fontSize="sm"
-                    fontWeight="bold"
-                  >
-                    Subscribe
-                  </Button>
                 </Flex>
               </Box>
             </Flex>
