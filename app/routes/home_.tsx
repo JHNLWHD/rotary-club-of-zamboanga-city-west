@@ -300,9 +300,9 @@ export default function Home() {
                 color="gray.900"
                 mb={6}
               >
-                Lend a Helping Hand{" "}
+                Service Above Self{" "}
                 <Text as="span" color="brand.500">
-                  to Those in Need
+                  in Zamboanga City
                 </Text>
               </Heading>
               <Text 
@@ -312,8 +312,7 @@ export default function Home() {
                 lineHeight="relaxed"
                 maxW="480px"
               >
-                We help communities develop powerful corporate social responsibility 
-                through meaningful community engagement strategies in Zamboanga City, Philippines.
+                Dedicated to serving our community through meaningful projects that create lasting positive change in Zamboanga City and beyond.
               </Text>
               
               <Flex direction={{ base: "column", sm: "row" }} gap={4} mb={8} justify="flex-start">
