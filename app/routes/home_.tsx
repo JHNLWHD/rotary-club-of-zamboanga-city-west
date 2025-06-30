@@ -11,6 +11,7 @@ import {
   Textarea,
   useBreakpointValue,
   VStack,
+  Button,
 } from "@chakra-ui/react";
 import { HeroCarousel } from "../components/homepage/HeroCarousel";
 import { Users, Handshake, Heart } from "lucide-react";
@@ -1503,9 +1504,26 @@ export default function Home() {
               <Heading as="h3" fontSize="xl" color="gray.900" mb={6} fontWeight="bold">
                 Send us a Message
               </Heading>
-              <form>
+              <form
+                name="contact"
+                method="POST"
+                data-netlify="true"
+                data-netlify-honeypot="bot-field"
+                action="/thank-you"
+              >
+                {/* Hidden field for Netlify Forms */}
+                <input type="hidden" name="form-name" value="contact" />
+                
+                {/* Honeypot field for spam protection */}
+                <Box display="none">
+                  <label>
+                    Don't fill this out if you're human: <input name="bot-field" />
+                  </label>
+                </Box>
+
                 <VStack gap={4} align="stretch">
                   <Input 
+                    name="name"
                     placeholder="Your Name" 
                     bg="gray.50" 
                     color="gray.900"
@@ -1515,6 +1533,7 @@ export default function Home() {
                     px={4}
                     py={4}
                     height="auto"
+                    required
                     _focus={{ 
                       borderColor: "brand.500", 
                       bg: "white",
@@ -1524,6 +1543,7 @@ export default function Home() {
                     _placeholder={{ color: "gray.500" }}
                   />
                   <Input 
+                    name="email"
                     placeholder="Your Email Address" 
                     type="email"
                     bg="gray.50" 
@@ -1534,6 +1554,7 @@ export default function Home() {
                     px={4}
                     py={4}
                     height="auto"
+                    required
                     _focus={{ 
                       borderColor: "brand.500", 
                       bg: "white",
@@ -1543,6 +1564,7 @@ export default function Home() {
                     _placeholder={{ color: "gray.500" }}
                   />
                   <Textarea 
+                    name="message"
                     placeholder="Tell us about your inquiry or how you'd like to get involved..." 
                     bg="gray.50" 
                     color="gray.900"
@@ -1553,6 +1575,7 @@ export default function Home() {
                     py={4}
                     rows={5}
                     resize="vertical"
+                    required
                     _focus={{ 
                       borderColor: "brand.500", 
                       bg: "white",
@@ -1561,8 +1584,7 @@ export default function Home() {
                     _hover={{ borderColor: "gray.300" }}
                     _placeholder={{ color: "gray.500" }}
                   />
-                  <ButtonLink 
-                    href="#" 
+                  <Button
                     type="submit"
                     bg="brand.500"
                     color="white"
@@ -1573,12 +1595,11 @@ export default function Home() {
                     fontSize="md"
                     fontWeight="bold"
                     w="full"
-                    textAlign="center"
                     transition="all 0.2s"
                     boxShadow="sm"
                   >
                     Send Message
-                  </ButtonLink>
+                  </Button>
                 </VStack>
               </form>
             </Box>
