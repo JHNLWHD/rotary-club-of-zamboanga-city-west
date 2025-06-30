@@ -932,7 +932,7 @@ export default function Home() {
         <Box maxW="1000px" mx="auto" px={{ base: 4, md: 8 }} textAlign="center" position="relative" zIndex={1}>
           <Heading as="h2" fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }} mb={6} fontWeight="bold" lineHeight="shorter" color="black">
             Join Your Hand With Us For A{" "}
-            <Text as="span" color="yellow.200">
+            <Text as="span" color="gold.400">
               Better Life and Future
             </Text>
           </Heading>
