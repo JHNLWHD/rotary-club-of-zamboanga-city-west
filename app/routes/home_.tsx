@@ -160,7 +160,7 @@ const popularProjects = [
 const events = [
   {
     title: "Weekly Club Meeting",
-    date: "Every Thursday, 7:00 PM",
+    date: "Every Tuesday, 6:00 PM",
     image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=80",
     desc: "Join us for fellowship and planning our next service project!",
   },
@@ -183,7 +183,7 @@ const team = [
 
 const faqs = [
   { q: "How do I become a member?", a: "Visit our Membership page and fill out the application form." },
-  { q: "When and where do you meet?", a: "Every Thursday, 7:00 PM at Grand Astoria Hotel, Zamboanga City." },
+  { q: "When and where do you meet?", a: "Every Tuesday, 6:00 PM at Grand Astoria Hotel, Zamboanga City." },
   { q: "Can I volunteer without joining?", a: "Yes! Contact us to join our next service project as a volunteer." },
 ];
 
@@ -1388,10 +1388,10 @@ export default function Home() {
                     </Box>
                     <Box>
                       <Text fontWeight="bold" color="gray.900" fontSize="md">
-                        Every Thursday
+                        Every Tuesday
                       </Text>
                       <Text color="gray.600" fontSize="sm">
-                        7:00 PM - 9:00 PM
+                        6:00 PM - 8:00 PM
                       </Text>
                     </Box>
                   </Flex>

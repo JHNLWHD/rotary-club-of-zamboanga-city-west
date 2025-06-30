@@ -441,7 +441,7 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
                   </Flex>
                   <Flex align="center" gap={3}>
                     <Clock size={16} color="white" style={{ flexShrink: 0 }} />
-                    <Text color="gray.300" fontSize="sm">Every Thursday, 7:00 PM</Text>
+                    <Text color="gray.300" fontSize="sm">Every Tuesday, 6:00 PM</Text>
                   </Flex>
                 </Flex>
               </Box>
