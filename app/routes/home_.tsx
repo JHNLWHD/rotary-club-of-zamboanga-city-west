@@ -619,7 +619,7 @@ export default function Home() {
                 mx="auto" 
                 mb={4}
               >
-                <Image src="https://img.icons8.com/color/48/organic-food.png" alt="Healthy food program icon" boxSize="40px" />
+                <Image src="/areas-of-focus/AOF_maternal_color_no_title.png" alt="Healthy food program icon" boxSize="40px" />
               </Box>
               <Heading as="h3" size="md" color="gray.900" fontWeight="bold" mb={3}>
                 Healthy Food
@@ -643,7 +643,7 @@ export default function Home() {
                 mx="auto" 
                 mb={4}
               >
-                <Image src="https://img.icons8.com/color/48/book-and-pencil.png" alt="Children education program icon" boxSize="40px" />
+                <Image src="/areas-of-focus/AOF_education_color_no_title.png" alt="Children education program icon" boxSize="40px" />
               </Box>
               <Heading as="h3" size="md" color="gray.900" fontWeight="bold" mb={3}>
                 Kids Education
@@ -667,7 +667,7 @@ export default function Home() {
                 mx="auto" 
                 mb={4}
               >
-                <Image src="https://img.icons8.com/color/48/water-glass.png" alt="Clean water initiative icon" boxSize="40px" />
+                <Image src="/areas-of-focus/AOF_water_color_no_title.png" alt="Clean water initiative icon" boxSize="40px" />
               </Box>
               <Heading as="h3" size="md" color="gray.900" fontWeight="bold" mb={3}>
                 Pure Water
@@ -691,7 +691,7 @@ export default function Home() {
                 mx="auto" 
                 mb={4}
               >
-                <Image src="https://img.icons8.com/color/48/medical-heart.png" alt="Medical care services icon" boxSize="40px" />
+                <Image src="/areas-of-focus/AOF_disease_color_no_title.png" alt="Medical care services icon" boxSize="40px" />
               </Box>
               <Heading as="h3" size="md" color="gray.900" fontWeight="bold" mb={3}>
                 Medical Care
