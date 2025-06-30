@@ -67,7 +67,7 @@ function TopBar() {
 function CtaCard() {
   return (
     <Link 
-      href="https://rotaract.rotaryzcwest.org/" 
+      href="https://rotaract.rotaryzcwest.org/?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=rotaract_referral" 
       target="_blank" 
       rel="noopener noreferrer"
       _hover={{ transform: "scale(1.02)", textDecoration: "none" }}
@@ -241,9 +241,22 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
           {/* Right CTAs */}
           <Flex align="center" gap={2} flex="0 0 auto" display={{ base: "none", lg: "flex" }}>
             <CtaCard />
-            <ButtonLink href="/donate" bg="brand.500" color="white" _hover={{ bg: "brand.700" }} py={3} fontSize="sm">
+            <Link 
+              href="https://www.rotary.org/en/get-involved/ways-to-give?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=foundation_giving" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              bg="brand.500" 
+              color="white" 
+              _hover={{ bg: "brand.700" }} 
+              py={3} 
+              px={7}
+              borderRadius="md"
+              fontSize="sm"
+              fontWeight="bold"
+              style={{ display: 'inline-block', textAlign: 'center', textDecoration: 'none' }}
+            >
               Donate Now
-            </ButtonLink>
+            </Link>
           </Flex>
           {/* Hamburger for mobile */}
           <Button
@@ -300,9 +313,25 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
             ))}
             
             <CtaCard />
-            <ButtonLink href="/donate" w="full" mt={2} py={3} onClick={() => setMobileMenuOpen(false)}>
+            <Link 
+              href="https://www.rotary.org/en/get-involved/ways-to-give?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=foundation_giving" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              bg="brand.500" 
+              color="white" 
+              _hover={{ bg: "brand.700" }} 
+              w="full" 
+              mt={2} 
+              py={3}
+              px={7}
+              borderRadius="md"
+              fontSize="sm"
+              fontWeight="bold"
+              style={{ display: 'inline-block', textAlign: 'center', textDecoration: 'none' }}
+              onClick={() => setMobileMenuOpen(false)}
+            >
               Donate Now
-            </ButtonLink>
+            </Link>
           </Box>
         )}
       </Box>
