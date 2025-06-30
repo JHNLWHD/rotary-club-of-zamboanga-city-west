@@ -173,10 +173,12 @@ const events = [
 ];
 
 const team = [
-  { name: "Juan Dela Cruz", role: "President", image: "https://randomuser.me/api/portraits/men/32.jpg" },
-  { name: "Maria Santos", role: "Vice President", image: "https://randomuser.me/api/portraits/women/44.jpg" },
-  { name: "Jose Ramos", role: "Secretary", image: "https://randomuser.me/api/portraits/men/45.jpg" },
-  { name: "Ana Lim", role: "Treasurer", image: "https://randomuser.me/api/portraits/women/65.jpg" },
+  { name: "Reynald \"Rey\" Ariño", role: "PRESIDENT", designation: "MPHF" },
+  { name: "PE Eliseo \"Totoh\" Hablo", role: "VICE PRESIDENT", designation: "MPHF" },
+  { name: "PP Fernando \"Nanding\" Yu", role: "SECRETARY", designation: "RFMD" },
+  { name: "PN Charliemagne \"Charles\" Tilos", role: "EXECUTIVE SECRETARY", designation: "PHF" },
+  { name: "Rtn. Ramon \"Mon\" Azuelo", role: "TREASURER", designation: "PHF" },
+  { name: "Rtn. Jonathan \"Nathan\" Lim", role: "AUDITOR", designation: "PHF" },
 ];
 
 const faqs = [
@@ -1111,7 +1113,7 @@ export default function Home() {
             </Text>
           </Box>
 
-          <SimpleGrid columns={{ base: 2, md: 4 }} gap={8}>
+          <SimpleGrid columns={{ base: 2, md: 3 }} gap={8}>
             {team.map((member) => (
               <Box 
                 as="article"
@@ -1126,35 +1128,31 @@ export default function Home() {
                 borderColor="gray.100"
               >
                 <Box position="relative" mb={4}>
-                  <Image 
-                    src={member.image} 
-                    alt={`${member.name} - ${member.role} of Rotary Club Zamboanga City West`}
+                  <Box 
                     borderRadius="full" 
                     boxSize="100px" 
                     mx="auto" 
                     border="4px solid"
                     borderColor="brand.500"
-                    objectFit="cover"
-                  />
-                  <Box 
-                    position="absolute" 
-                    bottom={0} 
-                    right="50%" 
-                    transform="translateX(50%)" 
-                    bg="brand.500" 
-                    borderRadius="full" 
-                    p={2}
-                    aria-label="Team member badge"
+                    bg="gray.200"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
                   >
-                    <Users size={16} color="white" />
+                    <Users size={40} color="#005DAA" />
                   </Box>
                 </Box>
-                <Heading as="h3" fontSize="lg" color="gray.900" fontWeight="bold" mb={1}>
+                <Heading as="h3" fontSize="lg" color="gray.900" fontWeight="bold" mb={1} lineHeight="shorter">
                   {member.name}
                 </Heading>
-                <Text color="brand.500" fontWeight="medium" fontSize="sm">
+                <Text color="brand.500" fontWeight="bold" fontSize="sm" mb={1}>
                   {member.role}
                 </Text>
+                {member.designation && (
+                  <Text color="gray.600" fontWeight="medium" fontSize="xs">
+                    {member.designation}
+                  </Text>
+                )}
               </Box>
             ))}
           </SimpleGrid>
