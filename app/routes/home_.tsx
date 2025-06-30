@@ -378,89 +378,197 @@ export default function Home() {
         </Box>
       </Box>
 
-      {/* Three Column Feature Section */}
-      <Box as="section" py={16} bg="white" id="services">
+      {/* How You Can Get Involved Section - Redesigned */}
+      <Box as="section" py={20} bg="white" id="involvement">
         <Box maxW="1200px" mx="auto" px={{ base: 4, md: 8 }}>
-          <Heading as="h2" size="xl" textAlign="center" mb={12} color="gray.900">
-            How You Can Get Involved
-          </Heading>
+          {/* Section Header */}
+          <Box textAlign="center" mb={16}>
+            <Text 
+              fontSize="sm" 
+              fontWeight="bold" 
+              color="brand.500" 
+              letterSpacing="wider" 
+              textTransform="uppercase"
+              mb={2}
+            >
+              Join Our Mission
+            </Text>
+            <Heading as="h2" fontSize={{ base: "3xl", md: "4xl" }} color="gray.900" fontWeight="bold" mb={4}>
+              How You Can Get Involved
+            </Heading>
+            <Text 
+              fontSize={{ base: "md", md: "lg" }} 
+              color="gray.600" 
+              maxW="600px" 
+              mx="auto" 
+              lineHeight="relaxed"
+            >
+              Join us in creating lasting positive change in Zamboanga City. Every contribution, big or small, makes a meaningful difference in our community.
+            </Text>
+          </Box>
+
+          {/* Three Column Cards */}
           <SimpleGrid columns={{ base: 1, md: 3 }} gap={8}>
             {/* Become a Volunteer */}
-            <Box as="article" textAlign="center" p={6}>
-              <Box 
-                bg="blue.50" 
-                borderRadius="full" 
-                w={16} 
-                h={16} 
-                display="flex" 
-                alignItems="center" 
-                justifyContent="center" 
-                mx="auto" 
-                mb={6}
-                role="img"
-                aria-label="Volunteer icon"
-              >
-                <Users size={32} color="#3182CE" />
+            <Box 
+              as="article" 
+              bg="white" 
+              p={8} 
+              borderRadius="2xl" 
+              boxShadow="lg"
+              border="1px solid"
+              borderColor="gray.100"
+              _hover={{ 
+                boxShadow: "xl", 
+                transform: "translateY(-4px)",
+                borderColor: "blue.200"
+              }} 
+              transition="all 0.3s"
+              position="relative"
+              overflow="hidden"
+            >
+              {/* Background Gradient */}
+              <Box
+                position="absolute"
+                top={0}
+                left={0}
+                right={0}
+                height="4px"
+                bg="linear(to-r, blue.400, blue.600)"
+              />
+              
+              <Box textAlign="center">
+                <Box 
+                  bg="blue.50" 
+                  borderRadius="xl" 
+                  w={20} 
+                  h={20} 
+                  display="flex" 
+                  alignItems="center" 
+                  justifyContent="center" 
+                  mx="auto" 
+                  mb={6}
+                  border="3px solid"
+                  borderColor="blue.100"
+                >
+                  <Users size={40} color="#3182CE" />
+                </Box>
+                <Heading as="h3" fontSize="xl" color="gray.900" mb={4} fontWeight="bold">
+                  Become a Volunteer
+                </Heading>
+                <Text color="gray.600" lineHeight="relaxed" mb={6}>
+                  Join our dedicated team of Rotarians and make a meaningful impact in Zamboanga City. 
+                  Together, we create lasting change through service above self.
+                </Text>
               </Box>
-              <Heading as="h3" size="lg" color="gray.900" mb={4} fontWeight="bold">
-                Become a Volunteer
-              </Heading>
-              <Text color="gray.600" lineHeight="relaxed">
-                Join our dedicated team of Rotarians and make a meaningful impact in Zamboanga City. 
-                Together, we create lasting change through service above self.
-              </Text>
             </Box>
 
-            {/* Quick Fundraise */}
-            <Box as="article" textAlign="center" p={6}>
-              <Box 
-                bg="green.50" 
-                borderRadius="full" 
-                w={16} 
-                h={16} 
-                display="flex" 
-                alignItems="center" 
-                justifyContent="center" 
-                mx="auto" 
-                mb={6}
-                role="img"
-                aria-label="Fundraising icon"
-              >
-                <Handshake size={32} color="#38A169" />
+            {/* Support Through Fundraising */}
+            <Box 
+              as="article" 
+              bg="white" 
+              p={8} 
+              borderRadius="2xl" 
+              boxShadow="lg"
+              border="1px solid"
+              borderColor="gray.100"
+              _hover={{ 
+                boxShadow: "xl", 
+                transform: "translateY(-4px)",
+                borderColor: "green.200"
+              }} 
+              transition="all 0.3s"
+              position="relative"
+              overflow="hidden"
+            >
+              {/* Background Gradient */}
+              <Box
+                position="absolute"
+                top={0}
+                left={0}
+                right={0}
+                height="4px"
+                bg="linear(to-r, green.400, green.600)"
+              />
+              
+              <Box textAlign="center">
+                <Box 
+                  bg="green.50" 
+                  borderRadius="xl" 
+                  w={20} 
+                  h={20} 
+                  display="flex" 
+                  alignItems="center" 
+                  justifyContent="center" 
+                  mx="auto" 
+                  mb={6}
+                  border="3px solid"
+                  borderColor="green.100"
+                >
+                  <Handshake size={40} color="#38A169" />
+                </Box>
+                <Heading as="h3" fontSize="xl" color="gray.900" mb={4} fontWeight="bold">
+                  Support Through Fundraising
+                </Heading>
+                <Text color="gray.600" lineHeight="relaxed" mb={6}>
+                  Help us raise funds for important community projects. Every peso counts towards 
+                  building schools, providing clean water, and supporting healthcare initiatives.
+                </Text>
               </Box>
-              <Heading as="h3" size="lg" color="gray.900" mb={4} fontWeight="bold">
-                Quick Fundraise
-              </Heading>
-              <Text color="gray.600" lineHeight="relaxed">
-                Help us raise funds for important community projects. Every peso counts towards 
-                building schools, providing clean water, and supporting healthcare initiatives.
-              </Text>
             </Box>
 
-            {/* Start Donating */}
-            <Box as="article" textAlign="center" p={6}>
-              <Box 
-                bg="red.50" 
-                borderRadius="full" 
-                w={16} 
-                h={16} 
-                display="flex" 
-                alignItems="center" 
-                justifyContent="center" 
-                mx="auto" 
-                mb={6}
-                role="img"
-                aria-label="Donation icon"
-              >
-                <Heart size={32} color="#E53E3E" />
+            {/* Make a Donation */}
+            <Box 
+              as="article" 
+              bg="white" 
+              p={8} 
+              borderRadius="2xl" 
+              boxShadow="lg"
+              border="1px solid"
+              borderColor="gray.100"
+              _hover={{ 
+                boxShadow: "xl", 
+                transform: "translateY(-4px)",
+                borderColor: "red.200"
+              }} 
+              transition="all 0.3s"
+              position="relative"
+              overflow="hidden"
+            >
+              {/* Background Gradient */}
+              <Box
+                position="absolute"
+                top={0}
+                left={0}
+                right={0}
+                height="4px"
+                bg="linear(to-r, red.400, red.600)"
+              />
+              
+              <Box textAlign="center">
+                <Box 
+                  bg="red.50" 
+                  borderRadius="xl" 
+                  w={20} 
+                  h={20} 
+                  display="flex" 
+                  alignItems="center" 
+                  justifyContent="center" 
+                  mx="auto" 
+                  mb={6}
+                  border="3px solid"
+                  borderColor="red.100"
+                >
+                  <Heart size={40} color="#E53E3E" />
+                </Box>
+                <Heading as="h3" fontSize="xl" color="gray.900" mb={4} fontWeight="bold">
+                  Make a Donation
+                </Heading>
+                <Text color="gray.600" lineHeight="relaxed" mb={6}>
+                  Your generous donations directly support our mission to serve communities in need. 
+                  From disaster relief to education programs, your contribution makes a difference.
+                </Text>
               </Box>
-              <Heading as="h3" size="lg" color="gray.900" mb={4} fontWeight="bold">
-                Start Donating
-              </Heading>
-              <Text color="gray.600" lineHeight="relaxed">
-                Your generous donations directly support our mission to serve communities in need. 
-                From disaster relief to education programs, your contribution makes a difference.
-              </Text>
             </Box>
           </SimpleGrid>
         </Box>
@@ -924,9 +1032,8 @@ export default function Home() {
           right={0} 
           bottom={0} 
           opacity={0.1}
-          bgImage="radial-gradient(circle at 25% 25%, white 2px, transparent 2px)"
-          bgSize="50px 50px"
-          aria-hidden="true"
+          background="radial-gradient(circle at 25% 25%, white 3px, transparent 3px), radial-gradient(circle at 75% 75%, white 2px, transparent 2px)"
+          backgroundSize="50px 50px, 30px 30px"
         />
         
         <Box maxW="1000px" mx="auto" px={{ base: 4, md: 8 }} textAlign="center" position="relative" zIndex={1}>
