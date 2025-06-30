@@ -66,13 +66,21 @@ function TopBar() {
 
 function CtaCard() {
   return (
-    <Flex align="center" bg="gold.100" borderRadius="md" px={2} py={2} gap={2} minW="140px">
-      <Heart size={18} color="#D69E2E" fill="#D69E2E" />
-      <Box>
-        <Text fontSize="9px" color="gray.700" lineHeight={1.1}>Join Us Now</Text>
-        <Text fontWeight="bold" color="brand.500" fontSize="11px" lineHeight={1.1}>Become a Volunteer</Text>
-      </Box>
-    </Flex>
+    <Link 
+      href="https://rotaract.rotaryzcwest.org/" 
+      target="_blank" 
+      rel="noopener noreferrer"
+      _hover={{ transform: "scale(1.02)", textDecoration: "none" }}
+      transition="all 0.2s"
+    >
+      <Flex align="center" bg="gold.100" borderRadius="md" px={2} py={3} gap={2} minW="140px">
+        <Heart size={18} color="#D69E2E" fill="#D69E2E" />
+        <Box>
+          <Text fontSize="9px" color="gray.700" lineHeight={1.1}>Visit Now</Text>
+          <Text fontWeight="bold" color="brand.500" fontSize="11px" lineHeight={1.1}>Visit Rotaract Site</Text>
+        </Box>
+      </Flex>
+    </Link>
   );
 }
 
