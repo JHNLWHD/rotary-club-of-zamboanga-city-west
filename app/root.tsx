@@ -55,7 +55,7 @@ export default function App() {
         <Outlet />
       ) : (
         <GlobalLayout>
-          <Outlet />
+      <Outlet />
         </GlobalLayout>
       )}
     </Provider>
