@@ -460,6 +460,9 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
                   <Link href="/service-projects" color="gray.300" fontSize="sm" _hover={{ color: "brand.400" }} transition="color 0.2s">
                     Community Economic Development
                   </Link>
+                  <Link href="/service-projects" color="gray.300" fontSize="sm" _hover={{ color: "brand.400" }} transition="color 0.2s">
+                    Supporting the Environment
+                  </Link>
                 </Flex>
               </Box>
 
