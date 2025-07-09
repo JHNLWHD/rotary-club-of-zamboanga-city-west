@@ -14,7 +14,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { HeroCarousel } from "../components/homepage/HeroCarousel";
-import { Users, Handshake, Heart } from "lucide-react";
+import { Users, Handshake, Heart, Clock, DollarSign, Award, Target, Globe } from "lucide-react";
 
 export function meta() {
   return [
@@ -295,21 +295,25 @@ export default function Home() {
         backgroundSize="cover"
         backgroundPosition="center"
         backgroundRepeat="no-repeat"
+        w="100vw"
+        maxW="100vw"
+        px={0}
+        m={0}
       >
-        {/* Overlay for better text readability */}
+        {/* Enhanced Overlay with Gradient */}
         <Box
           position="absolute"
           top={0}
           left={0}
           right={0}
           bottom={0}
-          bg="blackAlpha.400"
+          bg="linear-gradient(135deg, rgba(0,93,170,0.8) 0%, rgba(0,0,0,0.6) 100%)"
           zIndex={1}
         />
         
-        <Box px={{ base: 4, md: 16 }} position="relative" zIndex={2}>
-          <Flex direction={{ base: "column", lg: "row" }} align="center" gap={{ base: 6, lg: 8 }} minH={{ base: "400px", md: "500px" }}>
-            <Box flex={1} maxW={{ base: "100%", lg: "52%" }} pr={{ base: 0, lg: 4 }}>
+        <Box px={{ base: 4, md: 16 }} position="relative" zIndex={2} w="100%">
+          <Flex direction={{ base: "column", lg: "row" }} align="center" gap={{ base: 6, lg: 8 }} minH={{ base: "400px", md: "500px" }} w="100%">
+            <Box flex={1} maxW={{ base: "100%", lg: "52%" }} pr={{ base: 0, lg: 4 }} w="100%">
               <Text 
                 fontSize="sm" 
                 fontWeight="bold" 
@@ -318,6 +322,7 @@ export default function Home() {
                 textTransform="uppercase"
                 mb={3}
                 textShadow="0 2px 4px rgba(0,0,0,0.5)"
+                opacity={0.9}
               >
                 Rotary Club of Zamboanga City West
               </Text>
@@ -329,6 +334,7 @@ export default function Home() {
                 color="white"
                 mb={6}
                 textShadow="0 2px 4px rgba(0,0,0,0.7)"
+                letterSpacing="tight"
               >
                 Service Above Self in Zamboanga City
               </Heading>
@@ -337,13 +343,14 @@ export default function Home() {
                 color="gray.100" 
                 mb={8} 
                 lineHeight="relaxed"
-                maxW="480px"
+                maxW={{ base: "100%", md: "480px" }}
                 textShadow="0 1px 3px rgba(0,0,0,0.7)"
+                opacity={0.95}
               >
                 Dedicated to serving our community through meaningful projects that create lasting positive change in Zamboanga City and beyond.
               </Text>
               
-              <Flex direction={{ base: "column", sm: "row" }} gap={4} mb={8} justify="flex-start">
+              <Flex direction={{ base: "column", sm: "row" }} gap={4} mb={8} justify="flex-start" w="100%">
                 <Link
                   href="/service-projects"
                   bg="brand.500"
@@ -351,26 +358,31 @@ export default function Home() {
                   fontWeight="bold"
                   px={8}
                   py={4}
-                  borderRadius="full"
-                  _hover={{ bg: "brand.600", transform: "translateY(-2px)" }}
+                  borderRadius="md"
+                  _hover={{ 
+                    bg: "brand.600", 
+                    transform: "translateY(-2px)",
+                    boxShadow: "0 10px 25px rgba(0,93,170,0.3)"
+                  }}
                   style={{ display: 'inline-block', textAlign: 'center', textDecoration: 'none' }}
-                  transition="all 0.2s"
-                  boxShadow="lg"
+                  transition="all 0.3s ease"
+                  boxShadow="0 4px 15px rgba(0,93,170,0.2)"
                   fontSize="md"
+                  w={{ base: "100%", sm: "auto" }}
                 >
                   Learn About Our Projects
                 </Link>
               </Flex>
               
-              {/* Stats or Icons */}
-              <Flex gap={6} align="center" mt={2}>
-                <Box color="gold.500">
+              {/* Enhanced Stats or Icons */}
+              <Flex gap={6} align="center" mt={2} w="100%">
+                <Box color="gold.400" _hover={{ transform: "scale(1.1)" }} transition="transform 0.2s">
                   <Users size={28} />
                 </Box>
-                <Box color="gold.500">
+                <Box color="gold.400" _hover={{ transform: "scale(1.1)" }} transition="transform 0.2s">
                   <Handshake size={28} />
                 </Box>
-                <Box color="gold.500">
+                <Box color="gold.400" _hover={{ transform: "scale(1.1)" }} transition="transform 0.2s">
                   <Heart size={28} />
                 </Box>
                 <Text fontSize="sm" color="gray.200" ml={2} fontWeight="medium" textShadow="0 1px 2px rgba(0,0,0,0.7)">
@@ -386,6 +398,7 @@ export default function Home() {
               alignItems="center" 
               position="relative"
               maxW={{ base: "100%", lg: "48%" }}
+              w="100%"
             >
               <HeroCarousel />
             </Box>
@@ -393,207 +406,193 @@ export default function Home() {
         </Box>
       </Box>
 
-      {/* How You Can Get Involved Section - Redesigned */}
-      <Box as="section" py={20} bg="white" id="involvement" mt={8}>
+      {/* Stats Section */}
+      <Box as="section" py={20} bgGradient="linear(to-b, gray.50, white)" id="stats">
         <Box maxW="1200px" mx="auto" px={{ base: 4, md: 8 }}>
-          {/* Section Header */}
-          <Box textAlign="center" mb={16}>
-            <Text 
-              fontSize="sm" 
-              fontWeight="bold" 
-              color="brand.500" 
-              letterSpacing="wider" 
-              textTransform="uppercase"
-              mb={2}
-            >
-              Join Our Mission
-            </Text>
-            <Heading as="h2" fontSize={{ base: "3xl", md: "4xl" }} color="gray.900" fontWeight="bold" mb={4}>
-              How You Can Get Involved
-            </Heading>
-            <Text 
-              fontSize={{ base: "md", md: "lg" }} 
-              color="gray.600" 
-              maxW="600px" 
-              mx="auto" 
-              lineHeight="relaxed"
-            >
-              Join us in creating lasting positive change in Zamboanga City. Every contribution, big or small, makes a meaningful difference in our community.
-            </Text>
-          </Box>
-
-          {/* Three Column Cards */}
-          <SimpleGrid columns={{ base: 1, md: 3 }} gap={8}>
-            {/* Partner with Us */}
+          <SimpleGrid columns={{ base: 2, md: 4 }} gap={8}>
             <Box 
-              as="article" 
               bg="white" 
-              p={8} 
               borderRadius="2xl" 
-              boxShadow="lg"
+              p={8} 
+              boxShadow="0 4px 20px rgba(0,0,0,0.08)"
               border="1px solid"
               borderColor="gray.100"
+              textAlign="center"
               _hover={{ 
-                boxShadow: "xl", 
-                transform: "translateY(-4px)",
+                transform: "translateY(-4px)", 
+                boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
                 borderColor: "blue.200"
-              }} 
-              transition="all 0.3s"
+              }}
+              transition="all 0.3s ease"
               position="relative"
               overflow="hidden"
             >
-              {/* Background Gradient */}
-              <Box
-                position="absolute"
-                top={0}
-                left={0}
-                right={0}
-                height="4px"
-                bg="linear(to-r, blue.400, blue.600)"
-              />
-              
-              <Box textAlign="center">
-                <Box 
-                  bg="blue.50" 
-                  borderRadius="xl" 
-                  w={20} 
-                  h={20} 
-                  display="flex" 
-                  alignItems="center" 
-                  justifyContent="center" 
-                  mx="auto" 
-                  mb={6}
-                  border="3px solid"
-                  borderColor="blue.100"
-                >
-                  <Users size={40} color="#3182CE" />
-                </Box>
-                <Heading as="h3" fontSize="xl" color="gray.900" mb={4} fontWeight="bold">
-                  Partner with Us
-                </Heading>
-                <Text color="gray.600" lineHeight="relaxed" mb={6}>
-                  Connect with our Rotary club to explore partnership opportunities and collaborative 
-                  projects that create meaningful impact in Zamboanga City and beyond.
-                </Text>
+              <Box 
+                bgGradient="linear(to-br, blue.100, blue.200)" 
+                borderRadius="full" 
+                w={16} 
+                h={16} 
+                display="flex" 
+                alignItems="center" 
+                justifyContent="center" 
+                mx="auto" 
+                mb={4}
+                border="3px solid"
+                borderColor="blue.300"
+                _hover={{ transform: "scale(1.1)" }}
+                transition="transform 0.2s"
+              >
+                <Users size={32} color="#3182CE" />
               </Box>
+              <Heading as="h3" fontSize="3xl" color="brand.500" mb={2} fontWeight="bold">
+                85+
+              </Heading>
+              <Text color="gray.700" fontWeight="medium" fontSize="md">
+                Active Members
+              </Text>
             </Box>
-
-            {/* Support Through Fundraising */}
             <Box 
-              as="article" 
               bg="white" 
-              p={8} 
               borderRadius="2xl" 
-              boxShadow="lg"
+              p={8} 
+              boxShadow="0 4px 20px rgba(0,0,0,0.08)"
               border="1px solid"
               borderColor="gray.100"
+              textAlign="center"
               _hover={{ 
-                boxShadow: "xl", 
-                transform: "translateY(-4px)",
+                transform: "translateY(-4px)", 
+                boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
                 borderColor: "green.200"
-              }} 
-              transition="all 0.3s"
+              }}
+              transition="all 0.3s ease"
               position="relative"
               overflow="hidden"
             >
-              {/* Background Gradient */}
-              <Box
-                position="absolute"
-                top={0}
-                left={0}
-                right={0}
-                height="4px"
-                bg="linear(to-r, green.400, green.600)"
-              />
-              
-              <Box textAlign="center">
-                <Box 
-                  bg="green.50" 
-                  borderRadius="xl" 
-                  w={20} 
-                  h={20} 
-                  display="flex" 
-                  alignItems="center" 
-                  justifyContent="center" 
-                  mx="auto" 
-                  mb={6}
-                  border="3px solid"
-                  borderColor="green.100"
-                >
-                  <Handshake size={40} color="#38A169" />
-                </Box>
-                <Heading as="h3" fontSize="xl" color="gray.900" mb={4} fontWeight="bold">
-                  Support Through Fundraising
-                </Heading>
-                <Text color="gray.600" lineHeight="relaxed" mb={6}>
-                  Help us raise funds for important community projects. Every peso counts towards 
-                  building schools, providing clean water, and supporting healthcare initiatives.
-                </Text>
+              <Box 
+                bgGradient="linear(to-br, green.100, green.200)" 
+                borderRadius="full" 
+                w={16} 
+                h={16} 
+                display="flex" 
+                alignItems="center" 
+                justifyContent="center" 
+                mx="auto" 
+                mb={4}
+                border="3px solid"
+                borderColor="green.300"
+                _hover={{ transform: "scale(1.1)" }}
+                transition="transform 0.2s"
+              >
+                <Target size={32} color="#38A169" />
               </Box>
+              <Heading as="h3" fontSize="3xl" color="brand.500" mb={2} fontWeight="bold">
+                120+
+              </Heading>
+              <Text color="gray.700" fontWeight="medium" fontSize="md">
+                Projects Completed
+              </Text>
             </Box>
-
-            {/* Make a Donation */}
             <Box 
-              as="article" 
               bg="white" 
-              p={8} 
               borderRadius="2xl" 
-              boxShadow="lg"
+              p={8} 
+              boxShadow="0 4px 20px rgba(0,0,0,0.08)"
               border="1px solid"
               borderColor="gray.100"
+              textAlign="center"
               _hover={{ 
-                boxShadow: "xl", 
-                transform: "translateY(-4px)",
-                borderColor: "red.200"
-              }} 
-              transition="all 0.3s"
+                transform: "translateY(-4px)", 
+                boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
+                borderColor: "purple.200"
+              }}
+              transition="all 0.3s ease"
               position="relative"
               overflow="hidden"
             >
-              {/* Background Gradient */}
-              <Box
-                position="absolute"
-                top={0}
-                left={0}
-                right={0}
-                height="4px"
-                bg="linear(to-r, red.400, red.600)"
-              />
-              
-              <Box textAlign="center">
-                <Box 
-                  bg="red.50" 
-                  borderRadius="xl" 
-                  w={20} 
-                  h={20} 
-                  display="flex" 
-                  alignItems="center" 
-                  justifyContent="center" 
-                  mx="auto" 
-                  mb={6}
-                  border="3px solid"
-                  borderColor="red.100"
-                >
-                  <Heart size={40} color="#E53E3E" />
-                </Box>
-                <Heading as="h3" fontSize="xl" color="gray.900" mb={4} fontWeight="bold">
-                  Make a Donation
-                </Heading>
-                <Text color="gray.600" lineHeight="relaxed" mb={6}>
-                  Your generous donations directly support our mission to serve communities in need. 
-                  From disaster relief to education programs, your contribution makes a difference.
-                </Text>
+              <Box 
+                bgGradient="linear(to-br, purple.100, purple.200)" 
+                borderRadius="full" 
+                w={16} 
+                h={16} 
+                display="flex" 
+                alignItems="center" 
+                justifyContent="center" 
+                mx="auto" 
+                mb={4}
+                border="3px solid"
+                borderColor="purple.300"
+                _hover={{ transform: "scale(1.1)" }}
+                transition="transform 0.2s"
+              >
+                <DollarSign size={32} color="#805AD5" />
               </Box>
+              <Heading as="h3" fontSize="3xl" color="brand.500" mb={2} fontWeight="bold">
+                ₱5M+
+              </Heading>
+              <Text color="gray.700" fontWeight="medium" fontSize="md">
+                Funds Raised
+              </Text>
+            </Box>
+            <Box 
+              bg="white" 
+              borderRadius="2xl" 
+              p={8} 
+              boxShadow="0 4px 20px rgba(0,0,0,0.08)"
+              border="1px solid"
+              borderColor="gray.100"
+              textAlign="center"
+              _hover={{ 
+                transform: "translateY(-4px)", 
+                boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
+                borderColor: "orange.200"
+              }}
+              transition="all 0.3s ease"
+              position="relative"
+              overflow="hidden"
+            >
+              <Box 
+                bgGradient="linear(to-br, orange.100, orange.200)" 
+                borderRadius="full" 
+                w={16} 
+                h={16} 
+                display="flex" 
+                alignItems="center" 
+                justifyContent="center" 
+                mx="auto" 
+                mb={4}
+                border="3px solid"
+                borderColor="orange.300"
+                _hover={{ transform: "scale(1.1)" }}
+                transition="transform 0.2s"
+              >
+                <Clock size={32} color="#DD6B20" />
+              </Box>
+              <Heading as="h3" fontSize="3xl" color="brand.500" mb={2} fontWeight="bold">
+                45
+              </Heading>
+              <Text color="gray.700" fontWeight="medium" fontSize="md">
+                Years of Service
+              </Text>
             </Box>
           </SimpleGrid>
         </Box>
       </Box>
 
       {/* Service Areas Overview */}
-      <Box as="section" py={16} maxW="1200px" mx="auto" px={{ base: 4, md: 8 }} id="focus-areas">
+      <Box as="section" py={20} maxW="1200px" mx="auto" px={{ base: 4, md: 8 }} id="focus-areas">
         {/* Section Header */}
-        <Box textAlign="center" mb={12}>
-          <Heading as="h2" fontSize={{ base: "3xl", md: "4xl" }} color="brand.500" fontWeight="bold" mb={4}>
+        <Box textAlign="center" mb={16}>
+          <Text 
+            fontSize="sm" 
+            fontWeight="bold" 
+            color="brand.500" 
+            letterSpacing="wider" 
+            textTransform="uppercase"
+            mb={2}
+          >
+            Rotary's Areas of Focus
+          </Text>
+          <Heading as="h2" fontSize={{ base: "3xl", md: "4xl" }} color="gray.900" fontWeight="bold" mb={4}>
             ROTARY'S AREAS OF FOCUS
           </Heading>
           <Text 
@@ -613,10 +612,10 @@ export default function Home() {
               <Box 
                 key={area.title} 
                 textAlign="center" 
-                _hover={{ transform: "translateY(-6px)" }} 
-                transition="all 0.3s"
+                _hover={{ transform: "translateY(-8px)" }} 
+                transition="all 0.3s ease"
               >
-                {/* Circular Icon Container */}
+                {/* Enhanced Circular Icon Container */}
                 <Box 
                   borderRadius="full" 
                   w={{ base: "120px", md: "140px", lg: "160px" }}
@@ -629,13 +628,13 @@ export default function Home() {
                   bg="white"
                   border="4px solid"
                   borderColor={area.color}
-                  boxShadow="lg"
+                  boxShadow="0 8px 25px rgba(0,0,0,0.1)"
                   _hover={{ 
                     transform: "scale(1.05)", 
-                    boxShadow: "xl",
+                    boxShadow: "0 12px 35px rgba(0,0,0,0.15)",
                     borderColor: `${area.color.split('.')[0]}.600`
                   }}
-                  transition="all 0.3s"
+                  transition="all 0.3s ease"
                   position="relative"
                   overflow="hidden"
                 >
@@ -677,10 +676,10 @@ export default function Home() {
             <Flex justify="center" mt={8}>
               <Box 
                 textAlign="center" 
-                _hover={{ transform: "translateY(-6px)" }} 
-                transition="all 0.3s"
+                _hover={{ transform: "translateY(-8px)" }} 
+                transition="all 0.3s ease"
               >
-                {/* Circular Icon Container */}
+                {/* Enhanced Circular Icon Container */}
                 <Box 
                   borderRadius="full" 
                   w={{ base: "120px", md: "140px", lg: "160px" }}
@@ -693,13 +692,13 @@ export default function Home() {
                   bg="white"
                   border="4px solid"
                   borderColor={serviceAreas[6].color}
-                  boxShadow="lg"
+                  boxShadow="0 8px 25px rgba(0,0,0,0.1)"
                   _hover={{ 
                     transform: "scale(1.05)", 
-                    boxShadow: "xl",
+                    boxShadow: "0 12px 35px rgba(0,0,0,0.15)",
                     borderColor: `${serviceAreas[6].color.split('.')[0]}.600`
                   }}
-                  transition="all 0.3s"
+                  transition="all 0.3s ease"
                   position="relative"
                   overflow="hidden"
                 >
@@ -739,7 +738,7 @@ export default function Home() {
       </Box>
 
       {/* Project Highlights / Success Stories */}
-      <Box as="section" py={20} bg="gray.50" id="projects">
+      <Box as="section" py={20} bgGradient="linear(to-b, gray.50, white)" id="projects">
         <Box maxW="1200px" mx="auto" px={{ base: 4, md: 8 }}>
           {/* Section Header */}
           <Box textAlign="center" mb={16}>
@@ -774,10 +773,15 @@ export default function Home() {
                 key={proj.title}
                 bg="white" 
                 borderRadius="2xl" 
-                boxShadow="sm" 
+                boxShadow="0 8px 25px rgba(0,0,0,0.08)"
                 overflow="hidden"
-                _hover={{ boxShadow: "sm", transform: "translateY(-4px)" }}
-                transition="all 0.3s"
+                _hover={{ 
+                  boxShadow: "0 12px 35px rgba(0,0,0,0.12)", 
+                  transform: "translateY(-4px)" 
+                }}
+                transition="all 0.3s ease"
+                border="1px solid"
+                borderColor="gray.100"
               >
                 <Flex direction={{ base: "column", lg: idx % 2 === 0 ? "row" : "row-reverse" }} align="stretch">
                   <Box flex="1" position="relative">
@@ -795,13 +799,14 @@ export default function Home() {
                       position="absolute" 
                       top={4} 
                       left={4} 
-                      bg="brand.500" 
+                      bgGradient="linear(to-r, brand.500, brand.600)"
                       color="white" 
-                      px={3} 
-                      py={1} 
+                      px={4} 
+                      py={2} 
                       borderRadius="full" 
                       fontSize="sm" 
                       fontWeight="bold"
+                      boxShadow="0 4px 15px rgba(0,93,170,0.3)"
                     >
                       Featured Project
                     </Box>
@@ -817,12 +822,13 @@ export default function Home() {
                     
                     <Box 
                       as="blockquote"
-                      bg="blue.50" 
+                      bgGradient="linear(to-r, blue.50, blue.100)" 
                       borderLeft="4px solid" 
                       borderLeftColor="brand.500" 
                       p={6} 
-                      borderRadius="md"
+                      borderRadius="lg"
                       mb={6}
+                      boxShadow="0 4px 15px rgba(59,130,246,0.1)"
                     >
                       <Text fontSize="lg" fontStyle="italic" color="gray.700" mb={2}>
                         "{proj.quote}"
@@ -834,16 +840,22 @@ export default function Home() {
 
                     <ButtonLink 
                       href="/service-projects"
-                      bg="brand.500"
+                      bgGradient="linear(to-r, brand.500, brand.600)"
                       color="white"
-                      _hover={{ bg: "brand.600" }}
+                      _hover={{ 
+                        bgGradient: "linear(to-r, brand.600, brand.700)",
+                        transform: "translateY(-2px)",
+                        boxShadow: "0 8px 25px rgba(0,93,170,0.3)"
+                      }}
                       borderRadius="lg"
-                      px={6}
-                      py={3}
+                      px={8}
+                      py={4}
                       fontSize="md"
                       fontWeight="bold"
                       alignSelf="flex-start"
                       aria-label={`Learn more about ${proj.title} project`}
+                      transition="all 0.3s ease"
+                      boxShadow="0 4px 15px rgba(0,93,170,0.2)"
                     >
                       Learn More About This Project
                     </ButtonLink>
@@ -856,7 +868,7 @@ export default function Home() {
       </Box>
 
       {/* Events / News */}
-      <Box as="section" py={20} bg="gray.50" id="events">
+      <Box as="section" py={20} bgGradient="linear(to-b, gray.50, white)" id="events">
         <Box maxW="1200px" mx="auto" px={{ base: 4, md: 8 }}>
           {/* Section Header */}
           <Box textAlign="center" mb={16}>
@@ -891,12 +903,15 @@ export default function Home() {
                 key={event.title} 
                 bg="white" 
                 borderRadius="2xl" 
-                boxShadow="sm" 
+                boxShadow="0 8px 25px rgba(0,0,0,0.08)"
                 overflow="hidden"
                 border="1px solid"
                 borderColor="gray.100"
-                _hover={{ boxShadow: "sm", transform: "translateY(-4px)" }}
-                transition="all 0.3s"
+                _hover={{ 
+                  boxShadow: "0 12px 35px rgba(0,0,0,0.12)", 
+                  transform: "translateY(-4px)" 
+                }}
+                transition="all 0.3s ease"
               >
                 <Box position="relative">
                   <Image 
@@ -913,13 +928,14 @@ export default function Home() {
                     position="absolute" 
                     bottom={4} 
                     left={4} 
-                    bg="brand.500" 
+                    bgGradient="linear(to-r, brand.500, brand.600)"
                     color="white" 
-                    px={3} 
-                    py={1} 
+                    px={4} 
+                    py={2} 
                     borderRadius="full" 
                     fontSize="sm" 
                     fontWeight="bold"
+                    boxShadow="0 4px 15px rgba(0,93,170,0.3)"
                   >
                     <time dateTime={event.date}>{event.date}</time>
                   </Box>
@@ -936,15 +952,21 @@ export default function Home() {
                   <Flex justify="space-between" align="center">
                     <ButtonLink 
                       href="/about/calendar"
-                      bg="brand.500"
+                      bgGradient="linear(to-r, brand.500, brand.600)"
                       color="white"
-                      _hover={{ bg: "brand.600" }}
+                      _hover={{ 
+                        bgGradient: "linear(to-r, brand.600, brand.700)",
+                        transform: "translateY(-2px)",
+                        boxShadow: "0 8px 25px rgba(0,93,170,0.3)"
+                      }}
                       borderRadius="lg"
                       px={6}
                       py={3}
                       fontSize="sm"
                       fontWeight="bold"
                       aria-label={`Learn more about ${event.title}`}
+                      transition="all 0.3s ease"
+                      boxShadow="0 4px 15px rgba(0,93,170,0.2)"
                     >
                       Learn More
                     </ButtonLink>
@@ -994,13 +1016,18 @@ export default function Home() {
                 as="article"
                 key={member.name} 
                 textAlign="center" 
-                bg="gray.50" 
+                bg="white" 
                 borderRadius="2xl" 
                 p={6}
-                _hover={{ bg: "white", boxShadow: "sm", transform: "translateY(-4px)" }}
-                transition="all 0.3s"
+                _hover={{ 
+                  bg: "gray.50", 
+                  boxShadow: "0 8px 25px rgba(0,0,0,0.1)", 
+                  transform: "translateY(-4px)" 
+                }}
+                transition="all 0.3s ease"
                 border="1px solid"
                 borderColor="gray.100"
+                boxShadow="0 4px 15px rgba(0,0,0,0.05)"
               >
                 <Box position="relative" mb={4}>
                   <Box 
@@ -1009,10 +1036,12 @@ export default function Home() {
                     mx="auto" 
                     border="4px solid"
                     borderColor="brand.500"
-                    bg="gray.200"
+                    bgGradient="linear(to-br, gray.100, gray.200)"
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
+                    _hover={{ transform: "scale(1.05)" }}
+                    transition="transform 0.2s"
                   >
                     <Users size={40} color="#005DAA" />
                   </Box>
@@ -1034,67 +1063,8 @@ export default function Home() {
         </Box>
       </Box>
 
-      {/* FAQ & Stats Combined */}
-      <Box as="section" py={20} bg="gray.50" id="faq-stats">
-        <Box maxW="1200px" mx="auto" px={{ base: 4, md: 8 }}>
-          <Flex direction={{ base: "column", lg: "row" }} gap={16}>
-            {/* Impact Stats */}
-            <Box flex={1}>
-              <Heading as="h2" fontSize="2xl" color="gray.900" mb={8} fontWeight="bold">
-                Our Impact in Numbers
-              </Heading>
-              <SimpleGrid columns={2} gap={6}>
-                <Box as="article" textAlign="center" p={6} bg="white" borderRadius="xl" boxShadow="sm">
-                  <Heading as="h3" fontSize="3xl" color="brand.500" fontWeight="bold" mb={2}>
-                    85+
-                  </Heading>
-                  <Text color="gray.700" fontWeight="medium" fontSize="sm">Members</Text>
-                </Box>
-                <Box as="article" textAlign="center" p={6} bg="white" borderRadius="xl" boxShadow="sm">
-                  <Heading as="h3" fontSize="3xl" color="brand.500" fontWeight="bold" mb={2}>
-                    120+
-                  </Heading>
-                  <Text color="gray.700" fontWeight="medium" fontSize="sm">Projects Completed</Text>
-                </Box>
-                <Box as="article" textAlign="center" p={6} bg="white" borderRadius="xl" boxShadow="sm">
-                  <Heading as="h3" fontSize="3xl" color="brand.500" fontWeight="bold" mb={2}>
-                    ₱5M+
-                  </Heading>
-                  <Text color="gray.700" fontWeight="medium" fontSize="sm">Funds Raised</Text>
-                </Box>
-                <Box as="article" textAlign="center" p={6} bg="white" borderRadius="xl" boxShadow="sm">
-                  <Heading as="h3" fontSize="3xl" color="brand.500" fontWeight="bold" mb={2}>
-                    45
-                  </Heading>
-                  <Text color="gray.700" fontWeight="medium" fontSize="sm">Years of Service</Text>
-                </Box>
-              </SimpleGrid>
-            </Box>
-
-            {/* FAQ */}
-            <Box flex={1}>
-              <Heading as="h2" fontSize="2xl" color="gray.900" mb={8} fontWeight="bold">
-                Frequently Asked Questions
-              </Heading>
-              <Box display="flex" flexDirection="column" gap={4}>
-                {faqs.map((faq, idx) => (
-                  <Box as="article" key={idx} bg="white" p={6} borderRadius="xl" boxShadow="sm">
-                    <Heading as="h3" fontWeight="bold" color="gray.900" mb={2} fontSize="md">
-                      {faq.q}
-                    </Heading>
-                    <Text color="gray.600" lineHeight="relaxed">
-                      {faq.a}
-                    </Text>
-                  </Box>
-                ))}
-              </Box>
-            </Box>
-          </Flex>
-        </Box>
-      </Box>
-
       {/* Contact & Meeting Info */}
-      <Box as="section" py={20} bg="gray.50" id="contact">
+      <Box as="section" py={20} bgGradient="linear(to-b, gray.50, white)" id="contact">
         <Box maxW="1200px" mx="auto" px={{ base: 4, md: 8 }}>
           {/* Section Header */}
           <Box textAlign="center" mb={16}>
@@ -1129,7 +1099,7 @@ export default function Home() {
               bg="white" 
               borderRadius="2xl" 
               p={8} 
-              boxShadow="sm"
+              boxShadow="0 8px 25px rgba(0,0,0,0.08)"
               border="1px solid"
               borderColor="gray.100"
             >
@@ -1220,15 +1190,27 @@ export default function Home() {
                     type="submit"
                     bg="brand.500"
                     color="white"
-                    _hover={{ bg: "brand.600", transform: "translateY(-1px)" }}
+                    _hover={{ 
+                      bg: "brand.600", 
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 8px 25px rgba(0,93,170,0.3)"
+                    }}
                     borderRadius="lg"
                     px={8}
                     py={4}
                     fontSize="md"
                     fontWeight="bold"
                     w="full"
-                    transition="all 0.2s"
-                    boxShadow="sm"
+                    transition="all 0.3s ease"
+                    boxShadow="0 4px 15px rgba(0,93,170,0.2)"
+                    _active={{
+                      bg: "brand.700",
+                      transform: "translateY(0px)"
+                    }}
+                    _focus={{
+                      bg: "brand.500",
+                      boxShadow: "0 0 0 3px rgba(0,93,170,0.3)"
+                    }}
                   >
                     Send Message
                   </Button>
@@ -1243,7 +1225,7 @@ export default function Home() {
                 bg="white" 
                 borderRadius="2xl" 
                 p={8} 
-                boxShadow="sm"
+                boxShadow="0 8px 25px rgba(0,0,0,0.08)"
                 border="1px solid"
                 borderColor="gray.100"
               >
@@ -1253,11 +1235,11 @@ export default function Home() {
                 <VStack align="start" gap={4}>
                   <Flex align="center" gap={3}>
                     <Box 
-                      bg="blue.50" 
+                      bgGradient="linear(to-br, blue.100, blue.200)"
                       borderRadius="lg" 
                       p={2}
                       border="2px solid"
-                      borderColor="blue.200"
+                      borderColor="blue.300"
                     >
                       <Image src="https://img.icons8.com/ios-filled/20/3182CE/calendar.png" alt="Calendar" />
                     </Box>
@@ -1272,11 +1254,11 @@ export default function Home() {
                   </Flex>
                   <Flex align="start" gap={3}>
                     <Box 
-                      bg="green.50" 
+                      bgGradient="linear(to-br, green.100, green.200)"
                       borderRadius="lg" 
                       p={2}
                       border="2px solid"
-                      borderColor="green.200"
+                      borderColor="green.300"
                       mt={1}
                     >
                       <Image src="https://img.icons8.com/ios-filled/20/38A169/marker.png" alt="Location" />
@@ -1299,7 +1281,7 @@ export default function Home() {
                 bg="white" 
                 borderRadius="2xl" 
                 p={8} 
-                boxShadow="sm"
+                boxShadow="0 8px 25px rgba(0,0,0,0.08)"
                 border="1px solid"
                 borderColor="gray.100"
               >
@@ -1309,11 +1291,11 @@ export default function Home() {
                 <VStack align="start" gap={4}>
                   <Flex align="center" gap={3}>
                     <Box 
-                      bg="red.50" 
+                      bgGradient="linear(to-br, red.100, red.200)"
                       borderRadius="lg" 
                       p={2}
                       border="2px solid"
-                      borderColor="red.200"
+                      borderColor="red.300"
                     >
                       <Image src="https://img.icons8.com/ios-filled/20/E53E3E/email.png" alt="Email" />
                     </Box>
@@ -1328,11 +1310,11 @@ export default function Home() {
                   </Flex>
                   <Flex align="center" gap={3}>
                     <Box 
-                      bg="blue.50" 
+                      bgGradient="linear(to-br, blue.100, blue.200)"
                       borderRadius="lg" 
                       p={2}
                       border="2px solid"
-                      borderColor="blue.200"
+                      borderColor="blue.300"
                     >
                       <Image src="https://img.icons8.com/ios-filled/20/1877F2/facebook.png" alt="Facebook" />
                     </Box>
@@ -1357,6 +1339,64 @@ export default function Home() {
               </Box>
             </Box>
           </Flex>
+        </Box>
+      </Box>
+
+      {/* FAQ Section */}
+      <Box as="section" py={20} bg="white" id="faq">
+        <Box maxW="1200px" mx="auto" px={{ base: 4, md: 8 }}>
+          {/* Section Header */}
+          <Box textAlign="center" mb={16}>
+            <Text 
+              fontSize="sm" 
+              fontWeight="bold" 
+              color="brand.500" 
+              letterSpacing="wider" 
+              textTransform="uppercase"
+              mb={2}
+            >
+              Common Questions
+            </Text>
+            <Heading as="h2" fontSize={{ base: "3xl", md: "4xl" }} color="gray.900" fontWeight="bold" mb={4}>
+              Frequently Asked Questions
+            </Heading>
+            <Text 
+              fontSize={{ base: "md", md: "lg" }} 
+              color="gray.600" 
+              maxW="600px" 
+              mx="auto" 
+              lineHeight="relaxed"
+            >
+              Find answers to common questions about joining our club and getting involved in our community projects.
+            </Text>
+          </Box>
+
+          <Box display="flex" flexDirection="column" gap={4} maxW="800px" mx="auto">
+            {faqs.map((faq, idx) => (
+              <Box 
+                as="article" 
+                key={idx} 
+                bg="white" 
+                p={6} 
+                borderRadius="xl" 
+                boxShadow="0 4px 15px rgba(0,0,0,0.05)"
+                border="1px solid"
+                borderColor="gray.100"
+                _hover={{ 
+                  boxShadow: "0 8px 25px rgba(0,0,0,0.1)",
+                  transform: "translateY(-2px)"
+                }}
+                transition="all 0.3s ease"
+              >
+                <Heading as="h3" fontWeight="bold" color="gray.900" mb={3} fontSize="lg">
+                  {faq.q}
+                </Heading>
+                <Text color="gray.600" lineHeight="relaxed">
+                  {faq.a}
+                </Text>
+              </Box>
+            ))}
+          </Box>
         </Box>
       </Box>
     </Box>

@@ -1,8 +1,10 @@
 import { Box, Flex, Button, Link, Spacer, Image, Text } from "@chakra-ui/react";
+import { useBreakpointValue } from "@chakra-ui/react";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { MapPin, Phone, Mail, Clock, Facebook, ChevronDown, Heart } from "lucide-react";
 import { Menu } from "./menu";
+import { useLocation } from "react-router";
 
 const aboutUsLinks = [
   { label: "Club Leadership", href: "/about/leadership" },
@@ -40,7 +42,16 @@ function ButtonLink({ href, children, ...props }: { href: string; children: Reac
 
 function TopBar({ transparent }: { transparent: boolean }) {
   return (
-    <Flex bg={transparent ? "transparent" : "white"} color={transparent ? "white" : "gray.700"} fontSize="xs" px={{ base: 2, md: 12 }} py={2} align="center" justify="space-between">
+    <Flex 
+      bg={transparent ? "transparent" : "white"} 
+      color={transparent ? "white" : "gray.700"} 
+      fontSize="xs" 
+      px={{ base: 2, md: 12 }} 
+      py={2} 
+      align="center" 
+      justify="space-between"
+      display={{ base: "none", md: "flex" }}
+    >
       <Flex gap={2} align="center">
         <Link href="https://www.facebook.com/RCZCwest" target="_blank" rel="noopener noreferrer">
           <Facebook size={18} color={transparent ? "white" : "#6C757D"} />
@@ -84,10 +95,10 @@ function CtaCard() {
   );
 }
 
-function HamburgerIcon() {
+function HamburgerIcon({ color = "currentColor" }: { color?: string }) {
   return (
     <Box as="span" display="inline-block" w="24px" h="24px">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="18" x2="21" y2="18" /></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="18" x2="21" y2="18" /></svg>
     </Box>
   );
 }
@@ -98,17 +109,30 @@ export function GlobalLayout({ children, transparentHeader = false }: { children
 
   const navTextColor = transparentHeader ? "white" : "gray.700";
   const navTextShadow = transparentHeader ? "0 1px 3px rgba(0,0,0,0.7)" : undefined;
-  const navHoverColor = "brand.500";
+  const navHoverColor = transparentHeader ? undefined : "brand.500";
   const navHoverBg = transparentHeader ? "whiteAlpha.200" : "gray.100";
   const clubNameColor = transparentHeader ? "white" : "brand.500";
   const clubNameShadow = transparentHeader ? "0 2px 4px rgba(0,0,0,0.7)" : undefined;
 
+  const location = useLocation();
+  const isHomePage = location.pathname === "/" || location.pathname === "/home";
+
+  const showTopBar = useBreakpointValue({ base: false, md: true });
+
   return (
     <Flex direction="column" minHeight="100vh" position="relative">
       {/* Top Bar - Absolutely positioned */}
-      <Box position="absolute" top={0} left={0} right={0} zIndex={21}>
-        <TopBar transparent={transparentHeader} />
-      </Box>
+      {showTopBar && (
+        <Box 
+          position="absolute" 
+          top={0} 
+          left={0} 
+          right={0} 
+          zIndex={21}
+        >
+          <TopBar transparent={transparentHeader} />
+        </Box>
+      )}
       {/* Main Header/Nav - Absolutely positioned */}
       <Box 
         as="header" 
@@ -296,12 +320,13 @@ export function GlobalLayout({ children, transparentHeader = false }: { children
               Donate Now
             </Link>
           </Flex>
+          {/* Spacer to push hamburger to the right on mobile */}
+          <Spacer display={{ base: "block", lg: "none" }} />
           {/* Hamburger for mobile */}
           <Button
             aria-label="Open menu"
             display={{ base: "flex", md: "none" }}
             variant="ghost"
-            color="white"
             ml={2}
             onClick={() => setMobileMenuOpen((v) => !v)}
             p={2}
@@ -309,7 +334,7 @@ export function GlobalLayout({ children, transparentHeader = false }: { children
             height="auto"
             _hover={{ bg: "whiteAlpha.200" }}
           >
-            <HamburgerIcon />
+            <HamburgerIcon color={transparentHeader ? "white" : "#2D3748"} />
           </Button>
         </Flex>
         {/* Mobile Menu */}
@@ -401,7 +426,7 @@ export function GlobalLayout({ children, transparentHeader = false }: { children
       </Box>
 
       {/* Main Content */}
-      <Box as="main" flex="1 1 0%" bg="gray.50" pb={8} px={{ base: 4, md: 0 }}>
+      <Box as="main" flex="1 1 0%" bg="gray.50" pb={8} px={isHomePage ? 0 : { base: 4, md: 0 }}>
         {children}
       </Box>
 
