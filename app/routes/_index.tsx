@@ -99,13 +99,13 @@ export default function Index() {
         <Stack gap={8} textAlign="center" align="center">
           {/* Construction Icon */}
           <Box
-            bg="yellow.100"
+            bg="gold.100"
             borderRadius="full"
             p={6}
             border="3px solid"
-            borderColor="yellow.400"
+            borderColor="gold.400"
           >
-            <Construction size={64} color="#D69E2E" />
+            <Construction size={64} color="#f7a81b" />
           </Box>
 
           {/* Main Heading */}
@@ -176,10 +176,10 @@ export default function Index() {
               <Box>
                 <Flex justify="space-between" align="center" mb={2}>
                   <Text fontSize="sm" fontWeight="medium" color="gray.700">Testing & Review</Text>
-                  <Text fontSize="sm" color="yellow.600" fontWeight="bold">70%</Text>
+                  <Text fontSize="sm" color="gold.600" fontWeight="bold">70%</Text>
                 </Flex>
                 <Box bg="gray.200" h="6px" borderRadius="full" overflow="hidden">
-                  <Box bg="yellow.500" h="100%" w="70%" borderRadius="full" />
+                  <Box bg="gold.500" h="100%" w="70%" borderRadius="full" />
                 </Box>
               </Box>
             </Stack>

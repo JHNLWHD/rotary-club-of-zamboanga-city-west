@@ -49,11 +49,11 @@ export default function FoundationGiving() {
         </Box>
 
         <Box 
-          bg="yellow.50" 
-          p={8} 
-          borderRadius="xl" 
-          border="1px solid" 
-          borderColor="yellow.200"
+          bg="gold.50"
+          p={6}
+          borderRadius="lg"
+          border="2px solid"
+          borderColor="gold.200"
           w="full" 
           maxW="500px"
         >

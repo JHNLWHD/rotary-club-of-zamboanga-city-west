@@ -284,17 +284,40 @@ export default function Home() {
       />
 
       {/* Hero Section */}
-      <Box as="section" position="relative" overflow="hidden" bg="gray.50" py={{ base: 8, md: 12 }}>
-        <Box px={{ base: 4, md: 16 }}>
-          <Flex direction={{ base: "column", lg: "row" }} align="center" gap={{ base: 6, lg: 8 }}>
+      <Box 
+        as="section" 
+        position="relative" 
+        overflow="hidden" 
+        pt={{ base: "140px", md: "160px" }}
+        pb={{ base: 8, md: 12 }}
+        minH={{ base: "600px", md: "700px" }}
+        backgroundImage="url('/rotary-zc-west.jpg')"
+        backgroundSize="cover"
+        backgroundPosition="center"
+        backgroundRepeat="no-repeat"
+      >
+        {/* Overlay for better text readability */}
+        <Box
+          position="absolute"
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          bg="blackAlpha.400"
+          zIndex={1}
+        />
+        
+        <Box px={{ base: 4, md: 16 }} position="relative" zIndex={2}>
+          <Flex direction={{ base: "column", lg: "row" }} align="center" gap={{ base: 6, lg: 8 }} minH={{ base: "400px", md: "500px" }}>
             <Box flex={1} maxW={{ base: "100%", lg: "52%" }} pr={{ base: 0, lg: 4 }}>
               <Text 
                 fontSize="sm" 
                 fontWeight="bold" 
-                color="brand.500" 
+                color="white" 
                 letterSpacing="wider" 
                 textTransform="uppercase"
                 mb={3}
+                textShadow="0 2px 4px rgba(0,0,0,0.5)"
               >
                 Rotary Club of Zamboanga City West
               </Text>
@@ -303,20 +326,19 @@ export default function Home() {
                 fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }} 
                 fontWeight="bold" 
                 lineHeight="shorter"
-                color="gray.900"
+                color="white"
                 mb={6}
+                textShadow="0 2px 4px rgba(0,0,0,0.7)"
               >
-                Service Above Self{" "}
-                <Text as="span" color="brand.500">
-                  in Zamboanga City
-                </Text>
+                Service Above Self in Zamboanga City
               </Heading>
               <Text 
                 fontSize={{ base: "md", md: "lg" }} 
-                color="gray.600" 
+                color="gray.100" 
                 mb={8} 
                 lineHeight="relaxed"
                 maxW="480px"
+                textShadow="0 1px 3px rgba(0,0,0,0.7)"
               >
                 Dedicated to serving our community through meaningful projects that create lasting positive change in Zamboanga City and beyond.
               </Text>
@@ -333,7 +355,7 @@ export default function Home() {
                   _hover={{ bg: "brand.600", transform: "translateY(-2px)" }}
                   style={{ display: 'inline-block', textAlign: 'center', textDecoration: 'none' }}
                   transition="all 0.2s"
-                  boxShadow="sm"
+                  boxShadow="lg"
                   fontSize="md"
                 >
                   Learn About Our Projects
@@ -342,16 +364,16 @@ export default function Home() {
               
               {/* Stats or Icons */}
               <Flex gap={6} align="center" mt={2}>
-                <Box color="brand.500">
+                <Box color="gold.500">
                   <Users size={28} />
                 </Box>
-                <Box color="brand.500">
+                <Box color="gold.500">
                   <Handshake size={28} />
                 </Box>
-                <Box color="brand.500">
+                <Box color="gold.500">
                   <Heart size={28} />
                 </Box>
-                <Text fontSize="sm" color="gray.500" ml={2} fontWeight="medium">
+                <Text fontSize="sm" color="gray.200" ml={2} fontWeight="medium" textShadow="0 1px 2px rgba(0,0,0,0.7)">
                   Service Above Self
                 </Text>
               </Flex>
@@ -372,7 +394,7 @@ export default function Home() {
       </Box>
 
       {/* How You Can Get Involved Section - Redesigned */}
-      <Box as="section" py={20} bg="white" id="involvement">
+      <Box as="section" py={20} bg="white" id="involvement" mt={8}>
         <Box maxW="1200px" mx="auto" px={{ base: 4, md: 8 }}>
           {/* Section Header */}
           <Box textAlign="center" mb={16}>

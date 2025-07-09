@@ -17,16 +17,16 @@ const config = defineConfig({
           900: { value: "#00152a" },
         },
         gold: {
-          50: { value: "#fff8e1" },
-          100: { value: "#ffecb3" },
-          200: { value: "#ffe082" },
-          300: { value: "#ffd54f" },
-          400: { value: "#ffca28" },
-          500: { value: "#FDB714" }, // Rotary Gold
-          600: { value: "#fbc02d" },
-          700: { value: "#f9a825" },
-          800: { value: "#f57c00" },
-          900: { value: "#e65100" },
+          50: { value: "#fef7e8" },
+          100: { value: "#fdecc8" },
+          200: { value: "#fcdba4" },
+          300: { value: "#fbca7f" },
+          400: { value: "#f9b85a" },
+          500: { value: "#f7a81b" }, // Official Rotary Gold
+          600: { value: "#e6971a" },
+          700: { value: "#d58618" },
+          800: { value: "#c47516" },
+          900: { value: "#b36414" },
         },
         gray: {
           50: { value: "#F8F9FA" }, // light gray

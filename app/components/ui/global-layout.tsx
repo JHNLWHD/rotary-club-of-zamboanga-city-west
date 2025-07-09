@@ -38,26 +38,26 @@ function ButtonLink({ href, children, ...props }: { href: string; children: Reac
   );
 }
 
-function TopBar() {
+function TopBar({ transparent }: { transparent: boolean }) {
   return (
-    <Flex bg="gray.50" color="gray.700" fontSize="xs" px={{ base: 2, md: 12 }} py={2} align="center" justify="space-between" borderBottom="1px solid #E2E8F0">
+    <Flex bg={transparent ? "transparent" : "white"} color={transparent ? "white" : "gray.700"} fontSize="xs" px={{ base: 2, md: 12 }} py={2} align="center" justify="space-between">
       <Flex gap={2} align="center">
         <Link href="https://www.facebook.com/RCZCwest" target="_blank" rel="noopener noreferrer">
-          <Facebook size={18} color="#6C757D" />
+          <Facebook size={18} color={transparent ? "white" : "#6C757D"} />
         </Link>
       </Flex>
       <Flex gap={7} align="center" display={{ base: "none", md: "flex" }}>
         <Flex gap={1} align="center">
-          <MapPin size={14} color="#6C757D" />
-          914 Grand Astoria Hotel, Zamboanga City
+          <MapPin size={14} color={transparent ? "white" : "#6C757D"} />
+          <Text color={transparent ? "white" : "gray.700"} textShadow={transparent ? "0 1px 3px rgba(0,0,0,0.7)" : undefined}>914 Grand Astoria Hotel, Zamboanga City</Text>
         </Flex>
         <Flex gap={1} align="center">
-          <Mail size={14} color="#6C757D" />
-          rotaryzcwest@gmail.com
+          <Mail size={14} color={transparent ? "white" : "#6C757D"} />
+          <Text color={transparent ? "white" : "gray.700"} textShadow={transparent ? "0 1px 3px rgba(0,0,0,0.7)" : undefined}>rotaryzcwest@gmail.com</Text>
         </Flex>
         <Flex gap={1} align="center">
-          <Clock size={14} color="#6C757D" />
-          Tue 6:00 PM
+          <Clock size={14} color={transparent ? "white" : "#6C757D"} />
+          <Text color={transparent ? "white" : "gray.700"} textShadow={transparent ? "0 1px 3px rgba(0,0,0,0.7)" : undefined}>Tue 6:00 PM</Text>
         </Flex>
       </Flex>
     </Flex>
@@ -92,16 +92,34 @@ function HamburgerIcon() {
   );
 }
 
-export function GlobalLayout({ children }: { children: ReactNode }) {
+export function GlobalLayout({ children, transparentHeader = false }: { children: ReactNode, transparentHeader?: boolean }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [aboutUsMenuOpen, setAboutUsMenuOpen] = useState(false);
 
+  const navTextColor = transparentHeader ? "white" : "gray.700";
+  const navTextShadow = transparentHeader ? "0 1px 3px rgba(0,0,0,0.7)" : undefined;
+  const navHoverColor = "brand.500";
+  const navHoverBg = transparentHeader ? "whiteAlpha.200" : "gray.100";
+  const clubNameColor = transparentHeader ? "white" : "brand.500";
+  const clubNameShadow = transparentHeader ? "0 2px 4px rgba(0,0,0,0.7)" : undefined;
+
   return (
-    <Flex direction="column" minHeight="100vh">
-      {/* Top Bar */}
-      <TopBar />
-      {/* Main Header/Nav */}
-      <Box as="header" bg="white" boxShadow="sm" position="sticky" top={0} zIndex={10} borderBottom="1px solid #E2E8F0">
+    <Flex direction="column" minHeight="100vh" position="relative">
+      {/* Top Bar - Absolutely positioned */}
+      <Box position="absolute" top={0} left={0} right={0} zIndex={21}>
+        <TopBar transparent={transparentHeader} />
+      </Box>
+      {/* Main Header/Nav - Absolutely positioned */}
+      <Box 
+        as="header" 
+        bg={transparentHeader ? "transparent" : "white"}
+        position="absolute" 
+        top="32px"
+        left={0} 
+        right={0} 
+        zIndex={20} 
+        borderBottom={transparentHeader ? "none" : "1px solid #E2E8F0"}
+      >
         <Flex align="center" px={{ base: 4, md: 12 }} height={20} gap={4}>
           {/* Logo and Club Name (left) */}
           <Flex align="center" gap={2} minW="0" flex="0 0 auto" maxW={{ base: "180px", md: "280px" }}>
@@ -116,12 +134,13 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
             <Box 
               fontWeight="bold" 
               fontSize={{ base: "xs", md: "sm" }} 
-              color="brand.500" 
+              color={clubNameColor}
               overflow="hidden"
               display="flex" 
               alignItems="center" 
               height="100%"
               lineHeight={1.2}
+              textShadow={clubNameShadow}
             >
               <Box>
                 <Box>Rotary Club of</Box>
@@ -136,16 +155,17 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
             <Link
               href="/"
               fontWeight="medium"
-              color="gray.700"
+              color={navTextColor}
               fontSize="sm"
               px={2}
               py={2}
               borderRadius="md"
-              _hover={{ color: "brand.500", bg: "gray.100" }}
-              style={{ transition: 'background 0.2s' }}
+              _hover={{ color: navHoverColor, bg: navHoverBg }}
+              style={{ transition: 'all 0.2s' }}
               textAlign="center"
               whiteSpace="nowrap"
               minW="auto"
+              textShadow={navTextShadow}
             >
               Home
             </Link>
@@ -163,14 +183,15 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
                   <Button
                     variant="ghost"
                     fontWeight="medium"
-                    color="gray.700"
+                    color={navTextColor}
                     fontSize="sm"
                     px={2}
                     py={2}
                     borderRadius="md"
-                    _hover={{ color: "brand.500", bg: "gray.100" }}
+                    _hover={{ color: navHoverColor, bg: navHoverBg }}
                     transition="all 0.2s"
                     minW="auto"
+                    textShadow={navTextShadow}
                   >
                     About Us <ChevronDown size={14} style={{ marginLeft: '4px' }} />
                   </Button>
@@ -222,16 +243,17 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
                 key={link.href}
                 href={link.href}
                 fontWeight="medium"
-                color="gray.700"
+                color={navTextColor}
                 fontSize="sm"
                 px={2}
                 py={2}
                 borderRadius="md"
-                _hover={{ color: "brand.500", bg: "gray.100" }}
-                style={{ transition: 'background 0.2s' }}
+                _hover={{ color: navHoverColor, bg: navHoverBg }}
+                style={{ transition: 'all 0.2s' }}
                 textAlign="center"
                 whiteSpace="nowrap"
                 minW="auto"
+                textShadow={navTextShadow}
               >
                 {link.label}
               </Link>
@@ -240,20 +262,36 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
           
           {/* Right CTAs */}
           <Flex align="center" gap={2} flex="0 0 auto" display={{ base: "none", lg: "flex" }}>
-            <CtaCard />
+            <Link 
+              href="https://rotaract.rotaryzcwest.org/?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=rotaract_referral" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              _hover={{ transform: "scale(1.02)", textDecoration: "none" }}
+              transition="all 0.2s"
+            >
+              <Flex align="center" bg="gold.100" borderRadius="md" px={2} py={3} gap={2} minW="140px">
+                <Heart size={18} color="#f7a81b" fill="#f7a81b" />
+                <Box>
+                  <Text fontSize="9px" color="gray.700" lineHeight={1.1}>Visit Now</Text>
+                  <Text fontWeight="bold" color="brand.500" fontSize="11px" lineHeight={1.1}>Visit Rotaract Site</Text>
+                </Box>
+              </Flex>
+            </Link>
             <Link 
               href="https://www.rotary.org/en/get-involved/ways-to-give?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=foundation_giving" 
               target="_blank" 
               rel="noopener noreferrer"
               bg="brand.500" 
               color="white" 
-              _hover={{ bg: "brand.700" }} 
+              _hover={{ bg: "brand.600", transform: "translateY(-1px)" }} 
               py={3} 
               px={7}
               borderRadius="md"
               fontSize="sm"
               fontWeight="bold"
               style={{ display: 'inline-block', textAlign: 'center', textDecoration: 'none' }}
+              transition="all 0.2s"
+              boxShadow="lg"
             >
               Donate Now
             </Link>
@@ -263,22 +301,30 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
             aria-label="Open menu"
             display={{ base: "flex", md: "none" }}
             variant="ghost"
-            color="brand.500"
+            color="white"
             ml={2}
             onClick={() => setMobileMenuOpen((v) => !v)}
             p={2}
             minW={0}
             height="auto"
+            _hover={{ bg: "whiteAlpha.200" }}
           >
             <HamburgerIcon />
           </Button>
         </Flex>
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <Box bg="white" boxShadow="md" px={6} py={4} display={{ md: "none" }}>
+          <Box 
+            bg="blackAlpha.900" 
+            backdropFilter="blur(10px)"
+            px={6} 
+            py={4} 
+            display={{ md: "none" }} 
+            borderTop="none"
+          >
             {/* About Us Section */}
             <Box mb={4}>
-              <Text fontWeight="bold" color="gray.900" mb={2} fontSize="sm" textTransform="uppercase" letterSpacing="wider">
+              <Text fontWeight="bold" color="white" mb={2} fontSize="sm" textTransform="uppercase" letterSpacing="wider">
                 About Us
               </Text>
               {aboutUsLinks.map((link) => (
@@ -286,9 +332,9 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
                   <Link 
                     href={link.href} 
                     fontWeight="medium" 
-                    color="gray.600" 
+                    color="gray.300" 
                     fontSize="sm"
-                    _hover={{ color: "brand.500" }} 
+                    _hover={{ color: "gold.400" }} 
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     {link.label}
@@ -303,8 +349,8 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
                 <Link 
                   href={link.href} 
                   fontWeight="medium" 
-                  color="gray.700" 
-                  _hover={{ color: "brand.500" }} 
+                  color="white" 
+                  _hover={{ color: "gold.400" }} 
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {link.label}
@@ -312,14 +358,30 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
               </Box>
             ))}
             
-            <CtaCard />
+            <Link 
+              href="https://rotaract.rotaryzcwest.org/?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=rotaract_referral" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              _hover={{ transform: "scale(1.02)", textDecoration: "none" }}
+              transition="all 0.2s"
+              display="block"
+              mb={2}
+            >
+              <Flex align="center" bg="gold.100" borderRadius="md" px={2} py={3} gap={2} minW="140px">
+                <Heart size={18} color="#f7a81b" fill="#f7a81b" />
+                <Box>
+                  <Text fontSize="9px" color="gray.700" lineHeight={1.1}>Visit Now</Text>
+                  <Text fontWeight="bold" color="brand.500" fontSize="11px" lineHeight={1.1}>Visit Rotaract Site</Text>
+                </Box>
+              </Flex>
+            </Link>
             <Link 
               href="https://www.rotary.org/en/get-involved/ways-to-give?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=foundation_giving" 
               target="_blank" 
               rel="noopener noreferrer"
               bg="brand.500" 
               color="white" 
-              _hover={{ bg: "brand.700" }} 
+              _hover={{ bg: "brand.600", transform: "translateY(-1px)" }} 
               w="full" 
               mt={2} 
               py={3}
@@ -329,6 +391,8 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
               fontWeight="bold"
               style={{ display: 'inline-block', textAlign: 'center', textDecoration: 'none' }}
               onClick={() => setMobileMenuOpen(false)}
+              transition="all 0.2s"
+              boxShadow="lg"
             >
               Donate Now
             </Link>
@@ -337,7 +401,7 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
       </Box>
 
       {/* Main Content */}
-      <Box as="main" flex="1 1 0%" bg="gray.50" py={8} px={{ base: 4, md: 0 }}>
+      <Box as="main" flex="1 1 0%" bg="gray.50" pb={8} px={{ base: 4, md: 0 }}>
         {children}
       </Box>
 
