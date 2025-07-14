@@ -245,38 +245,579 @@ const serviceAreas = [
   },
 ];
 
-const projectHighlights = [
+const projectHighlights: Project[] = [
   {
     title: "Clean Water for Barangay Sta. Maria",
-    desc: "Installed a new water filtration system benefiting 500+ families.",
-    image: "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=800&q=80",
-    quote: "Now our children have safe water every day!",
-    person: "- Resident, Sta. Maria",
+    shortDescription: "Installed a new water filtration system benefiting 500+ families.",
+    description: `# Clean Water for Barangay Sta. Maria
+
+Our club successfully implemented a comprehensive water filtration system in Barangay Sta. Maria, addressing the critical need for clean drinking water in this underserved community.
+
+## Project Overview
+
+This initiative was born from our community needs assessment, where we discovered that over 500 families in Barangay Sta. Maria were relying on unsafe water sources. Many residents were experiencing waterborne illnesses, particularly affecting children and the elderly.
+
+## What We Accomplished
+
+- **Water Filtration System Installation**: Installed a state-of-the-art filtration system capable of processing 10,000 liters of clean water daily
+- **Community Training**: Conducted workshops for 50 community leaders on water system maintenance and hygiene practices
+- **Health Impact**: Reduced waterborne illness cases by 80% within the first 6 months
+- **Sustainability**: Established a community water committee to maintain the system
+
+## Technical Specifications
+
+The filtration system includes:
+- Multi-stage filtration process
+- UV sterilization technology
+- Automatic backwash system
+- Real-time water quality monitoring
+
+## Community Impact
+
+- **500+ families** now have access to clean drinking water
+- **2,500+ individuals** directly benefited
+- **80% reduction** in waterborne illnesses
+- **Improved school attendance** among children
+
+## Project Partners
+
+- **Rotary Club of Zamboanga City West** - Project lead and funding
+- **Barangay Sta. Maria Council** - Community coordination
+- **Zamboanga City Water District** - Technical consultation
+- **Local Health Department** - Health impact monitoring
+
+## Project Timeline
+
+- **Planning Phase**: January - March 2024
+- **Implementation**: April - June 2024
+- **Community Training**: July 2024
+- **Monitoring & Evaluation**: Ongoing
+
+## Sustainability
+
+The project includes a comprehensive maintenance plan and community training to ensure long-term success. Local residents have been trained in system operation and basic maintenance, creating local ownership and sustainability.`,
+    headerImage: "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=800&q=80",
+    gallery: [
+      "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80"
+    ],
+    date: "2024-06-15",
+    location: "Barangay Sta. Maria, Zamboanga City",
+    partners: ["Barangay Sta. Maria Council", "Zamboanga City Water District", "Local Health Department"],
+    facebookLink: "https://www.facebook.com/RCZCwest/posts/123456789",
   },
   {
     title: "Medical Mission 2024",
-    desc: "Free checkups and medicines for 1,200+ residents.",
-    image: "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=800&q=80",
-    quote: "Thank you, Rotary, for caring for our health!",
-    person: "- Local beneficiary",
+    shortDescription: "Free checkups and medicines for 1,200+ residents.",
+    description: `# Medical Mission 2024
+
+Our annual medical mission brought essential healthcare services to over 1,200 residents across multiple barangays in Zamboanga City, providing free consultations, medicines, and health education.
+
+## Mission Overview
+
+The 2024 Medical Mission was our largest healthcare initiative to date, serving communities that have limited access to medical care. Our team of volunteer doctors, nurses, and healthcare professionals provided comprehensive medical services over three days.
+
+## Services Provided
+
+### Primary Care Services
+- **General Consultations**: 1,200+ patients received medical checkups
+- **Pediatric Care**: Specialized care for 300+ children
+- **Geriatric Care**: Dedicated services for elderly patients
+- **Women's Health**: Gynecological consultations and screenings
+
+### Specialized Services
+- **Dental Care**: 500+ dental checkups and treatments
+- **Eye Care**: Vision screenings and prescription glasses
+- **Laboratory Tests**: Blood sugar, blood pressure, and basic lab work
+- **Vaccinations**: Immunization programs for children and adults
+
+### Health Education
+- **Nutrition Workshops**: Healthy eating guidelines
+- **Hygiene Education**: Personal and community hygiene practices
+- **Disease Prevention**: Information on common illnesses
+- **Family Planning**: Reproductive health education
+
+## Impact Statistics
+
+- **1,200+ patients** served
+- **15 volunteer doctors** participated
+- **25 volunteer nurses** and healthcare workers
+- **₱500,000+** worth of medicines distributed
+- **5 barangays** covered
+
+## Medical Team
+
+Our volunteer medical team included:
+- **Dr. Maria Santos** - General Medicine
+- **Dr. Juan Dela Cruz** - Pediatrics
+- **Dr. Ana Rodriguez** - Internal Medicine
+- **Dr. Carlos Lim** - Dentistry
+- **Dr. Elena Tan** - Ophthalmology
+
+## Community Partners
+
+- **Zamboanga City Health Office** - Coordination and support
+- **Local Barangay Councils** - Community mobilization
+- **Philippine Medical Association** - Professional support
+- **Local Pharmacies** - Medicine donations
+
+## Patient Stories
+
+### Maria, 45, Barangay San Roque
+"Thank you, Rotary, for the free checkup and medicines. I couldn't afford to see a doctor, but now I know what's wrong and how to take care of myself."
+
+### Juan, 8, Barangay Sta. Barbara
+"The doctors were so kind to me. They gave me vitamins and taught me how to brush my teeth properly."
+
+## Future Plans
+
+Based on the success of this mission, we plan to:
+- Establish regular mobile clinics
+- Create a health monitoring system
+- Develop partnerships with local hospitals
+- Expand services to more remote areas
+
+## Sustainability
+
+The mission's impact extends beyond the three-day event through:
+- Follow-up care coordination
+- Health education materials distributed
+- Community health worker training
+- Ongoing health monitoring programs`,
+    headerImage: "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=800&q=80",
+    gallery: [
+      "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&w=800&q=80"
+    ],
+    date: "2024-03-20",
+    location: "Multiple Barangays, Zamboanga City",
+    partners: ["Zamboanga City Health Office", "Philippine Medical Association", "Local Pharmacies"],
+    facebookLink: "https://www.facebook.com/RCZCwest/posts/987654321",
   },
 ];
 
-const popularProjects = [
+const popularProjects: Project[] = [
   {
     title: "School Supplies Drive",
-    desc: "Provided 1,000+ students with essential school kits.",
-    image: "https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=800&q=80",
+    shortDescription: "Provided 1,000+ students with essential school kits.",
+    description: `# School Supplies Drive 2024
+
+Our annual School Supplies Drive ensures that underprivileged students have the essential tools they need to succeed in their education. This year, we provided complete school kits to over 1,000 students across 15 schools in Zamboanga City.
+
+## Project Goals
+
+- Provide essential school supplies to students in need
+- Reduce barriers to education access
+- Support academic success and attendance
+- Promote educational equality
+
+## What's Included in Each Kit
+
+### Basic Supplies
+- **Notebooks**: 5 notebooks of different sizes
+- **Pens and Pencils**: 10 pens, 5 pencils, 2 erasers
+- **Rulers and Compasses**: Geometry tools for math classes
+- **Art Supplies**: Crayons, colored pencils, scissors, glue
+
+### Organization Tools
+- **School Bags**: Durable backpacks for carrying supplies
+- **Pencil Cases**: To keep supplies organized
+- **Folders**: For organizing papers and assignments
+
+### Personal Care Items
+- **Hygiene Kits**: Toothbrush, toothpaste, soap
+- **Water Bottles**: Reusable bottles for staying hydrated
+
+## Distribution Process
+
+### School Selection
+We partnered with the Department of Education to identify schools with the highest need:
+- Schools in economically disadvantaged areas
+- Schools with high dropout rates
+- Schools serving indigenous communities
+
+### Distribution Events
+- **School Visits**: Our team visited each school personally
+- **Student Registration**: Teachers helped identify students in need
+- **Kit Assembly**: Volunteers assembled kits on-site
+- **Distribution Day**: Students received their kits with smiles
+
+## Impact by Numbers
+
+- **1,000+ students** received complete school kits
+- **15 schools** across Zamboanga City
+- **25 barangays** served
+- **₱300,000+** worth of supplies distributed
+- **100%** of identified students served
+
+## Student Stories
+
+### Ana, Grade 3 Student
+"I was so happy when I got my new school bag and supplies. Now I can do my homework properly and my teacher won't scold me for not having paper."
+
+### Miguel, Grade 6 Student
+"The art supplies are my favorite! I love drawing and now I have my own crayons and colored pencils."
+
+## Community Support
+
+### Volunteer Participation
+- **50+ Rotary members** participated in kit assembly
+- **30+ community volunteers** helped with distribution
+- **15 teachers** assisted with student identification
+
+### Donor Recognition
+- **Local Businesses**: Office supply stores, bookstores
+- **Individual Donors**: Club members and community supporters
+- **Corporate Partners**: Companies providing bulk supplies
+
+## Educational Impact
+
+### Academic Performance
+- **Improved attendance** among recipient students
+- **Better homework completion** rates
+- **Increased participation** in class activities
+- **Enhanced creativity** through art supplies
+
+### Long-term Benefits
+- **Reduced financial burden** on families
+- **Increased student confidence**
+- **Better academic preparedness**
+- **Promoted educational equality**
+
+## Future Plans
+
+Based on this year's success, we plan to:
+- **Expand reach** to more schools
+- **Include additional supplies** like calculators for older students
+- **Establish ongoing support** programs
+- **Partner with more donors** for sustainability
+
+## Sustainability
+
+The project's impact extends beyond the initial distribution:
+- **Follow-up visits** to assess long-term impact
+- **Teacher feedback** on student performance
+- **Family engagement** in educational support
+- **Ongoing needs assessment** for future drives`,
+    headerImage: "https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=800&q=80",
+    gallery: [
+      "https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=800&q=80"
+    ],
+    date: "2024-05-15",
+    location: "15 Schools across Zamboanga City",
+    partners: ["Department of Education", "Local Office Supply Stores", "Community Volunteers"],
+    facebookLink: "https://www.facebook.com/RCZCwest/posts/456789123",
   },
   {
     title: "Feeding Program",
-    desc: "Weekly meals for undernourished children in local barangays.",
-    image: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80",
+    shortDescription: "Weekly meals for undernourished children in local barangays.",
+    description: `# Weekly Feeding Program
+
+Our ongoing feeding program provides nutritious meals to undernourished children in local barangays, addressing food insecurity and promoting healthy development among vulnerable youth.
+
+## Program Overview
+
+The Weekly Feeding Program operates year-round, serving hot, nutritious meals to children who may not have access to regular, healthy food. Our program focuses on both immediate hunger relief and long-term nutritional education.
+
+## Weekly Schedule
+
+### Monday - Friday
+- **Breakfast Program**: 7:00 AM - 8:00 AM
+- **Lunch Program**: 12:00 PM - 1:00 PM
+- **Afternoon Snack**: 3:00 PM - 4:00 PM
+
+### Weekend Program
+- **Saturday Brunch**: 10:00 AM - 11:00 AM
+- **Sunday Family Meal**: 12:00 PM - 1:00 PM
+
+## Nutritional Focus
+
+### Balanced Meals
+Each meal includes:
+- **Protein**: Fish, chicken, eggs, or beans
+- **Carbohydrates**: Rice, bread, or root vegetables
+- **Vegetables**: Fresh local vegetables
+- **Fruits**: Seasonal fruits for vitamins
+- **Dairy**: Milk or yogurt when available
+
+### Special Dietary Needs
+- **Allergy-friendly options** for children with food sensitivities
+- **Cultural considerations** for diverse communities
+- **Age-appropriate portions** for different age groups
+
+## Program Locations
+
+### Primary Sites
+- **Barangay Sta. Maria Community Center**
+- **Barangay San Roque Elementary School**
+- **Barangay Sta. Barbara Health Center**
+- **Barangay Talon-Talon Community Hall**
+
+### Mobile Units
+- **Mobile kitchen** for remote areas
+- **Home delivery** for children unable to travel
+- **Emergency response** for disaster-affected areas
+
+## Impact Statistics
+
+### Weekly Reach
+- **500+ children** served weekly
+- **1,500+ meals** provided per week
+- **5 barangays** covered
+- **25+ volunteers** involved
+
+### Long-term Impact
+- **Improved nutrition** among participants
+- **Better school attendance** and performance
+- **Reduced malnutrition** cases
+- **Enhanced community health**
+
+## Volunteer Program
+
+### Kitchen Volunteers
+- **Food preparation** and cooking
+- **Meal planning** and nutrition guidance
+- **Kitchen management** and safety
+- **Food safety** and hygiene practices
+
+### Distribution Volunteers
+- **Meal serving** and portion control
+- **Community outreach** and registration
+- **Health monitoring** and follow-up
+- **Educational activities** with children
+
+## Community Partnerships
+
+### Local Partners
+- **Barangay Councils**: Venue and community coordination
+- **Local Farmers**: Fresh produce supply
+- **Fish Vendors**: Fresh fish donations
+- **Bakery Owners**: Bread and pastry donations
+
+### Government Support
+- **Department of Social Welfare**: Program coordination
+- **Department of Health**: Nutritional guidelines
+- **Local Health Centers**: Health monitoring
+
+## Success Stories
+
+### Maria, Age 8
+"Before the feeding program, I often went to school hungry. Now I have breakfast every morning and I can concentrate better in class."
+
+### Juan, Age 6
+"I love the fruits they give us! My mom says I'm growing stronger and healthier."
+
+## Educational Component
+
+### Nutrition Education
+- **Healthy eating habits** workshops
+- **Food preparation** demonstrations
+- **Garden planting** activities
+- **Hygiene practices** training
+
+### Life Skills
+- **Basic cooking** skills for older children
+- **Food safety** and storage education
+- **Budget planning** for families
+- **Community gardening** projects
+
+## Monitoring and Evaluation
+
+### Health Monitoring
+- **Regular weight** and height measurements
+- **Nutritional status** assessments
+- **Health check-ups** for participants
+- **Family health** education sessions
+
+### Program Evaluation
+- **Attendance tracking** and analysis
+- **Feedback collection** from families
+- **Impact assessment** on school performance
+- **Community satisfaction** surveys
+
+## Future Expansion
+
+### Planned Improvements
+- **Additional locations** in underserved areas
+- **Weekend family** meal programs
+- **Nutrition education** for parents
+- **Sustainable food** sourcing partnerships
+
+### Long-term Goals
+- **Reduce malnutrition** rates by 50%
+- **Improve school attendance** by 30%
+- **Establish community** gardens
+- **Create sustainable** food security programs`,
+    headerImage: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80",
+    gallery: [
+      "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80"
+    ],
+    date: "2024-01-01",
+    location: "Multiple Barangays, Zamboanga City",
+    partners: ["Department of Social Welfare", "Local Farmers", "Community Volunteers"],
+    facebookLink: "https://www.facebook.com/RCZCwest/posts/789123456",
   },
   {
     title: "Tree Planting",
-    desc: "Planted 2,000+ trees for a greener Zamboanga.",
-    image: "https://images.unsplash.com/photo-1465101178521-c1a9136a3fd8?auto=format&fit=crop&w=800&q=80",
+    shortDescription: "Planted 2,000+ trees for a greener Zamboanga.",
+    description: `# Tree Planting Initiative 2024
+
+Our comprehensive tree planting initiative aims to create a greener, more sustainable Zamboanga City by planting 2,000+ trees across strategic locations, contributing to environmental conservation and climate change mitigation.
+
+## Project Overview
+
+The Tree Planting Initiative is a multi-year program designed to increase urban forest cover, improve air quality, and create more livable communities in Zamboanga City. Our approach combines environmental science with community engagement.
+
+## Tree Species Selection
+
+### Native Species
+- **Narra (Pterocarpus indicus)**: National tree, excellent shade provider
+- **Mahogany (Swietenia macrophylla)**: Fast-growing, valuable timber
+- **Acacia (Acacia mangium)**: Nitrogen-fixing, soil improvement
+- **Mango (Mangifera indica)**: Fruit-bearing, community benefit
+
+### Ornamental Trees
+- **Fire Tree (Delonix regia)**: Beautiful flowering tree
+- **Golden Shower (Cassia fistula)**: Yellow flowers, drought-resistant
+- **Rain Tree (Samanea saman)**: Large canopy, excellent shade
+
+## Planting Locations
+
+### Urban Areas
+- **City Parks**: Paseo del Mar, Plaza Pershing
+- **School Grounds**: 20+ public schools
+- **Government Buildings**: City Hall, Barangay Halls
+- **Roadside Areas**: Major thoroughfares and highways
+
+### Rural Areas
+- **Watershed Areas**: Pasonanca Natural Park
+- **Agricultural Lands**: Community farms
+- **Coastal Areas**: Mangrove restoration sites
+- **Hillside Areas**: Erosion control sites
+
+## Planting Process
+
+### Site Preparation
+- **Soil Analysis**: Testing for pH, nutrients, and drainage
+- **Site Clearing**: Removing debris and preparing planting holes
+- **Irrigation Setup**: Ensuring water access for new trees
+- **Protection Measures**: Installing tree guards and supports
+
+### Planting Techniques
+- **Proper Hole Size**: 2-3 times root ball diameter
+- **Root Care**: Untangling and spreading roots properly
+- **Soil Amendment**: Adding organic matter and nutrients
+- **Mulching**: Applying mulch to retain moisture
+
+### Post-Planting Care
+- **Regular Watering**: First 2 years of establishment
+- **Pruning**: Shaping and removing damaged branches
+- **Fertilization**: Annual nutrient application
+- **Pest Management**: Monitoring and treatment as needed
+
+## Community Involvement
+
+### Volunteer Participation
+- **2,000+ volunteers** participated in planting events
+- **50+ organizations** partnered in the initiative
+- **15 barangays** actively involved
+- **Schools and universities** participated in educational programs
+
+### Educational Programs
+- **Tree Care Workshops**: Teaching proper maintenance
+- **Environmental Education**: Climate change and biodiversity
+- **Youth Programs**: Engaging young people in conservation
+- **Community Training**: Sustainable forestry practices
+
+## Environmental Impact
+
+### Carbon Sequestration
+- **Estimated 100+ tons** of CO2 absorbed annually
+- **Long-term carbon storage** in tree biomass
+- **Climate change mitigation** contribution
+- **Carbon footprint reduction** for the city
+
+### Biodiversity Enhancement
+- **Habitat creation** for local wildlife
+- **Bird nesting sites** and food sources
+- **Insect diversity** increase
+- **Ecosystem services** improvement
+
+### Air Quality Improvement
+- **Particulate matter** filtration
+- **Oxygen production** increase
+- **Temperature regulation** through shade
+- **Wind protection** and erosion control
+
+## Monitoring and Maintenance
+
+### Growth Monitoring
+- **Quarterly measurements** of tree height and diameter
+- **Survival rate** tracking and analysis
+- **Health assessments** and treatment plans
+- **Growth rate** comparison with projections
+
+### Maintenance Schedule
+- **Monthly inspections** for new plantings
+- **Quarterly maintenance** for established trees
+- **Annual pruning** and shaping
+- **Emergency response** for storm damage
+
+## Success Metrics
+
+### Quantitative Results
+- **2,000+ trees** successfully planted
+- **95% survival rate** after first year
+- **15+ locations** covered across the city
+- **50+ species** of trees planted
+
+### Qualitative Impact
+- **Improved community** aesthetics
+- **Enhanced recreational** spaces
+- **Increased property** values
+- **Better mental health** through green spaces
+
+## Future Plans
+
+### Expansion Goals
+- **5,000 trees** by 2025
+- **Additional species** introduction
+- **More locations** in underserved areas
+- **International partnerships** for best practices
+
+### Sustainability Measures
+- **Community ownership** of planted trees
+- **Local nursery** development
+- **Seed collection** and propagation
+- **Educational curriculum** integration
+
+## Recognition and Awards
+
+- **Environmental Excellence Award** from DENR
+- **Community Service Recognition** from City Government
+- **Best Practice Award** from Rotary International
+- **Media Coverage** in local and national outlets`,
+    headerImage: "https://images.unsplash.com/photo-1465101178521-c1a9136a3fd8?auto=format&fit=crop&w=800&q=80",
+    gallery: [
+      "https://images.unsplash.com/photo-1465101178521-c1a9136a3fd8?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=800&q=80"
+    ],
+    date: "2024-04-22",
+    location: "Multiple locations across Zamboanga City",
+    partners: ["Department of Environment and Natural Resources", "City Government", "Local Schools"],
+    facebookLink: "https://www.facebook.com/RCZCwest/posts/321654987",
   },
 ];
 
@@ -341,6 +882,19 @@ const gallery = [
   "https://images.unsplash.com/photo-1465101178521-c1a9136a3fd8?auto=format&fit=crop&w=400&q=80",
   "https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=400&q=80",
 ];
+
+// Project data structure
+interface Project {
+  title: string;
+  shortDescription: string;
+  description: string;
+  headerImage: string;
+  gallery: string[];
+  date: string;
+  location: string;
+  partners: string[];
+  facebookLink: string;
+}
 
 export default function Home() {
   const heroImgSize = useBreakpointValue({ base: "100%", md: "80%" });
@@ -765,8 +1319,9 @@ export default function Home() {
             </Text>
           </Box>
 
-          <Stack gap={16}>
-            {projectHighlights.map((proj, idx) => (
+          {/* 3-Column Project Cards */}
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={8}>
+            {projectHighlights.slice(0, 3).map((proj, idx) => (
               <Box 
                 as="article"
                 key={proj.title}
@@ -776,93 +1331,125 @@ export default function Home() {
                 overflow="hidden"
                 _hover={{ 
                   boxShadow: "0 12px 35px rgba(0,0,0,0.12)", 
-                  transform: "translateY(-4px)" 
+                  transform: "translateY(-8px)" 
                 }}
                 transition="all 0.3s ease"
                 border="1px solid"
                 borderColor="gray.100"
+                height="100%"
+                display="flex"
+                flexDirection="column"
               >
-                <Flex direction={{ base: "column", lg: idx % 2 === 0 ? "row" : "row-reverse" }} align="stretch">
-                  <Box flex="1" position="relative">
-                    <Image
-                      src={proj.image}
-                      alt={`${proj.title} - Community service project in Zamboanga City`}
-                      width="100%"
-                      height={{ base: "250px", lg: "350px" }}
-                      objectFit="cover"
-                      onError={(e) => { 
-                        (e.target as HTMLImageElement).src = "https://via.placeholder.com/600x350?text=Project+Image"; 
-                      }}
-                    />
-                    <Box 
-                      position="absolute" 
-                      top={4} 
-                      left={4} 
-                      bgGradient="linear(to-r, brand.500, brand.600)"
-                      color="white" 
-                      px={4} 
-                      py={2} 
-                      borderRadius="full" 
-                      fontSize="sm" 
-                      fontWeight="bold"
-                      boxShadow="0 4px 15px rgba(0,93,170,0.3)"
-                    >
-                      Featured Project
-                    </Box>
+                {/* Image Section */}
+                <Box position="relative" flexShrink={0}>
+                  <Image
+                    src={proj.headerImage}
+                    alt={`${proj.title} - Community service project in Zamboanga City`}
+                    width="100%"
+                    height="200px"
+                    objectFit="cover"
+                    onError={(e) => { 
+                      (e.target as HTMLImageElement).src = "https://via.placeholder.com/400x200?text=Project+Image"; 
+                    }}
+                  />
+                  <Box 
+                    position="absolute" 
+                    top={4} 
+                    left={4} 
+                    bgGradient="linear(to-r, brand.500, brand.600)"
+                    color="white" 
+                    px={3} 
+                    py={1} 
+                    borderRadius="full" 
+                    fontSize="xs" 
+                    fontWeight="bold"
+                    boxShadow="0 4px 15px rgba(0,93,170,0.3)"
+                  >
+                    Featured
                   </Box>
+                </Box>
+                
+                {/* Content Section */}
+                <Box p={6} flex="1" display="flex" flexDirection="column">
+                  <Heading as="h3" fontSize="lg" color="gray.900" mb={3} fontWeight="bold" lineHeight="shorter">
+                    {proj.title}
+                  </Heading>
+                  <Text color="gray.600" mb={4} fontSize="sm" lineHeight="relaxed" flex="1">
+                    {proj.shortDescription}
+                  </Text>
                   
-                  <Box flex="1" p={{ base: 8, lg: 12 }} display="flex" flexDirection="column" justifyContent="center">
-                    <Heading as="h3" fontSize={{ base: "xl", lg: "2xl" }} color="gray.900" mb={4} fontWeight="bold" lineHeight="shorter">
-                      {proj.title}
-                    </Heading>
-                    <Text color="gray.600" mb={6} fontSize={{ base: "md", lg: "lg" }} lineHeight="relaxed">
-                      {proj.desc}
-                    </Text>
-                    
-                    <Box 
-                      as="blockquote"
-                      bgGradient="linear(to-r, blue.50, blue.100)" 
-                      borderLeft="4px solid" 
-                      borderLeftColor="brand.500" 
-                      p={6} 
-                      borderRadius="lg"
-                      mb={6}
-                      boxShadow="0 4px 15px rgba(59,130,246,0.1)"
-                    >
-                      <Text fontSize="lg" fontStyle="italic" color="gray.700" mb={2}>
-                        "{proj.quote}"
-                      </Text>
-                      <Text as="cite" fontSize="sm" fontWeight="bold" color="brand.500">
-                        {proj.person}
-                      </Text>
-                    </Box>
+                  {/* Project Details */}
+                  <VStack align="start" gap={2} mb={4}>
+                    <Flex align="center" gap={2} fontSize="xs" color="gray.500">
+                      <Box as="span">📅</Box>
+                      <Text>{new Date(proj.date).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric' 
+                      })}</Text>
+                    </Flex>
+                    <Flex align="center" gap={2} fontSize="xs" color="gray.500">
+                      <Box as="span">📍</Box>
+                      <Text>{proj.location}</Text>
+                    </Flex>
+                    {proj.partners && proj.partners.length > 0 && (
+                      <Flex align="center" gap={2} fontSize="xs" color="gray.500">
+                        <Box as="span">🤝</Box>
+                        <Text>{proj.partners.length} partner{proj.partners.length > 1 ? 's' : ''}</Text>
+                      </Flex>
+                    )}
+                  </VStack>
 
-                    <ButtonLink 
-                      href="/service-projects"
-                      bgGradient="linear(to-r, brand.500, brand.600)"
-                      color="white"
-                      _hover={{ 
-                        bgGradient: "linear(to-r, brand.600, brand.700)",
-                        transform: "translateY(-2px)",
-                        boxShadow: "0 8px 25px rgba(0,93,170,0.3)"
-                      }}
-                      borderRadius="lg"
-                      px={8}
-                      py={4}
-                      fontSize="md"
-                      fontWeight="bold"
-                      alignSelf="flex-start"
-                      aria-label={`Learn more about ${proj.title} project`}
-                      transition="all 0.3s ease"
-                      boxShadow="0 4px 15px rgba(0,93,170,0.2)"
-                    >
-                      Learn More About This Project
-                    </ButtonLink>
-                  </Box>
-                </Flex>
+                  <ButtonLink 
+                    href="/service-projects"
+                    bgGradient="linear(to-r, brand.500, brand.600)"
+                    color="white"
+                    _hover={{ 
+                      bgGradient: "linear(to-r, brand.600, brand.700)",
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 8px 25px rgba(0,93,170,0.3)"
+                    }}
+                    borderRadius="lg"
+                    px={6}
+                    py={3}
+                    fontSize="sm"
+                    fontWeight="bold"
+                    alignSelf="flex-start"
+                    aria-label={`Learn more about ${proj.title} project`}
+                    transition="all 0.3s ease"
+                    boxShadow="0 4px 15px rgba(0,93,170,0.2)"
+                    mt="auto"
+                  >
+                    Learn More
+                  </ButtonLink>
+                </Box>
               </Box>
             ))}
-          </Stack>
+          </SimpleGrid>
+          
+          {/* View All Projects Button */}
+          <Box textAlign="center" mt={12}>
+            <ButtonLink 
+              href="/service-projects"
+              bgGradient="linear(to-r, brand.500, brand.600)"
+              color="white"
+              _hover={{ 
+                bgGradient: "linear(to-r, brand.600, brand.700)",
+                transform: "translateY(-2px)",
+                boxShadow: "0 8px 25px rgba(0,93,170,0.3)"
+              }}
+              borderRadius="lg"
+              px={8}
+              py={4}
+              fontSize="md"
+              fontWeight="bold"
+              aria-label="View all our service projects"
+              transition="all 0.3s ease"
+              boxShadow="0 4px 15px rgba(0,93,170,0.2)"
+            >
+              View All Projects
+            </ButtonLink>
+          </Box>
         </Box>
       </Box>
 
