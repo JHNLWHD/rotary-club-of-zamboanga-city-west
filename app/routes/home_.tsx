@@ -15,6 +15,123 @@ import {
 } from "@chakra-ui/react";
 import { HeroCarousel } from "../components/homepage/HeroCarousel";
 import { Users, Handshake, Heart, Clock, DollarSign, Award, Target, Globe } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+
+// Custom hook for counting animation
+function useCountUp(end: number, duration: number = 2000, start: number = 0) {
+  const [count, setCount] = useState(start);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated) {
+          setHasAnimated(true);
+          const startTime = Date.now();
+          
+          const animate = () => {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            // Easing function for smooth animation
+            const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+            const currentCount = Math.floor(easeOutQuart * (end - start) + start);
+            
+            setCount(currentCount);
+            
+            if (progress < 1) {
+              requestAnimationFrame(animate);
+            }
+          };
+          
+          requestAnimationFrame(animate);
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, [end, duration, start, hasAnimated]);
+
+  return { count, ref };
+}
+
+// Animated Stat Component
+function AnimatedStat({ 
+  endValue, 
+  suffix = "", 
+  label, 
+  icon: Icon, 
+  iconColor, 
+  bgGradient, 
+  borderColor, 
+  duration = 2000,
+  formatValue
+}: {
+  endValue: number;
+  suffix?: string;
+  label: string;
+  icon: any;
+  iconColor: string;
+  bgGradient: string;
+  borderColor: string;
+  duration?: number;
+  formatValue?: (count: number) => string;
+}) {
+  const { count, ref } = useCountUp(endValue, duration);
+
+  const displayValue = formatValue ? formatValue(count) : `${count.toLocaleString()}${suffix}`;
+
+  return (
+    <Box 
+      ref={ref}
+      bg="white" 
+      borderRadius="2xl" 
+      p={8} 
+      boxShadow="0 4px 20px rgba(0,0,0,0.08)"
+      border="1px solid"
+      borderColor="gray.100"
+      textAlign="center"
+      _hover={{ 
+        transform: "translateY(-4px)", 
+        boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
+        borderColor: `${borderColor.split('.')[0]}.200`
+      }}
+      transition="all 0.3s ease"
+      position="relative"
+      overflow="hidden"
+    >
+      <Box 
+        bgGradient={bgGradient}
+        borderRadius="full" 
+        w={16} 
+        h={16} 
+        display="flex" 
+        alignItems="center" 
+        justifyContent="center" 
+        mx="auto" 
+        mb={4}
+        border="3px solid"
+        borderColor={borderColor}
+        _hover={{ transform: "scale(1.1)" }}
+        transition="transform 0.2s"
+      >
+        <Icon size={32} color={iconColor} />
+      </Box>
+      <Heading as="h3" fontSize="3xl" color="brand.500" mb={2} fontWeight="bold">
+        {displayValue}
+      </Heading>
+      <Text color="gray.700" fontWeight="medium" fontSize="md">
+        {label}
+      </Text>
+    </Box>
+  );
+}
 
 export function meta() {
   return [
@@ -410,170 +527,52 @@ export default function Home() {
       <Box as="section" py={20} bgGradient="linear(to-b, gray.50, white)" id="stats">
         <Box maxW="1200px" mx="auto" px={{ base: 4, md: 8 }}>
           <SimpleGrid columns={{ base: 2, md: 4 }} gap={8}>
-            <Box 
-              bg="white" 
-              borderRadius="2xl" 
-              p={8} 
-              boxShadow="0 4px 20px rgba(0,0,0,0.08)"
-              border="1px solid"
-              borderColor="gray.100"
-              textAlign="center"
-              _hover={{ 
-                transform: "translateY(-4px)", 
-                boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
-                borderColor: "blue.200"
+            <AnimatedStat 
+              endValue={85} 
+              suffix="+" 
+              label="Active Members" 
+              icon={Users} 
+              iconColor="#3182CE" 
+              bgGradient="linear(to-br, blue.100, blue.200)" 
+              borderColor="blue.300" 
+              duration={2000}
+            />
+            <AnimatedStat 
+              endValue={120} 
+              suffix="+" 
+              label="Projects Completed" 
+              icon={Target} 
+              iconColor="#38A169" 
+              bgGradient="linear(to-br, green.100, green.200)" 
+              borderColor="green.300" 
+              duration={2000}
+            />
+            <AnimatedStat 
+              endValue={5000000} 
+              suffix="+" 
+              label="Funds Raised" 
+              icon={DollarSign} 
+              iconColor="#805AD5" 
+              bgGradient="linear(to-br, purple.100, purple.200)" 
+              borderColor="purple.300" 
+              duration={2000}
+              formatValue={(count) => {
+                if (count >= 1000000) {
+                  return `₱${(count / 1000000).toFixed(0)}M+`;
+                }
+                return `₱${count.toLocaleString()}+`;
               }}
-              transition="all 0.3s ease"
-              position="relative"
-              overflow="hidden"
-            >
-              <Box 
-                bgGradient="linear(to-br, blue.100, blue.200)" 
-                borderRadius="full" 
-                w={16} 
-                h={16} 
-                display="flex" 
-                alignItems="center" 
-                justifyContent="center" 
-                mx="auto" 
-                mb={4}
-                border="3px solid"
-                borderColor="blue.300"
-                _hover={{ transform: "scale(1.1)" }}
-                transition="transform 0.2s"
-              >
-                <Users size={32} color="#3182CE" />
-              </Box>
-              <Heading as="h3" fontSize="3xl" color="brand.500" mb={2} fontWeight="bold">
-                85+
-              </Heading>
-              <Text color="gray.700" fontWeight="medium" fontSize="md">
-                Active Members
-              </Text>
-            </Box>
-            <Box 
-              bg="white" 
-              borderRadius="2xl" 
-              p={8} 
-              boxShadow="0 4px 20px rgba(0,0,0,0.08)"
-              border="1px solid"
-              borderColor="gray.100"
-              textAlign="center"
-              _hover={{ 
-                transform: "translateY(-4px)", 
-                boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
-                borderColor: "green.200"
-              }}
-              transition="all 0.3s ease"
-              position="relative"
-              overflow="hidden"
-            >
-              <Box 
-                bgGradient="linear(to-br, green.100, green.200)" 
-                borderRadius="full" 
-                w={16} 
-                h={16} 
-                display="flex" 
-                alignItems="center" 
-                justifyContent="center" 
-                mx="auto" 
-                mb={4}
-                border="3px solid"
-                borderColor="green.300"
-                _hover={{ transform: "scale(1.1)" }}
-                transition="transform 0.2s"
-              >
-                <Target size={32} color="#38A169" />
-              </Box>
-              <Heading as="h3" fontSize="3xl" color="brand.500" mb={2} fontWeight="bold">
-                120+
-              </Heading>
-              <Text color="gray.700" fontWeight="medium" fontSize="md">
-                Projects Completed
-              </Text>
-            </Box>
-            <Box 
-              bg="white" 
-              borderRadius="2xl" 
-              p={8} 
-              boxShadow="0 4px 20px rgba(0,0,0,0.08)"
-              border="1px solid"
-              borderColor="gray.100"
-              textAlign="center"
-              _hover={{ 
-                transform: "translateY(-4px)", 
-                boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
-                borderColor: "purple.200"
-              }}
-              transition="all 0.3s ease"
-              position="relative"
-              overflow="hidden"
-            >
-              <Box 
-                bgGradient="linear(to-br, purple.100, purple.200)" 
-                borderRadius="full" 
-                w={16} 
-                h={16} 
-                display="flex" 
-                alignItems="center" 
-                justifyContent="center" 
-                mx="auto" 
-                mb={4}
-                border="3px solid"
-                borderColor="purple.300"
-                _hover={{ transform: "scale(1.1)" }}
-                transition="transform 0.2s"
-              >
-                <DollarSign size={32} color="#805AD5" />
-              </Box>
-              <Heading as="h3" fontSize="3xl" color="brand.500" mb={2} fontWeight="bold">
-                ₱5M+
-              </Heading>
-              <Text color="gray.700" fontWeight="medium" fontSize="md">
-                Funds Raised
-              </Text>
-            </Box>
-            <Box 
-              bg="white" 
-              borderRadius="2xl" 
-              p={8} 
-              boxShadow="0 4px 20px rgba(0,0,0,0.08)"
-              border="1px solid"
-              borderColor="gray.100"
-              textAlign="center"
-              _hover={{ 
-                transform: "translateY(-4px)", 
-                boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
-                borderColor: "orange.200"
-              }}
-              transition="all 0.3s ease"
-              position="relative"
-              overflow="hidden"
-            >
-              <Box 
-                bgGradient="linear(to-br, orange.100, orange.200)" 
-                borderRadius="full" 
-                w={16} 
-                h={16} 
-                display="flex" 
-                alignItems="center" 
-                justifyContent="center" 
-                mx="auto" 
-                mb={4}
-                border="3px solid"
-                borderColor="orange.300"
-                _hover={{ transform: "scale(1.1)" }}
-                transition="transform 0.2s"
-              >
-                <Clock size={32} color="#DD6B20" />
-              </Box>
-              <Heading as="h3" fontSize="3xl" color="brand.500" mb={2} fontWeight="bold">
-                45
-              </Heading>
-              <Text color="gray.700" fontWeight="medium" fontSize="md">
-                Years of Service
-              </Text>
-            </Box>
+            />
+            <AnimatedStat 
+              endValue={45} 
+              suffix="+" 
+              label="Years of Service" 
+              icon={Clock} 
+              iconColor="#DD6B20" 
+              bgGradient="linear(to-br, orange.100, orange.200)" 
+              borderColor="orange.300" 
+              duration={2000}
+            />
           </SimpleGrid>
         </Box>
       </Box>
