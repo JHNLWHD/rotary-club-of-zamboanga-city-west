@@ -48,17 +48,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   const location = useLocation();
   const isIndexPage = location.pathname === "/";
-  const isHomePage = location.pathname === "/home";
 
   return (
     <Provider>
-      {isIndexPage ? (
-          <Outlet />
-      ) : (
-        <GlobalLayout transparentHeader={isHomePage}>
+      <GlobalLayout transparentHeader={isIndexPage}>
           <Outlet />
         </GlobalLayout>
-      )}
     </Provider>
   );
 }
