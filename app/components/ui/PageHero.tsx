@@ -46,6 +46,7 @@ export function PageHero({
       bg={backgroundGradient}
       color="white"
       overflow="hidden"
+      mx={{ base: -4, md: 0 }}
     >
       {backgroundPattern && (
         <Box
