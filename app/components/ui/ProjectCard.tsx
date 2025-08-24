@@ -64,29 +64,30 @@ export function ProjectCard({ project }: { project: Project }) {
             {project.shortDescription}
           </Text>
           
-          <Flex justify="space-between" align="center" mt="auto">
-            {project.location && (
+          {project.location && (
+            <Box
+              display="flex"
+              alignItems="center"
+              gap={2}
+              color="gray.500"
+              fontSize="sm"
+              mb={4}
+            >
               <Box
+                bg="gray.100"
+                borderRadius="md"
+                p={1}
                 display="flex"
                 alignItems="center"
-                gap={2}
-                color="gray.500"
-                fontSize="sm"
+                justifyContent="center"
               >
-                <Box
-                  bg="gray.100"
-                  borderRadius="md"
-                  p={1}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <MapPinIcon />
-                </Box>
-                <Text fontWeight="medium">{project.location}</Text>
+                <MapPinIcon />
               </Box>
-            )}
-
+              <Text fontWeight="medium">{project.location}</Text>
+            </Box>
+          )}
+          
+          <Box mt="auto">
             <ButtonLink
               href={project.slug}
               size="sm"
@@ -104,11 +105,12 @@ export function ProjectCard({ project }: { project: Project }) {
               fontSize="xs"
               fontWeight="bold"
               transition="all 0.3s ease"
-              ml="auto"
+              width="100%"
+              textAlign="center"
             >
               Learn More
             </ButtonLink>
-          </Flex>
+          </Box>
         </Box>
       </Box>
     )
