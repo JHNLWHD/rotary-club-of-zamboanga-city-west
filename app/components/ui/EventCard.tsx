@@ -4,9 +4,10 @@ import type { Event } from "~/lib/contentful-types";
 
 type EventCardProps = {
   event: Event;
+  showLearnMoreButton?: boolean;
 };
 
-export function EventCard({ event }: EventCardProps): JSX.Element {
+export function EventCard({ event, showLearnMoreButton = true }: EventCardProps): JSX.Element {
   return (
     <Box
       as="article"
@@ -66,34 +67,36 @@ export function EventCard({ event }: EventCardProps): JSX.Element {
           {event.description}
         </Text>
 
-        <Text fontSize="sm" color="gray.500" fontWeight="medium" mb={6}>
+        <Text fontSize="sm" color="gray.500" fontWeight="medium" mb={showLearnMoreButton ? 6 : 0}>
           📅 <time dateTime={event.date}>{event.date}</time>
         </Text>
 
-        <Box mt="auto">
-          <ButtonLink
-            href="/about/calendar"
-            size="sm"
-            bg="white"
-            color="brand.500"
-            border="1px solid"
-            borderColor="brand.500"
-            _hover={{
-              bg: "brand.500",
-              color: "white",
-            }}
-            borderRadius="lg"
-            px={4}
-            py={2}
-            fontSize="xs"
-            fontWeight="bold"
-            transition="all 0.3s ease"
-            width="100%"
-            textAlign="center"
-          >
-            Learn More
-          </ButtonLink>
-        </Box>
+        {showLearnMoreButton && (
+          <Box mt="auto">
+            <ButtonLink
+              href="/about/calendar"
+              size="sm"
+              bg="white"
+              color="brand.500"
+              border="1px solid"
+              borderColor="brand.500"
+              _hover={{
+                bg: "brand.500",
+                color: "white",
+              }}
+              borderRadius="lg"
+              px={4}
+              py={2}
+              fontSize="xs"
+              fontWeight="bold"
+              transition="all 0.3s ease"
+              width="100%"
+              textAlign="center"
+            >
+              Learn More
+            </ButtonLink>
+          </Box>
+        )}
       </Box>
     </Box>
   );
