@@ -1,6 +1,7 @@
 import { Box, Flex, VStack, Heading, Text, Input, Textarea, Button, Image, Link } from "@chakra-ui/react";
 import { SectionHeader } from "../ui/SectionHeader";
 import type { ContactInfo, MeetingInfo } from "~/lib/contentful-types";
+import { CalendarIcon, FacebookIcon, MailIcon, MapPinIcon } from "lucide-react";
 
 type ContactSectionProps = {
   meetingInfo: MeetingInfo
@@ -163,7 +164,7 @@ export function ContactSection({ meetingInfo, contactInfo }: ContactSectionProps
                     border="2px solid"
                     borderColor="blue.300"
                   >
-                    <Image src="https://img.icons8.com/ios-filled/20/3182CE/calendar.png" alt="Calendar" />
+                    <CalendarIcon color="blue" />
                   </Box>
                   <Box>
                     <Text fontWeight="bold" color="gray.900" fontSize="md">
@@ -183,7 +184,7 @@ export function ContactSection({ meetingInfo, contactInfo }: ContactSectionProps
                     borderColor="green.300"
                     mt={1}
                   >
-                    <Image src="https://img.icons8.com/ios-filled/20/38A169/marker.png" alt="Location" />
+                    <MapPinIcon color="green" />
                   </Box>
                   <Box>
                     <Text fontWeight="bold" color="gray.900" fontSize="md">
@@ -218,7 +219,7 @@ export function ContactSection({ meetingInfo, contactInfo }: ContactSectionProps
                     border="2px solid"
                     borderColor="red.300"
                   >
-                    <Image src="https://img.icons8.com/ios-filled/20/E53E3E/email.png" alt="Email" />
+                    <MailIcon color="red" />
                   </Box>
                   <Box>
                     <Text fontWeight="bold" color="gray.900" fontSize="md">
@@ -237,7 +238,7 @@ export function ContactSection({ meetingInfo, contactInfo }: ContactSectionProps
                     border="2px solid"
                     borderColor="blue.300"
                   >
-                    <Image src="https://img.icons8.com/ios-filled/20/1877F2/facebook.png" alt="Facebook" />
+                    <FacebookIcon color="blue" />
                   </Box>
                   <Box>
                     <Link 
