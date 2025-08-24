@@ -167,8 +167,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
             {/* About Us Dropdown */}
             <Box
               position="relative"
-              onMouseEnter={() => setAboutUsMenuOpen(true)}
-              onMouseLeave={() => setAboutUsMenuOpen(false)}
+              onClick={() => setAboutUsMenuOpen(!aboutUsMenuOpen)}
             >
               <Menu.Root open={aboutUsMenuOpen} onOpenChange={(details) => setAboutUsMenuOpen(details.open)}>
                 <Menu.Trigger
