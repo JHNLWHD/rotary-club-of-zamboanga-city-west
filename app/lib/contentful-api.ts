@@ -247,6 +247,35 @@ export async function fetchHomepageContactSection(): Promise<HomepageContact | n
   }
 }
 
+export async function fetchAllProjects(): Promise<Project[] | null> {
+  try {
+    const contentfulResponse = await contentfulClient.getEntries({
+      content_type: CONTENT_TYPES.SERVICE_PROJECT,
+      'fields.isActive': true,
+      order: ['-fields.date'],
+    });
+
+    if (contentfulResponse.items.length === 0) {
+      return [];
+    }
+
+    return contentfulResponse.items.map((projectEntry) => {
+      const projectFields = extractContentfulEntryFields<Project>(projectEntry);
+      return {
+        ...projectFields,
+        headerImage: buildContentfulAssetMetadata(projectFields.headerImage),
+        gallery: {
+          images: projectFields.gallery?.images?.map((image: any) => buildContentfulAssetMetadata(image)) || []
+        },
+        slug: `/projects/${slugify(projectFields.title, { lower: true })}`,
+      };
+    });
+  } catch (error) {
+    console.error('Error fetching all projects:', error);
+    return [];
+  }
+}
+
 export async function fetchAllHomepageSections() {
   try {
     const [
