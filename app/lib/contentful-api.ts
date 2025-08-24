@@ -157,9 +157,7 @@ export async function fetchFeaturedProjectHighlights(): Promise<Project[] | null
       return {
         ...projectFields,
         headerImage: buildContentfulAssetMetadata(projectFields.headerImage),
-        gallery: {
-          images: projectFields.gallery?.images?.map((image: any) => buildContentfulAssetMetadata(image)) || []
-        },
+        gallery: projectFields.gallery?.map((image: any) => buildContentfulAssetMetadata(image)) || [],
         slug: `/service-projects/${projectFields.slug || slugify(projectFields.title, { lower: true })}`,
       };
     });
@@ -267,14 +265,38 @@ export async function fetchAllProjects(): Promise<Project[] | null> {
       return {
         ...projectFields,
         headerImage: buildContentfulAssetMetadata(projectFields.headerImage),
-        gallery: {
-          images: projectFields.gallery?.images?.map((image: any) => buildContentfulAssetMetadata(image)) || []
-        },
+        gallery: projectFields.gallery?.map((image: any) => buildContentfulAssetMetadata(image)) || [],
         slug: `/service-projects/${projectFields.slug || slugify(projectFields.title, { lower: true })}`,
       };
     });
   } catch (error) {
     console.error('Error fetching all projects:', error);
+    return [];
+  }
+}
+
+export async function fetchAllEvents(): Promise<Event[] | null> {
+  try {
+    const contentfulResponse = await contentfulClient.getEntries({
+      content_type: CONTENT_TYPES.EVENT,
+      'fields.isActive': true,
+      order: ['-fields.date'],
+    });
+
+    if (contentfulResponse.items.length === 0) {
+      return [];
+    }
+
+    return contentfulResponse.items.map((eventEntry) => {
+      const eventFields = extractContentfulEntryFields<Event>(eventEntry);
+      return {
+        ...eventFields,
+        image: buildContentfulAssetMetadata(eventFields.image),
+        slug: `/about/calendar/${slugify(eventFields.title, { lower: true })}`,
+      };
+    });
+  } catch (error) {
+    console.error('Error fetching all events:', error);
     return [];
   }
 }
