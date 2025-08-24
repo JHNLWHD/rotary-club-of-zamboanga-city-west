@@ -72,7 +72,7 @@ export function EventCard({ event }: EventCardProps): JSX.Element {
 
         <Box mt="auto">
           <ButtonLink
-            href={event.slug}
+            href="/about/calendar"
             size="sm"
             bg="white"
             color="brand.500"
