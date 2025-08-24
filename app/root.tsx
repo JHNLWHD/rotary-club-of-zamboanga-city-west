@@ -14,6 +14,7 @@ import { Provider } from "./components/ui/Provider";
 import { GlobalLayout } from "./components/ui/GlobalLayout";
 import { fetchHomepageContactSection } from "./lib/contentful-api";
 import type { ContactInfo, MeetingInfo } from "./lib/contentful-types";
+import { Toaster } from "sonner";
 
 type LoaderData = {
   contactData?: {
@@ -87,6 +88,7 @@ export default function App() {
       <GlobalLayout transparentHeader={isIndexPage} contactData={contactData}>
           <Outlet />
       </GlobalLayout>
+      <Toaster position="top-right" richColors />
     </Provider>
   );
 }

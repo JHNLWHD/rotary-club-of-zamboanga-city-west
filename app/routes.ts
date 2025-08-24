@@ -10,6 +10,7 @@ export default [
   route("contact", "routes/contact.tsx"),
   route("the-fortress", "routes/the-fortress.tsx"),
   route("service-projects", "routes/service-projects.tsx"),
+  route("service-projects/:slug", "routes/service-projects.$slug.tsx"),
   route("donate", "routes/donate.tsx"),
   route("thank-you", "routes/thank-you.tsx"),
   route("*", "routes/$.tsx"),

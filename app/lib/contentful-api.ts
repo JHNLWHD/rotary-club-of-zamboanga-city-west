@@ -26,7 +26,10 @@ const CONTENT_TYPES = {
 } as const;
 
 function extractContentfulEntryFields<T>(contentfulEntry: any): T {
-  return contentfulEntry.fields;
+  return {
+    id: contentfulEntry.sys.id,
+    ...contentfulEntry.fields,
+  };
 }
 
 type ProcessedAsset = {
@@ -157,7 +160,7 @@ export async function fetchFeaturedProjectHighlights(): Promise<Project[] | null
         gallery: {
           images: projectFields.gallery?.images?.map((image: any) => buildContentfulAssetMetadata(image)) || []
         },
-        slug: `/projects/${slugify(projectFields.title, { lower: true })}`,
+        slug: `/service-projects/${projectFields.slug || slugify(projectFields.title, { lower: true })}`,
       };
     });
   } catch (error) {
@@ -267,12 +270,41 @@ export async function fetchAllProjects(): Promise<Project[] | null> {
         gallery: {
           images: projectFields.gallery?.images?.map((image: any) => buildContentfulAssetMetadata(image)) || []
         },
-        slug: `/projects/${slugify(projectFields.title, { lower: true })}`,
+        slug: `/service-projects/${projectFields.slug || slugify(projectFields.title, { lower: true })}`,
       };
     });
   } catch (error) {
     console.error('Error fetching all projects:', error);
     return [];
+  }
+}
+
+export async function fetchProjectBySlug(slug: string): Promise<Project | null> {
+  try {
+    const contentfulResponse = await contentfulClient.getEntries({
+      content_type: CONTENT_TYPES.SERVICE_PROJECT,
+      'fields.isActive': true,
+      'fields.slug': slug,
+      limit: 1,
+    });
+
+    if (contentfulResponse.items.length === 0) {
+      return null;
+    }
+    const projectEntry = contentfulResponse.items[0];
+    const projectFields = extractContentfulEntryFields<Project>(projectEntry);
+    
+    const processedProject = {
+      ...projectFields,
+      headerImage: buildContentfulAssetMetadata(projectFields.headerImage),
+      gallery: projectFields.gallery?.map((image: any) => buildContentfulAssetMetadata(image)) || [],
+      slug: `/service-projects/${projectFields.slug || slugify(projectFields.title, { lower: true })}`,
+    };
+    console.log(processedProject);
+    return processedProject;
+  } catch (error) {
+    console.error('Error fetching project by slug:', error);
+    return null;
   }
 }
 

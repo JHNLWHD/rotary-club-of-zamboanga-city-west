@@ -44,23 +44,21 @@ export type ServiceArea = {
   isActive?: boolean;
 };
 
-export type ProjectGallery = {
-  images: ProcessedAsset[];
-};
-
 export type Project = {
   title: string;
   shortDescription: string;
-  description: RichTextDocument;
+  description: string | RichTextDocument; // Support both markdown string and rich text
   headerImage: ProcessedAsset;
-  gallery: ProjectGallery;
+  gallery: ProcessedAsset[];
   date: string;
   location: string;
   partners: string[];
+  hashtags: string[];
   facebookLink?: string;
   isActive: boolean;
   isFeatured: boolean;
   slug: string;
+  category: string;
 };
 
 export type Event = {

@@ -15,7 +15,7 @@
     "@emotion/react": "^11.14.0",
     "@react-router/node": "^7.5.2",
     "@react-router/serve": "^7.5.2",
-
+    "@tailwindcss/typography": "^0.5.16",
     "contentful": "^11.7.6",
     "dotenv": "^16.4.0",
     "isbot": "^5.1.27",
@@ -25,8 +25,13 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-icons": "^5.5.0",
+    "react-markdown": "^10.1.0",
     "react-router": "^7.5.2",
-    "slugify": "^1.6.6"
+    "react-share": "^5.2.2",
+    "remark-gfm": "^4.0.1",
+    "slugify": "^1.6.6",
+    "sonner": "^2.0.7",
+    "yet-another-react-lightbox": "^3.25.0"
   },
   "devDependencies": {
     "@netlify/vite-plugin-react-router": "^1.0.1",
