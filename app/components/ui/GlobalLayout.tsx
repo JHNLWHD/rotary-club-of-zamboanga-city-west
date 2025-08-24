@@ -95,7 +95,6 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
 
   return (
     <Flex direction="column" minHeight="100vh" position="relative">
-      {/* Top Bar - Absolutely positioned */}
       <Box 
         position="absolute" 
         top={0} 
@@ -105,12 +104,11 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
       >
         <TopBar transparent={transparentHeader} contactData={contactData} />
       </Box>
-      {/* Main Header/Nav - Absolutely positioned */}
       <Box 
         as="header" 
         bg={transparentHeader ? "transparent" : "white"}
         position="absolute" 
-        top="32px"
+        top={{ base: "0px", md: "32px" }}
         left={0} 
         right={0} 
         zIndex={20} 
