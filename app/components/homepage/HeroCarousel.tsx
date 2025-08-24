@@ -4,21 +4,13 @@ import "keen-slider/keen-slider.min.css";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const images = [
-  "/actions/promote-peace.jpg",
-  "/actions/connect.jpg",
-  "/actions/empower.jpg",
-  "/actions/fight-hunger.jpg",
-  "/actions/transform.jpg",
-  "/actions/mentor.jpg",
-  "/actions/learn.jpg",
-  "/actions/end-polio.jpg",
-  "/actions/inspire.jpg",
-  "/actions/save-lives.jpg",
-];
+type HeroCarouselProps = {
+  images: string[];
+};
 
-export function HeroCarousel() {
+export function HeroCarousel({ images }: HeroCarouselProps) {
   const [current, setCurrent] = useState(0);
+  
   const [sliderRef, instanceRef] = useKeenSlider({
     initial: 0,
     slideChanged(s) {
@@ -32,10 +24,11 @@ export function HeroCarousel() {
       <Box ref={sliderRef} className="keen-slider">
         {images.map((src, idx) => (
           <Box className="keen-slider__slide" key={src}>
-            <Image src={src} alt={`Hero ${idx + 1}`} w="full" h={{ base: "200px", sm: "240px", md: "280px", lg: "300px" }} objectFit="contain" />
+            <Image src={src} alt={`Hero ${idx + 1}`} w="full" h={{ base: "200px", sm: "240px", md: "280px", lg: "300px" }} objectFit="cover" />
           </Box>
         ))}
       </Box>
+      
       {/* Navigation Arrows */}
       <Button
         aria-label="Previous"
@@ -55,6 +48,7 @@ export function HeroCarousel() {
       >
         <ChevronLeft size={18} color="#2D3748" />
       </Button>
+      
       <Button
         aria-label="Next"
         position="absolute"
@@ -73,8 +67,16 @@ export function HeroCarousel() {
       >
         <ChevronRight size={18} color="#2D3748" />
       </Button>
+      
       {/* Dots */}
-      <Flex position="absolute" bottom={{ base: 3, md: 4 }} left="50%" transform="translateX(-50%)" gap={{ base: 1.5, md: 2 }} zIndex={2}>
+      <Flex 
+        position="absolute" 
+        bottom={{ base: 3, md: 4 }} 
+        left="50%"
+        transform="translateX(-50%)"
+        gap={{ base: 2, md: 3 }}
+        zIndex={2}
+      >
         {images.map((_, idx) => (
           <Box
             key={idx}

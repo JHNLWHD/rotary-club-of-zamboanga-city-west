@@ -1,21 +1,13 @@
 import { Box, Flex, VStack, Heading, Text, Input, Textarea, Button, Image, Link } from "@chakra-ui/react";
 import { SectionHeader } from "../ui/SectionHeader";
+import type { ContactInfo, MeetingInfo } from "~/lib/contentful-types";
 
 type ContactSectionProps = {
-  meetingInfo: {
-    day: string;
-    time: string;
-    location: string;
-    address: string;
-  };
-  contactInfo: {
-    email: string;
-    facebookUrl: string;
-    facebookHandle: string;
-  };
+  meetingInfo: MeetingInfo
+  contactInfo: ContactInfo
 };
 
-export function ContactSection({ meetingInfo, contactInfo }: ContactSectionProps) {
+export function ContactSection({ meetingInfo, contactInfo }: ContactSectionProps): JSX.Element {
   return (
     <Box as="section" py={20} bgGradient="linear(to-b, gray.50, white)" id="contact">
       <Box maxW="1200px" mx="auto" px={{ base: 4, md: 8 }}>
@@ -26,7 +18,6 @@ export function ContactSection({ meetingInfo, contactInfo }: ContactSectionProps
         />
 
         <Flex direction={{ base: "column", lg: "row" }} gap={12}>
-          {/* Contact Form */}
           <Box 
             flex={1} 
             bg="white" 
@@ -46,10 +37,8 @@ export function ContactSection({ meetingInfo, contactInfo }: ContactSectionProps
               data-netlify-honeypot="bot-field"
               action="/thank-you"
             >
-              {/* Hidden field for Netlify Forms */}
               <input type="hidden" name="form-name" value="contact" />
               
-              {/* Honeypot field for spam protection */}
               <Box display="none">
                 <label>
                   Don't fill this out if you're human: <input name="bot-field" />
@@ -163,7 +152,7 @@ export function ContactSection({ meetingInfo, contactInfo }: ContactSectionProps
               borderColor="gray.100"
             >
               <Heading as="h3" fontSize="xl" color="gray.900" mb={6} fontWeight="bold">
-                Join Our Weekly Meetings
+                Join Our Monthly Meetings
               </Heading>
               <VStack align="start" gap={4}>
                 <Flex align="center" gap={3}>

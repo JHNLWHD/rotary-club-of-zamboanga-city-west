@@ -4,14 +4,43 @@ import {
   Meta,
   Outlet,
   Scripts,
-  ScrollRestoration,
   useLocation,
+  useLoaderData,
 } from "react-router";
 
 import type { Route } from "./+types/root";
 import stylesheet from "./app.css?url";
-import { Provider } from "./components/ui/provider";
-import { GlobalLayout } from "./components/ui/global-layout";
+import { Provider } from "./components/ui/Provider";
+import { GlobalLayout } from "./components/ui/GlobalLayout";
+import { fetchHomepageContactSection } from "./lib/contentful-api";
+import type { ContactInfo, MeetingInfo } from "./lib/contentful-types";
+
+type LoaderData = {
+  contactData?: {
+    meetingInfo?: MeetingInfo;
+    contactInfo?: ContactInfo;
+  };
+};
+
+export async function loader({ request }: Route.LoaderArgs): Promise<LoaderData> {
+  try {
+    const contactSection = await fetchHomepageContactSection();
+    
+    if (contactSection) {
+      return {
+        contactData: {
+          meetingInfo: contactSection.meetingInfo,
+          contactInfo: contactSection.contactInfo,
+        },
+      };
+    }
+    
+    return { contactData: undefined };
+  } catch (error) {
+    console.error('Error loading contact data in root:', error);
+    return { contactData: undefined };
+  }
+}
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -23,6 +52,10 @@ export const links: Route.LinksFunction = () => [
   {
     rel: "stylesheet",
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+  },
+  {
+    rel: "stylesheet",
+    href: "https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap",
   },
   { rel: "stylesheet", href: stylesheet },
 ];
@@ -38,7 +71,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
-        <ScrollRestoration />
         <Scripts />
       </body>
     </html>
@@ -47,13 +79,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   const location = useLocation();
+  const { contactData } = useLoaderData() as LoaderData;
   const isIndexPage = location.pathname === "/";
 
   return (
     <Provider>
-      <GlobalLayout transparentHeader={isIndexPage}>
+      <GlobalLayout transparentHeader={isIndexPage} contactData={contactData}>
           <Outlet />
-        </GlobalLayout>
+      </GlobalLayout>
     </Provider>
   );
 }

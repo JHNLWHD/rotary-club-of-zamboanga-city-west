@@ -9,6 +9,7 @@ type HeroSectionProps = {
   ctaText: string;
   ctaLink: string;
   backgroundImage: string;
+  carouselImages: string[];
 };
 
 export function HeroSection({ 
@@ -17,7 +18,8 @@ export function HeroSection({
   description, 
   ctaText, 
   ctaLink, 
-  backgroundImage 
+  backgroundImage,
+  carouselImages
 }: HeroSectionProps) {
   return (
     <Box 
@@ -136,7 +138,7 @@ export function HeroSection({
             maxW={{ base: "100%", lg: "48%" }}
             w="100%"
           >
-            <HeroCarousel />
+            <HeroCarousel images={carouselImages} />
           </Box>
         </Flex>
       </Box>

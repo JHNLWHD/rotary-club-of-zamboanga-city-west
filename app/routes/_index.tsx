@@ -3,13 +3,20 @@ import {
   Flex,
   Heading,
   Text,
-  Image,
-  Stack,
+  Button,
   Link,
+  VStack,
+  HStack,
+  Spacer,
+  Image,
   Container,
-  useBreakpointValue,
+  Grid,
+  GridItem,
+  Card,
+  CardBody,
+  Icon,
 } from "@chakra-ui/react";
-import { Construction, Clock, Mail, Phone, Facebook, Calendar, Camera, Handshake, Users } from "lucide-react";
+import { Globe, Users, Target, Heart, MapPin, Phone, Mail, Clock, Facebook, ArrowRight, Construction, Calendar, Camera, Handshake } from "lucide-react";
 
 export function meta() {
   return [
@@ -53,50 +60,47 @@ function ButtonLink({ href, children, ...props }: { href: string; children: Reac
 }
 
 export default function Index() {
-  const logoSize = useBreakpointValue({ base: "120px", md: "160px" });
-  
   return (
     <Box minHeight="100vh" bg="gray.50">
       {/* Header */}
-      <Box bg="white" boxShadow="sm" py={4}>
+      <Box bg="white" borderBottom="1px" borderColor="gray.200" py={4}>
         <Container maxW="1200px">
           <Flex align="center" justify="space-between">
-            <Flex align="center" gap={3}>
-              <Image
-                src="/logo.png"
-                alt="Rotary Club of Zamboanga City West Logo"
-                width={{ base: '80px', md: '100px' }}
-                height="auto"
-                objectFit="contain"
+            <Flex align="center" gap={4}>
+              <Image 
+                src="/logo.png" 
+                alt="Rotary Club Logo" 
+                w={{ base: "120px", md: "160px" }}
+                h="auto"
               />
-              <Box>
-                <Text fontSize={{ base: "lg", md: "xl" }} fontWeight="bold" color="brand.500">
+              <VStack align="start" gap={0}>
+                <Heading size="lg" color="brand.500">
                   Rotary Club of Zamboanga City West
-                </Text>
+                </Heading>
                 <Text fontSize="sm" color="gray.600">
                   Service Above Self
                 </Text>
-              </Box>
+              </VStack>
             </Flex>
-            <Link 
-              href="https://www.facebook.com/RCZCwest" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              p={3}
-              borderRadius="lg"
-              bg="blue.50"
-              _hover={{ bg: "blue.100", transform: "translateY(-2px)" }}
-              transition="all 0.2s"
-            >
-              <Facebook size={24} color="#1877F2" />
-            </Link>
+            
+            <HStack gap={4} display={{ base: "none", md: "flex" }}>
+              <Link href="tel:+63-926-430-4580" color="gray.600">
+                <Phone size={16} />
+              </Link>
+              <Link href="mailto:rotaryzcwest@gmail.com" color="gray.600">
+                <Mail size={16} />
+              </Link>
+              <Link href="https://www.facebook.com/RCZCwest" color="blue.500" target="_blank" rel="noopener noreferrer">
+                <Facebook size={16} />
+              </Link>
+            </HStack>
           </Flex>
         </Container>
       </Box>
 
       {/* Main Content */}
       <Container maxW="800px" py={{ base: 12, md: 20 }}>
-        <Stack gap={8} textAlign="center" align="center">
+        <VStack gap={8} textAlign="center" align="center">
           {/* Construction Icon */}
           <Box
             bg="gold.100"
@@ -109,7 +113,7 @@ export default function Index() {
           </Box>
 
           {/* Main Heading */}
-          <Stack gap={4} align="center">
+          <VStack gap={4} align="center">
             <Heading 
               as="h1" 
               fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }} 
@@ -131,7 +135,7 @@ export default function Index() {
               We're working hard to bring you an improved website experience. 
               Our new site will better showcase our community service projects and make it easier to get involved.
             </Text>
-          </Stack>
+          </VStack>
 
           {/* Coming Soon Notice with Infographics */}
           <Box 
@@ -152,7 +156,7 @@ export default function Index() {
             </Flex>
             
             {/* Progress Infographic */}
-            <Stack gap={4} mb={6}>
+            <VStack gap={4} mb={6}>
               <Box>
                 <Flex justify="space-between" align="center" mb={2}>
                   <Text fontSize="sm" fontWeight="medium" color="gray.700">Website Design</Text>
@@ -182,7 +186,7 @@ export default function Index() {
                   <Box bg="gold.500" h="100%" w="70%" borderRadius="full" />
                 </Box>
               </Box>
-            </Stack>
+            </VStack>
 
             {/* Feature Icons */}
             <Text fontSize="sm" color="gray.600" mb={4} textAlign="center" fontWeight="medium">
@@ -232,7 +236,7 @@ export default function Index() {
               Stay Connected
             </Heading>
             
-            <Stack gap={4} align="stretch">
+            <VStack gap={4} align="stretch">
               <Flex align="center" gap={4} justify="center">
                 <Phone size={20} color="#3182CE" />
                 <Text color="gray.700">
@@ -253,7 +257,7 @@ export default function Index() {
                   <Text as="span" fontWeight="bold">Meetings:</Text> Every Thursday, 7:00 PM
                 </Text>
               </Flex>
-            </Stack>
+            </VStack>
 
             <Text 
               fontSize="sm" 
@@ -271,7 +275,7 @@ export default function Index() {
             Thank you for your patience as we work to improve our digital presence. 
             We look forward to serving our community better through our new website.
           </Text>
-        </Stack>
+        </VStack>
       </Container>
     </Box>
   );

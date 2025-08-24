@@ -1,10 +1,10 @@
 import { Box, Flex, Button, Link, Spacer, Image, Text } from "@chakra-ui/react";
-import { useBreakpointValue } from "@chakra-ui/react";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { MapPin, Phone, Mail, Clock, Facebook, ChevronDown, Heart } from "lucide-react";
-import { Menu } from "./menu";
+import { Menu } from "./Menu";
 import { useLocation } from "react-router";
+import type { ContactInfo, MeetingInfo } from "~/lib/contentful-types";
 
 const aboutUsLinks = [
   { label: "Club Leadership", href: "/about/leadership" },
@@ -20,78 +20,54 @@ const mainNavLinks = [
   { label: "Service Projects", href: "/service-projects" },
 ];
 
-function ButtonLink({ href, children, ...props }: { href: string; children: React.ReactNode; [key: string]: any }) {
-  return (
-    <Link
-      href={href}
-      bg="brand.500"
-      color="white"
-      fontWeight="bold"
-      px={7}
-      py={2}
-      borderRadius="md"
-      fontSize="sm"
-      _hover={{ bg: "brand.700" }}
-      style={{ display: 'inline-block', textAlign: 'center', textDecoration: 'none' }}
-      {...props}
-    >
-      {children}
-    </Link>
-  );
-}
+type ContactData = {
+  meetingInfo?: MeetingInfo;
+  contactInfo?: ContactInfo;
+};
 
-function TopBar({ transparent }: { transparent: boolean }) {
+function TopBar({ transparent, contactData }: { transparent: boolean; contactData?: ContactData }) {
   return (
     <Flex 
-      bg={transparent ? "transparent" : "white"} 
+      bg={transparent ? "blackAlpha.300" : "white"} 
       color={transparent ? "white" : "gray.700"} 
       fontSize="xs" 
       px={{ base: 2, md: 12 }} 
-      py={2} 
+      py={2}
       align="center" 
+
       justify="space-between"
       display={{ base: "none", md: "flex" }}
     >
       <Flex gap={2} align="center">
-        <Link href="https://www.facebook.com/RCZCwest" target="_blank" rel="noopener noreferrer">
+        <Link 
+          href={contactData?.contactInfo?.facebookUrl || "https://www.facebook.com/RCZCwest"} 
+          target="_blank" 
+          rel="noopener noreferrer"
+        >
           <Facebook size={18} color={transparent ? "white" : "#6C757D"} />
         </Link>
       </Flex>
       <Flex gap={7} align="center" display={{ base: "none", md: "flex" }}>
         <Flex gap={1} align="center">
           <MapPin size={14} color={transparent ? "white" : "#6C757D"} />
-          <Text color={transparent ? "white" : "gray.700"} textShadow={transparent ? "0 1px 3px rgba(0,0,0,0.7)" : undefined}>914 Grand Astoria Hotel, Zamboanga City</Text>
+          <Text color={transparent ? "white" : "gray.700"} textShadow={transparent ? "0 1px 3px rgba(0,0,0,0.7)" : undefined}>
+            {contactData?.meetingInfo?.address || "914 Grand Astoria Hotel, Zamboanga City"}
+          </Text>
         </Flex>
         <Flex gap={1} align="center">
           <Mail size={14} color={transparent ? "white" : "#6C757D"} />
-          <Text color={transparent ? "white" : "gray.700"} textShadow={transparent ? "0 1px 3px rgba(0,0,0,0.7)" : undefined}>rotaryzcwest@gmail.com</Text>
+          <Text color={transparent ? "white" : "gray.700"} textShadow={transparent ? "0 1px 3px rgba(0,0,0,0.7)" : undefined}>
+            {contactData?.contactInfo?.email || "rotaryzcwest@gmail.com"}
+          </Text>
         </Flex>
         <Flex gap={1} align="center">
           <Clock size={14} color={transparent ? "white" : "#6C757D"} />
-          <Text color={transparent ? "white" : "gray.700"} textShadow={transparent ? "0 1px 3px rgba(0,0,0,0.7)" : undefined}>Tue 6:00 PM</Text>
+          <Text color={transparent ? "white" : "gray.700"} textShadow={transparent ? "0 1px 3px rgba(0,0,0,0.7)" : undefined}>
+            {contactData?.meetingInfo ? `${contactData.meetingInfo.day} ${contactData.meetingInfo.time}` : "Tue 6:00 PM"}
+          </Text>
         </Flex>
       </Flex>
     </Flex>
-  );
-}
-
-function CtaCard() {
-  return (
-    <Link 
-      href="https://rotaract.rotaryzcwest.org/?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=rotaract_referral" 
-      target="_blank" 
-      rel="noopener noreferrer"
-      _hover={{ transform: "scale(1.02)", textDecoration: "none" }}
-      transition="all 0.2s"
-    >
-      <Flex align="center" bg="gold.100" borderRadius="md" px={2} py={3} gap={2} minW="140px">
-        <Heart size={18} color="#D69E2E" fill="#D69E2E" />
-        <Box>
-          <Text fontSize="9px" color="gray.700" lineHeight={1.1}>Visit Now</Text>
-          <Text fontWeight="bold" color="brand.500" fontSize="11px" lineHeight={1.1}>Visit Rotaract Site</Text>
-        </Box>
-      </Flex>
-    </Link>
   );
 }
 
@@ -103,7 +79,7 @@ function HamburgerIcon({ color = "currentColor" }: { color?: string }) {
   );
 }
 
-export function GlobalLayout({ children, transparentHeader = false }: { children: ReactNode, transparentHeader?: boolean }) {
+export function GlobalLayout({ children, transparentHeader = false, contactData }: { children: ReactNode, transparentHeader?: boolean, contactData?: ContactData }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [aboutUsMenuOpen, setAboutUsMenuOpen] = useState(false);
 
@@ -117,22 +93,18 @@ export function GlobalLayout({ children, transparentHeader = false }: { children
   const location = useLocation();
   const isHomePage = location.pathname === "/" || location.pathname === "/home";
 
-  const showTopBar = useBreakpointValue({ base: false, md: true });
-
   return (
     <Flex direction="column" minHeight="100vh" position="relative">
       {/* Top Bar - Absolutely positioned */}
-      {showTopBar && (
-        <Box 
-          position="absolute" 
-          top={0} 
-          left={0} 
-          right={0} 
-          zIndex={21}
-        >
-          <TopBar transparent={transparentHeader} />
-        </Box>
-      )}
+      <Box 
+        position="absolute" 
+        top={0} 
+        left={0} 
+        right={0} 
+        zIndex={21}
+      >
+        <TopBar transparent={transparentHeader} contactData={contactData} />
+      </Box>
       {/* Main Header/Nav - Absolutely positioned */}
       <Box 
         as="header" 
@@ -466,7 +438,7 @@ export function GlobalLayout({ children, transparentHeader = false }: { children
                   </Text>
                   <Flex gap={4}>
                     <Link 
-                      href="https://www.facebook.com/RCZCwest" 
+                      href={contactData?.contactInfo?.facebookUrl || "https://www.facebook.com/RCZCwest"} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       p={2}
@@ -565,19 +537,23 @@ export function GlobalLayout({ children, transparentHeader = false }: { children
                     <MapPin size={16} color="white" style={{ marginTop: '2px', flexShrink: 0 }} />
                     <Box>
                       <Text color="gray.300" fontSize="sm" lineHeight="relaxed">
-                        Grand Astoria Hotel<br />
-                        914 Mayor Jaldon Street<br />
+                        {contactData?.meetingInfo?.location || "Grand Astoria Hotel"}<br />
+                        {contactData?.meetingInfo?.address || "914 Mayor Jaldon Street"}<br />
                         Zamboanga City, Philippines
                       </Text>
                     </Box>
                   </Flex>
                   <Flex align="center" gap={3}>
                     <Mail size={16} color="white" style={{ flexShrink: 0 }} />
-                    <Text color="gray.300" fontSize="sm">rotaryzcwest@gmail.com</Text>
+                    <Text color="gray.300" fontSize="sm">
+                      {contactData?.contactInfo?.email || "rotaryzcwest@gmail.com"}
+                    </Text>
                   </Flex>
                   <Flex align="center" gap={3}>
                     <Clock size={16} color="white" style={{ flexShrink: 0 }} />
-                    <Text color="gray.300" fontSize="sm">Every Tuesday, 6:00 PM</Text>
+                    <Text color="gray.300" fontSize="sm">
+                      {contactData?.meetingInfo ? `Every ${contactData.meetingInfo.day}, ${contactData.meetingInfo.time}` : "Every Tuesday, 6:00 PM"}
+                    </Text>
                   </Flex>
                 </Flex>
               </Box>
