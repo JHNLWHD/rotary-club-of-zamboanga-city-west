@@ -78,7 +78,8 @@ export default function TheFortress() {
         position="relative" 
         bg="white" 
         overflow="hidden"
-        py={{ base: 16, md: 20 }}
+        pt={{ base: 24, md: 28 }}
+        pb={{ base: 16, md: 20 }}
       >
         {/* Background Pattern */}
         <Box
@@ -432,67 +433,6 @@ export default function TheFortress() {
       {/* Content Sections */}
       <Box py={16} bg="white">
         <Container maxW="1200px">
-          <SimpleGrid columns={{ base: 1, lg: 2 }} gap={12}>
-            {/* What You'll Find */}
-            <Box 
-              bg="gray.50" 
-              p={8} 
-              borderRadius="2xl" 
-              boxShadow="lg"
-              border="1px solid"
-              borderColor="gray.200"
-            >
-              <Heading as="h3" fontSize="2xl" color="gray.900" mb={6}>
-                What You'll Find in The Fortress
-              </Heading>
-              <Stack gap={4}>
-                <Flex align="start" gap={3}>
-                  <Badge colorScheme="blue" fontSize="xs" px={2} py={1}>NEW</Badge>
-                  <Box>
-                    <Text fontWeight="bold" color="gray.900" mb={1}>
-                      Member Spotlights
-                    </Text>
-                    <Text color="gray.600" fontSize="sm">
-                      Get to know our Rotarians and their inspiring stories of service
-                    </Text>
-                  </Box>
-                </Flex>
-                <Flex align="start" gap={3}>
-                  <Badge colorScheme="green" fontSize="xs" px={2} py={1}>FEATURED</Badge>
-                  <Box>
-                    <Text fontWeight="bold" color="gray.900" mb={1}>
-                      Project Updates
-                    </Text>
-                    <Text color="gray.600" fontSize="sm">
-                      Latest news on our community service projects and their impact
-                    </Text>
-                  </Box>
-                </Flex>
-                <Flex align="start" gap={3}>
-                  <Badge colorScheme="purple" fontSize="xs" px={2} py={1}>REGULAR</Badge>
-                  <Box>
-                    <Text fontWeight="bold" color="gray.900" mb={1}>
-                      Club Events
-                    </Text>
-                    <Text color="gray.600" fontSize="sm">
-                      Coverage of meetings, fellowships, and special celebrations
-                    </Text>
-                  </Box>
-                </Flex>
-                <Flex align="start" gap={3}>
-                  <Badge colorScheme="orange" fontSize="xs" px={2} py={1}>SPECIAL</Badge>
-                  <Box>
-                    <Text fontWeight="bold" color="gray.900" mb={1}>
-                      District News
-                    </Text>
-                    <Text color="gray.600" fontSize="sm">
-                      Updates from District 3850 and Rotary International
-                    </Text>
-                  </Box>
-                </Flex>
-              </Stack>
-            </Box>
-
             {/* Subscribe/Access */}
             <Box 
               bg="brand.500" 
@@ -532,7 +472,6 @@ export default function TheFortress() {
                 For more information about The Fortress or to contribute content, contact our editorial team.
               </Text>
             </Box>
-          </SimpleGrid>
         </Container>
       </Box>
     </Box>
