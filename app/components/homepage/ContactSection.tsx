@@ -14,8 +14,8 @@ export function ContactSection({ meetingInfo, contactInfo }: ContactSectionProps
       <Box maxW="1200px" mx="auto" px={{ base: 4, md: 8 }}>
         <SectionHeader 
           subtitle="Contact Us"
-          title="Get in Touch with Us"
-          description="Have questions about our projects or want to join our mission? We'd love to hear from you and explore how we can work together."
+          title="Join the Conversation"
+          description="Interested in our projects or inspired to join our mission? We’d love to hear from you and connect on how we can make a difference together."
         />
 
         <Flex direction={{ base: "column", lg: "row" }} gap={12}>

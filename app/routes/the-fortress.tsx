@@ -16,12 +16,12 @@ import { Download, Calendar, Users, Award, FileText, Eye } from "lucide-react";
 export function meta() {
   return [
     { title: "The Fortress | Official Publication of Rotary Club of Zamboanga City West" },
-    { name: "description", content: "Read The Fortress, the official publication of Rotary Club of Zamboanga City West. Stay updated with club news, member spotlights, and community project updates." },
+    { name: "description", content: "Feel the spirit of Rotary through stories of fellowship, service, and impact that continue to shape lives in Zamboanga City and across wider communities." },
     { name: "keywords", content: "The Fortress, Rotary publication, club newsletter, Zamboanga City West, member news, project updates, UNITE FOR GOOD" },
     
     // Open Graph tags
     { property: "og:title", content: "The Fortress | Official Publication of Rotary Club of Zamboanga City West" },
-    { property: "og:description", content: "Read The Fortress, the official publication of Rotary Club of Zamboanga City West." },
+    { property: "og:description", content: "Stories of fellowship, service, and impact shaping lives in Zamboanga City and beyond." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/the-fortress" },
     
@@ -165,7 +165,7 @@ export default function TheFortress() {
                 lineHeight="relaxed"
                 mb={8}
               >
-                Discover stories of service, community impact, and fellowship from our members as we work together to make a positive difference in Zamboanga City and beyond.
+                Feel the spirit of Rotary through stories of fellowship, service, and impact that continue to shape lives in Zamboanga City and across wider communities.
               </Text>
             </Box>
 

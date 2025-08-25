@@ -17,8 +17,8 @@ export function OfficersSection({ officers }: OfficersSectionProps): JSX.Element
       <Box maxW="1200px" mx="auto" px={{ base: 4, md: 8 }}>
         <SectionHeader 
           subtitle="Leadership Team"
-          title="Meet The Team Behind Their Success Story"
-          description="Our dedicated leaders work tirelessly to make our community initiatives successful and impactful."
+          title="Leadership Behind Our Mission"
+          description="Our dedicated leaders whose vision and dedication drive the success of our community projects."
         />
 
         {!sortedOfficers?.length ? (

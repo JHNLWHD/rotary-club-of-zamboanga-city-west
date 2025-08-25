@@ -16,7 +16,7 @@ export function ProjectHighlightsSection({ projects, viewAllLink }: ProjectHighl
         <SectionHeader 
           subtitle="Success Stories"
           title="Project Highlights"
-          description="Discover the transformative impact of our community projects and the lives we've touched together."
+          description="Witness the transformative impact of our community projects and the lives we've touched together."
         />
 
         {!projects?.length ? (

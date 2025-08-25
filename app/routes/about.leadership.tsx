@@ -51,12 +51,12 @@ export async function loader({ request }: Route.LoaderArgs) {
 export function meta() {
   return [
     { title: "Club Leadership | Rotary Club of Zamboanga City West" },
-    { name: "description", content: "Meet the leadership team of Rotary Club of Zamboanga City West. Our dedicated officers and board members guide our mission of service above self." },
+    { name: "description", content: "Meet the leaders whose vision and commitment drive the Rotary Club of Zamboanga City West in its mission of Service Above Self." },
     { name: "keywords", content: "Rotary leadership, club officers, board members, Zamboanga City, Rotary West" },
     
     // Open Graph tags
     { property: "og:title", content: "Club Leadership | Rotary Club of Zamboanga City West" },
-    { property: "og:description", content: "Meet the leadership team of Rotary Club of Zamboanga City West." },
+    { property: "og:description", content: "Meet the visionary leaders guiding our club's mission of Service Above Self." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/about/leadership" },
     
@@ -99,7 +99,7 @@ export default function ClubLeadership() {
     <>
       <PageHero
         title="Club Leadership"
-        description="Meet our dedicated leadership team who guide Rotary Club of Zamboanga City West in our mission of service above self."
+        description="Meet the leaders whose vision and commitment drive the Rotary Club of Zamboanga City West in its mission of Service Above Self."
         stats={leadershipStats}
       />
       

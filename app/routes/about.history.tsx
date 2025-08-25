@@ -28,7 +28,7 @@ export default function ClubHistory() {
     <>
       <PageHero
         title="Our History"
-        description="Discover the rich heritage of Rotary Club of Zamboanga City West and our 45-year journey of service to the community."
+        description="Celebrate the rich heritage of Rotary Club of Zamboanga City West and our 45-year journey of service to the community."
       />
 
       <Container maxW="1200px" py={{ base: 12, md: 20 }}>

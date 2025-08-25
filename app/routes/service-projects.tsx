@@ -34,12 +34,12 @@ export async function loader({ request }: Route.LoaderArgs) {
 export function meta() {
   return [
     { title: "Service Projects | Rotary Club of Zamboanga City West - Community Impact Initiatives" },
-    { name: "description", content: "Discover our transformative community service projects in Zamboanga City and Mindanao. From clean water access and education programs to healthcare initiatives and peace building efforts, learn how Rotary Club of Zamboanga City West creates lasting positive change." },
+    { name: "description", content: "Be inspired by service as our projects transform lives beyond our city—addressing urgent needs with dedication, resilience, and compassion to build a brighter future for all." },
     { name: "keywords", content: "Rotary service projects, community service Zamboanga City, clean water initiatives Philippines, education programs Mindanao, healthcare projects Zamboanga, peace building initiatives, Rotary community impact, local service projects, humanitarian aid Philippines" },
     
     // Open Graph tags
     { property: "og:title", content: "Service Projects | Rotary Club of Zamboanga City West - Community Impact" },
-    { property: "og:description", content: "Explore our community service projects making lasting impact in Zamboanga City and Mindanao. Clean water, education, healthcare, and peace building initiatives." },
+    { property: "og:description", content: "Be inspired by service as our projects transform lives—addressing urgent needs with dedication, resilience, and compassion." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/service-projects" },
     { property: "og:image", content: "https://rotaryzcwest.org/og-service-projects.jpg" },
@@ -49,7 +49,7 @@ export function meta() {
     // Twitter Card tags
     { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: "Service Projects | Rotary Club of Zamboanga City West" },
-    { name: "twitter:description", content: "Discover our community service projects creating lasting impact in Zamboanga City and beyond." },
+    { name: "twitter:description", content: "Be inspired by service as our projects transform lives and build a brighter future for all." },
     { name: "twitter:image", content: "https://rotaryzcwest.org/og-service-projects.jpg" },
     
     // Additional SEO tags
@@ -76,7 +76,7 @@ export default function ServiceProjects() {
     <Box>
       <PageHero
         title="Our Service Projects"
-        description="Discover our community service projects that are making a lasting impact in Zamboanga City and beyond. Through partnerships and dedication, we address the most pressing needs in our community."
+        description="Be inspired by the spirit of service as our projects transform lives well beyond our city’s borders. Together, we address urgent needs with dedication, resilience, and compassion — building a brighter future for all."
         stats={[
           {
             icon: <Target size={24} color="white" />,

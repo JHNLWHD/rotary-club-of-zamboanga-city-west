@@ -13,8 +13,8 @@ export function EventsSection({ events }: EventsSectionProps): JSX.Element {
       <Box maxW="1200px" mx="auto" px={{ base: 4, md: 8 }}>
         <SectionHeader
           subtitle="Events & Meetings"
-          title="Ready to Join Our Events"
-          description="Stay connected with our community through regular meetings and special events that bring Rotarians together."
+          title="Be Part of Our Upcoming Events"
+          description="Stay connected with our community through meetings and events that celebrate Rotary spirit and fellowship."
         />
 
         {!events?.length ? (

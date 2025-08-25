@@ -76,12 +76,12 @@ export async function loader({ request }: Route.LoaderArgs) {
 export function meta() {
   return [
     { title: "Calendar of Activities | Rotary Club of Zamboanga City West" },
-    { name: "description", content: "Stay updated with our upcoming events, meetings, and service projects. Join Rotary Club of Zamboanga City West in our community activities." },
+    { name: "description", content: "Stay connected with our events, regular meetings, and community service projects throughout the year." },
     { name: "keywords", content: "Rotary calendar, club events, meetings, service projects, community activities, Zamboanga City" },
 
     // Open Graph tags
     { property: "og:title", content: "Calendar of Activities | Rotary Club of Zamboanga City West" },
-    { property: "og:description", content: "Stay updated with our upcoming events, meetings, and service projects." },
+    { property: "og:description", content: "Stay connected with our events, regular meetings, and community service projects throughout the year." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/about/calendar" },
 
@@ -103,7 +103,7 @@ export default function CalendarOfActivities() {
     <Box>
       <PageHero
         title="Calendar of Activities"
-        description="Stay connected with our events, regular meetings, and community service projects throughout the year. Join us as we serve our community and build lasting friendships."
+        description="Stay connected with our events, regular meetings, and community service projects throughout the year."
         stats={[
           {
             icon: <Star size={24} color="white" />,
