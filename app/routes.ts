@@ -5,6 +5,7 @@ export default [
   route("under-construction", "routes/_index.tsx"),
   route("about/leadership", "routes/about.leadership.tsx"),
   route("about/history", "routes/about.history.tsx"),
+  route("about/board-resolutions", "routes/about.board-resolutions.tsx"),
   route("about/foundation-giving", "routes/about.foundation-giving.tsx"),
   route("about/calendar", "routes/about.calendar.tsx"),
   route("contact", "routes/contact.tsx"),

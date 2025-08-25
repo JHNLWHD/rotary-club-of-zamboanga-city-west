@@ -9,6 +9,7 @@ import type { ContactInfo, MeetingInfo } from "~/lib/contentful-types";
 const aboutUsLinks = [
   { label: "Club Leadership", href: "/about/leadership" },
   { label: "History", href: "/about/history" },
+  { label: "Board Resolutions", href: "/about/board-resolutions" },
   { label: "The Rotary Foundation Giving", href: "/about/foundation-giving" },
   { label: "Calendar of Activities", href: "/about/calendar" },
   { label: "Contact Us", href: "/contact" },
