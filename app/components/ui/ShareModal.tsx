@@ -109,8 +109,9 @@ function ShareModal({ isOpen, onClose, content, contentType }: ShareModalProps) 
             variant="ghost"
             size="sm"
             onClick={onClose}
-            icon={<X size={16} />}
-          />
+          >
+            <X size={16} />
+          </IconButton>
         </Flex>
         
         <VStack gap={4} align="stretch">
@@ -170,8 +171,8 @@ function ShareModal({ isOpen, onClose, content, contentType }: ShareModalProps) 
                 variant="outline"
                 size="sm"
                 onClick={copyToClipboard}
-                leftIcon={<Copy size={16} />}
               >
+                <Copy size={16} />
                 Copy
               </Button>
             </HStack>

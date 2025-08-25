@@ -2,41 +2,13 @@ import { Box, SimpleGrid, Text } from "@chakra-ui/react";
 import { SectionHeader } from "../ui/SectionHeader";
 import type { Officer } from "~/lib/contentful-types";
 import { OfficerCard } from "../ui/OfficerCard";
+import { sortOfficersByRoleHierarchy } from "~/lib/officer-utils";
 
 type OfficersSectionProps = {
   officers: Officer[];
 };
 
-function getOfficerRoleOrderPriority(role: string): number {
-  const roleOrderMap: Record<string, number> = {
-    'PRESIDENT': 1,
-    'VICE PRESIDENT': 2, 
-    'SECRETARY': 3,
-    'EXECUTIVE SECRETARY': 4,
-    'TREASURER': 5,
-    'AUDITOR': 6,
-  };
-  
-  const normalizedRole = role.toUpperCase().trim();
-  if (roleOrderMap[normalizedRole]) {
-    return roleOrderMap[normalizedRole];
-  }
-  
-  return 999;
-}
 
-function sortOfficersByRoleHierarchy(officers: Officer[]): Officer[] {
-  return [...officers].sort((officerA, officerB) => {
-    const priorityA = getOfficerRoleOrderPriority(officerA.role);
-    const priorityB = getOfficerRoleOrderPriority(officerB.role);
-    
-    if (priorityA !== priorityB) {
-      return priorityA - priorityB;
-    }
-    
-    return officerA.name.localeCompare(officerB.name);
-  });
-}
 
 export function OfficersSection({ officers }: OfficersSectionProps): JSX.Element {
   const sortedOfficers = sortOfficersByRoleHierarchy(officers);

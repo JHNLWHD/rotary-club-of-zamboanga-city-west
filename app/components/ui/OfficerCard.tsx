@@ -2,7 +2,28 @@ import { Box, Heading, Text } from "@chakra-ui/react";
 import type { Officer } from "~/lib/contentful-types";
 import { Users } from "lucide-react";
 
-export function OfficerCard({ officer }: { officer: Officer }): JSX.Element {
+type OfficerCardProps = {
+  officer: Officer;
+  colorScheme?: "brand" | "cranberry";
+};
+
+export function OfficerCard({ officer, colorScheme = "brand" }: OfficerCardProps): JSX.Element {
+  const colors = {
+    brand: {
+      primary: "#005DAA",
+      border: "brand.500",
+      text: "brand.500",
+      bg: "blue.50"
+    },
+    cranberry: {
+      primary: "#d41367",
+      border: "cranberry.500",
+      text: "cranberry.500", 
+      bg: "cranberry.50"
+    }
+  };
+  
+  const currentColors = colors[colorScheme];
     return (
         <Box
             as="article"
@@ -22,26 +43,26 @@ export function OfficerCard({ officer }: { officer: Officer }): JSX.Element {
             boxShadow="0 4px 15px rgba(0,0,0,0.05)"
         >
             <Box position="relative" mb={4}>
-                <Box
-                    borderRadius="full"
-                    boxSize="100px"
-                    mx="auto"
-                    border="4px solid"
-                    borderColor="brand.500"
-                    bgGradient="linear(to-br, gray.100, gray.200)"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    _hover={{ transform: "scale(1.05)" }}
-                    transition="transform 0.2s"
-                >
-                    <Users size={40} color="#005DAA" />
-                </Box>
+                            <Box
+                borderRadius="full"
+                boxSize="100px"
+                mx="auto"
+                border="4px solid"
+                borderColor={currentColors.border}
+                bgGradient="linear(to-br, gray.100, gray.200)"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                _hover={{ transform: "scale(1.05)" }}
+                transition="transform 0.2s"
+            >
+                <Users size={40} color={currentColors.primary} />
+            </Box>
             </Box>
             <Heading as="h3" fontSize="lg" color="gray.900" fontWeight="bold" mb={1} lineHeight="shorter">
                 {officer.name}
             </Heading>
-            <Text color="brand.500" fontWeight="bold" fontSize="sm" mb={1}>
+            <Text color={currentColors.text} fontWeight="bold" fontSize="sm" mb={1}>
                 {officer.role}
             </Text>
             {officer.designation && (

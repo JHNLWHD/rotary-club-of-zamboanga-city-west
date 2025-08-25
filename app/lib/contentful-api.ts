@@ -9,7 +9,8 @@ import type {
   HomepageServiceAreas,
   HomepageHero,
   HomepageContact,
-  Officer
+  Officer,
+  RotaryAnns
 } from './contentful-types';
 import slugify from 'slugify';
 
@@ -21,6 +22,7 @@ const CONTENT_TYPES = {
   SERVICE_PROJECT: 'serviceProject',
   EVENT: 'event',
   OFFICERS: 'officers',
+  ROTARY_ANNS: 'rotaryAnns',
   STAT_ITEM: 'statItem',
   SERVICE_AREA: 'serviceArea',
 } as const;
@@ -211,8 +213,6 @@ export async function fetchFeaturedOfficers(): Promise<Officer[] | null> {
       return [];
     }
 
-
-
     const processedOfficers = contentfulResponse.items.map((officerEntry) => {
       const officerFields = extractContentfulEntryFields<Officer>(officerEntry);
       return {
@@ -225,6 +225,105 @@ export async function fetchFeaturedOfficers(): Promise<Officer[] | null> {
   } catch (error) {
     console.error('Error fetching featured officers:', error);
     return [];
+  }
+}
+
+export async function fetchOfficersByType(type: 'Executive' | 'Director' | 'Adviser'): Promise<Officer[] | null> {
+  try {
+    const contentfulResponse = await contentfulClient.getEntries({
+      content_type: CONTENT_TYPES.OFFICERS,
+      'fields.isActive': true,
+      'fields.type': type,
+      order: type === 'Executive' ? ['-fields.role'] : ['fields.role'],
+    });
+
+    if (contentfulResponse.items.length === 0) {
+      return [];
+    }
+
+    const processedOfficers = contentfulResponse.items.map((officerEntry) => {
+      const officerFields = extractContentfulEntryFields<Officer>(officerEntry);
+      return {
+        ...officerFields,
+        photo: buildContentfulAssetMetadata(officerFields.photo), 
+      };
+    });
+
+    return processedOfficers;
+  } catch (error) {
+    console.error(`Error fetching ${type} officers:`, error);
+    return [];
+  }
+}
+
+export async function fetchRotaryAnnsByType(type: 'Executive' | 'Director'): Promise<RotaryAnns[] | null> {
+  try {
+    const contentfulResponse = await contentfulClient.getEntries({
+      content_type: CONTENT_TYPES.ROTARY_ANNS,
+      'fields.isActive': true,
+      'fields.type': type,
+      order: type === 'Executive' ? ['-fields.role'] : ['fields.role'],
+    });
+
+    if (contentfulResponse.items.length === 0) {
+      return [];
+    }
+
+    const processedRotaryAnns = contentfulResponse.items.map((rotaryAnnsEntry) => {
+      const rotaryAnnsFields = extractContentfulEntryFields<RotaryAnns>(rotaryAnnsEntry);
+      return {
+        ...rotaryAnnsFields,
+        photo: buildContentfulAssetMetadata(rotaryAnnsFields.photo), 
+      };
+    });
+
+    return processedRotaryAnns;
+  } catch (error) {
+    console.error(`Error fetching ${type} Rotary Anns:`, error);
+    return [];
+  }
+}
+
+export async function fetchAllOfficers(): Promise<{ 
+  executives: Officer[], 
+  directors: Officer[], 
+  advisers: Officer[] 
+} | null> {
+  try {
+    const [executives, directors, advisers] = await Promise.all([
+      fetchOfficersByType('Executive'),
+      fetchOfficersByType('Director'),
+      fetchOfficersByType('Adviser')
+    ]);
+
+    return {
+      executives: executives || [],
+      directors: directors || [],
+      advisers: advisers || []
+    };
+  } catch (error) {
+    console.error('Error fetching all officers:', error);
+    return null;
+  }
+}
+
+export async function fetchAllRotaryAnns(): Promise<{ 
+  executives: RotaryAnns[], 
+  directors: RotaryAnns[] 
+} | null> {
+  try {
+    const [executives, directors] = await Promise.all([
+      fetchRotaryAnnsByType('Executive'),
+      fetchRotaryAnnsByType('Director')
+    ]);
+
+    return {
+      executives: executives || [],
+      directors: directors || []
+    };
+  } catch (error) {
+    console.error('Error fetching all Rotary Anns:', error);
+    return null;
   }
 }
 

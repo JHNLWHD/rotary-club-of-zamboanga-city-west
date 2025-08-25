@@ -82,6 +82,16 @@ export type Officer = {
   isFeatured: boolean;
 };
 
+export type RotaryAnns = {
+  name: string;
+  role: string;
+  designation: string;
+  type: 'Executive' | 'Director';
+  photo?: ProcessedAsset;
+  isActive: boolean;
+  isFeatured: boolean;
+};
+
 export type HomepageStats = {
   title?: string;
   subtitle?: string;
