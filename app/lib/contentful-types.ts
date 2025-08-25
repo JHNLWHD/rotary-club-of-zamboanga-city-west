@@ -99,6 +99,17 @@ export type HomepageStats = {
   isActive: boolean;
 };
 
+export type FoundationGiving = {
+  startYear: number;
+  endYear: number;
+  annualFund: number;
+  polioPlus: number;
+  otherFund: number;
+  endowment: number;
+  total: number;
+  isActive: boolean;
+};
+
 export type HomepageServiceAreas = {
   title?: string;
   subtitle?: string;

@@ -10,7 +10,8 @@ import type {
   HomepageHero,
   HomepageContact,
   Officer,
-  RotaryAnns
+  RotaryAnns,
+  FoundationGiving
 } from './contentful-types';
 import slugify from 'slugify';
 
@@ -25,6 +26,7 @@ const CONTENT_TYPES = {
   ROTARY_ANNS: 'rotaryAnns',
   STAT_ITEM: 'statItem',
   SERVICE_AREA: 'serviceArea',
+  FOUNDATION_GIVING: 'foundationGiving',
 } as const;
 
 function extractContentfulEntryFields<T>(contentfulEntry: any): T {
@@ -307,23 +309,68 @@ export async function fetchAllOfficers(): Promise<{
   }
 }
 
-export async function fetchAllRotaryAnns(): Promise<{ 
-  executives: RotaryAnns[], 
-  directors: RotaryAnns[] 
-} | null> {
+export async function fetchAllRotaryAnns(): Promise<{ executives: RotaryAnns[], directors: RotaryAnns[] }> {
   try {
-    const [executives, directors] = await Promise.all([
-      fetchRotaryAnnsByType('Executive'),
-      fetchRotaryAnnsByType('Director')
-    ]);
+    const contentfulResponse = await contentfulClient.getEntries({
+      content_type: CONTENT_TYPES.ROTARY_ANNS,
+      'fields.isActive': true,
+      include: 2,
+      limit: 100,
+    });
 
-    return {
-      executives: executives || [],
-      directors: directors || []
-    };
+    if (contentfulResponse.items.length === 0) {
+      return { executives: [], directors: [] };
+    }
+
+    const rotaryAnns: RotaryAnns[] = contentfulResponse.items.map((entry) => {
+      const fields = extractContentfulEntryFields<RotaryAnns>(entry);
+      return {
+        ...fields,
+        photo: buildContentfulAssetMetadata(fields.photo),
+      };
+    });
+
+    const executives = rotaryAnns.filter((ann) => ann.type === 'Executive');
+    const directors = rotaryAnns.filter((ann) => ann.type === 'Director');
+
+    return { executives, directors };
   } catch (error) {
-    console.error('Error fetching all Rotary Anns:', error);
-    return null;
+    console.error('Error fetching Rotary Anns:', error);
+    return { executives: [], directors: [] };
+  }
+}
+
+export async function fetchFoundationGiving(): Promise<FoundationGiving[]> {
+  try {
+    const contentfulResponse = await contentfulClient.getEntries({
+      content_type: CONTENT_TYPES.FOUNDATION_GIVING,
+      order: ['fields.startYear'],
+      limit: 100,
+    });
+
+    if (contentfulResponse.items.length === 0) {
+      return [];
+    }
+
+    const foundationGiving: FoundationGiving[] = contentfulResponse.items.map((entry) => {
+      const fields = extractContentfulEntryFields<FoundationGiving>(entry);
+      return {
+        ...fields,
+        startYear: fields.startYear || 0,
+        endYear: fields.endYear || 0,
+        annualFund: fields.annualFund || 0,
+        polioPlus: fields.polioPlus || 0,
+        otherFund: fields.otherFund || 0,
+        endowment: fields.endowment || 0,
+        total: fields.total || 0,
+      };
+    });
+
+    // Sort by startYear to ensure chronological order
+    return foundationGiving.sort((a, b) => a.startYear - b.startYear);
+  } catch (error) {
+    console.error('Error fetching Foundation Giving data:', error);
+    return [];
   }
 }
 
