@@ -1,5 +1,5 @@
 import { Box, Container, Heading, Text, SimpleGrid, VStack, HStack, Badge, Button, Image, Flex, Link as ChakraLink } from "@chakra-ui/react";
-import { Calendar, Users, Heart, Target, Award, Globe, BookOpen, Lightbulb, Star } from "lucide-react";
+import { Calendar, Users, Heart, Target, Award, Globe, BookOpen, Lightbulb, Star, Facebook } from "lucide-react";
 import { PageHero } from "~/components/ui/PageHero";
 import { OfficerCard } from "~/components/ui/OfficerCard";
 import { ButtonLink } from "~/components/ui/ButtonLink";
@@ -177,6 +177,19 @@ export default function InteractSCCPage() {
                 >
                   View Calendar of Activities
                 </ButtonLink>
+                {interactData?.facebookLink && (
+                  <ButtonLink
+                    href={interactData.facebookLink}
+                    leftIcon={<Facebook size={20} />}
+                    colorScheme="facebook"
+                    size="lg"
+                    variant="solid"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Follow us on Facebook
+                  </ButtonLink>
+                )}
               </HStack>
             </VStack>
           </Box>

@@ -164,12 +164,14 @@ export type HomepageContact = {
 
 export type RotaractClubOfSouthernCityColleges = {
   calendarOfActivitiesLink: string;
+  facebookLink?: string;
   clubLeadership: ClubLeadership[];
   isActive: boolean;
 };
 
 export type InteractClubOfZamboangaCityWest = {
   calendarOfActivitiesLink: string;
+  facebookLink?: string;
   clubLeadership: ClubLeadership[];
   isActive: boolean;
 };

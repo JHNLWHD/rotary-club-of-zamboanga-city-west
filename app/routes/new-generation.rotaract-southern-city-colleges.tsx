@@ -1,5 +1,5 @@
 import { Box, Container, Heading, Text, SimpleGrid, VStack, HStack, Badge, Button, Image, Flex, Link as ChakraLink } from "@chakra-ui/react";
-import { Calendar, Users, Heart, Target, Award, Globe } from "lucide-react";
+import { Calendar, Users, Heart, Target, Award, Globe, Facebook } from "lucide-react";
 import { PageHero } from "~/components/ui/PageHero";
 import { OfficerCard } from "~/components/ui/OfficerCard";
 import { ButtonLink } from "~/components/ui/ButtonLink";
@@ -177,6 +177,19 @@ export default function RotaractSCCPage() {
                 >
                   View Calendar of Activities
                 </ButtonLink>
+                {rotaractData?.facebookLink && (
+                  <ButtonLink
+                    href={rotaractData.facebookLink}
+                    leftIcon={<Facebook size={20} />}
+                    colorScheme="facebook"
+                    size="lg"
+                    variant="solid"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Follow us on Facebook
+                  </ButtonLink>
+                )}
               </HStack>
             </VStack>
           </Box>
