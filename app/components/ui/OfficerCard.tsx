@@ -1,6 +1,7 @@
 import { Box, Heading, Text, Image } from "@chakra-ui/react";
 import type { Officer } from "~/lib/contentful-types";
 import { Users } from "lucide-react";
+import { useState } from "react";
 
 type OfficerCardProps = {
   officer: Officer;
@@ -12,6 +13,8 @@ export function OfficerCard({
   officer, 
   colorScheme = "brand" 
 }: OfficerCardProps): JSX.Element {
+  const [imageLoadError, setImageLoadError] = useState(false);
+  
   const colors = {
     brand: {
       primary: "#005DAA",
@@ -67,23 +70,13 @@ export function OfficerCard({
           transition="transform 0.2s"
           overflow="hidden"
         >
-          {officer.photo?.url ? (
+          {officer.photo?.url && !imageLoadError ? (
             <Image
               src={officer.photo.url}
               alt={officer.name}
               boxSize="100%"
               objectFit="cover"
-              onError={(e) => {
-                // Fallback to icon if image fails to load
-                const target = e.target as HTMLImageElement;
-                target.style.display = 'none';
-                const parent = target.parentElement;
-                if (parent) {
-                  const icon = document.createElement('div');
-                  icon.innerHTML = `<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="${currentColors.primary}" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>`;
-                  parent.appendChild(icon);
-                }
-              }}
+              onError={() => setImageLoadError(true)}
             />
           ) : (
             <Users size={40} color={currentColors.primary} />

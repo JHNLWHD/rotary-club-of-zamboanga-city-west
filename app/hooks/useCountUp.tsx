@@ -4,16 +4,19 @@ export function useCountUp(end: number, duration: number = 2000, start: number =
     const [count, setCount] = useState(start);
     const [hasAnimated, setHasAnimated] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
+    const startTimeRef = useRef<number | null>(null);
   
     useEffect(() => {
       const observer = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting && !hasAnimated) {
             setHasAnimated(true);
-            const startTime = Date.now();
+            startTimeRef.current = performance.now();
             
-            const animate = () => {
-              const elapsed = Date.now() - startTime;
+            const animate = (currentTime: number) => {
+              if (startTimeRef.current === null) return;
+              
+              const elapsed = currentTime - startTimeRef.current;
               const progress = Math.min(elapsed / duration, 1);
               
               // Easing function for smooth animation

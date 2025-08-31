@@ -30,6 +30,7 @@ function groupEventsByMonth(events: Event[]): GroupedEvents {
     try {
       const eventDate = new Date(event.date);
       const monthKey = eventDate.toLocaleDateString('en-US', {
+        timeZone: 'UTC',
         year: 'numeric',
         month: 'long'
       });
@@ -51,8 +52,8 @@ function formatEventDate(dateString: string): { day: string; month: string; week
     const date = new Date(dateString);
     return {
       day: date.getDate().toString(),
-      month: date.toLocaleDateString('en-US', { month: 'short' }),
-      weekday: date.toLocaleDateString('en-US', { weekday: 'short' })
+      month: date.toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' }),
+      weekday: date.toLocaleDateString('en-US', { weekday: 'short', timeZone: 'UTC' })
     };
   } catch (error) {
     return { day: '??', month: '???', weekday: '???' };

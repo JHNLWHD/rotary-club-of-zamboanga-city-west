@@ -633,7 +633,7 @@ export async function fetchTheFortress(): Promise<FortressIssue[]> {
       const issueFields = extractContentfulEntryFields<FortressIssue>(issueEntry);
       return {
         ...issueFields,
-        id: issueFields.id || issueEntry.sys?.id || `fortress-issue-${Date.now()}`,
+        id: issueFields.id || issueEntry.sys?.id || `fortress-issue-${issueEntry.sys?.createdAt || 'fallback'}`,
         file: buildContentfulAssetMetadata(issueFields.file),
       };
     });
