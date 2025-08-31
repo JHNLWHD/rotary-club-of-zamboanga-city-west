@@ -31,12 +31,12 @@ type LoaderData = {
 export async function loader({ request }: Route.LoaderArgs) {
   try {
     const fortressIssues = await fetchTheFortress();
-    return { 
+    return {
       fortressIssues: fortressIssues || [],
     };
   } catch (error) {
     console.error('Error loading fortress data on server:', error);
-    return { 
+    return {
       fortressIssues: [],
     };
   }
@@ -47,14 +47,14 @@ export function meta() {
     { title: "The Fortress | Official Publication of Rotary Club of Zamboanga City West" },
     { name: "description", content: "Feel the spirit of Rotary through stories of fellowship, service, and impact that continue to shape lives in Zamboanga City and across wider communities." },
     { name: "keywords", content: "The Fortress, Rotary publication, club newsletter, Zamboanga City West, member news, project updates, UNITE FOR GOOD" },
-    
+
     // Open Graph tags
     { property: "og:title", content: "The Fortress | Official Publication of Rotary Club of Zamboanga City West" },
     { property: "og:description", content: "Stories of fellowship, service, and impact shaping lives in Zamboanga City and beyond." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/the-fortress" },
     { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
-    
+
     // Canonical URL
     { rel: "canonical", href: "https://rotaryzcwest.org/the-fortress" },
   ];
@@ -63,14 +63,14 @@ export function meta() {
 // Helper function to convert Google Drive share link to embed URL
 function getGoogleDriveEmbedUrl(shareUrl: string): string {
   if (!shareUrl || typeof shareUrl !== 'string') return '';
-  
+
   // Extract file ID from Google Drive URL
   const fileIdMatch = shareUrl.match(/\/file\/d\/([a-zA-Z0-9-_]+)/);
   if (fileIdMatch) {
     const fileId = fileIdMatch[1];
     return `https://drive.google.com/file/d/${fileId}/preview`;
   }
-  
+
   // If it's already a direct URL, return as is
   return shareUrl;
 }
@@ -78,7 +78,7 @@ function getGoogleDriveEmbedUrl(shareUrl: string): string {
 // Helper function to get PDF URL from Contentful asset
 function getPdfUrlFromAsset(asset: any): string {
   if (!asset || !asset.url) return '';
-  
+
   // Contentful assets already provide direct URLs
   return asset.url;
 }
@@ -108,7 +108,7 @@ const defaultFortressIssues: FortressIssue[] = [
 
 export default function TheFortress() {
   const { fortressIssues } = useLoaderData() as LoaderData;
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPdfUrl, setSelectedPdfUrl] = useState<string>("");
   const [selectedIssueTitle, setSelectedIssueTitle] = useState<string>("");
@@ -126,20 +126,20 @@ export default function TheFortress() {
   // Load PDF components only on client side
   useEffect(() => {
     setIsClient(true);
-    
+
     const loadPdfComponents = async () => {
       try {
         const reactPdf = await import('react-pdf');
         Document = reactPdf.Document;
         Page = reactPdf.Page;
         pdfjs = reactPdf.pdfjs;
-        
+
         // Set up PDF.js worker using local file
         pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
-        
+
         // Note: CSS files are handled by the bundler or can be imported at the top level
         // Removing dynamic CSS imports that cause Vite issues
-        
+
         setPdfComponentsLoaded(true);
       } catch (error) {
         console.error('Failed to load PDF components:', error);
@@ -153,23 +153,23 @@ export default function TheFortress() {
   const handleOpenPdfModal = (issue: FortressIssue) => {
     console.log('Opening PDF modal for:', issue.issueNumber);
     console.log('File asset:', issue.file);
-    
+
     // Get PDF URL from Contentful asset
     const pdfUrl = getPdfUrlFromAsset(issue.file);
     console.log('PDF URL:', pdfUrl);
-    
+
     // Check if PDF components are loaded
     if (!pdfComponentsLoaded) {
       console.log('PDF components not loaded yet');
       setError('PDF viewer is still loading. Please try again in a moment.');
       return;
     }
-    
+
     if (!pdfUrl) {
       setError('No PDF file available for this issue.');
       return;
     }
-    
+
     setSelectedPdfUrl(pdfUrl);
     setSelectedIssueTitle(issue.issueNumber);
     setPageNumber(1);
@@ -199,15 +199,15 @@ export default function TheFortress() {
   const onDocumentLoadError = (error: Error) => {
     console.error('PDF load error:', error);
     console.error('Error details:', error.message);
-    
+
     // If it's a CORS error, worker setup failure, or version mismatch, try iframe fallback
-    if (error.message.includes('CORS') || 
-        error.message.includes('cross-origin') || 
-        error.message.includes('fetch') ||
-        error.message.includes('worker') ||
-        error.message.includes('Setting up fake worker failed') ||
-        error.message.includes('version') ||
-        error.message.includes('does not match')) {
+    if (error.message.includes('CORS') ||
+      error.message.includes('cross-origin') ||
+      error.message.includes('fetch') ||
+      error.message.includes('worker') ||
+      error.message.includes('Setting up fake worker failed') ||
+      error.message.includes('version') ||
+      error.message.includes('does not match')) {
       console.log('PDF.js error detected (CORS/Worker/Version), switching to iframe fallback');
       setUseIframeFallback(true);
       setError(null);
@@ -230,9 +230,9 @@ export default function TheFortress() {
   return (
     <Box bg="gray.50" minH="100vh">
       {/* Hero Section */}
-      <Box 
-        position="relative" 
-        bg="white" 
+      <Box
+        position="relative"
+        bg="white"
         overflow="hidden"
         pt={{ base: 24, md: 28 }}
         pb={{ base: 16, md: 20 }}
@@ -247,7 +247,7 @@ export default function TheFortress() {
           backgroundImage="linear-gradient(135deg, rgba(0, 93, 170, 0.03) 0%, rgba(255, 255, 255, 1) 100%)"
           zIndex={1}
         />
-        
+
         <Container maxW="1200px" position="relative" zIndex={2}>
           <Flex direction={{ base: "column", lg: "row" }} align="center" gap={12}>
             {/* Left Content */}
@@ -272,20 +272,20 @@ export default function TheFortress() {
               </Flex>
 
               {/* Main Title */}
-              <Heading 
-                as="h1" 
-                fontSize={{ base: "4xl", md: "5xl", lg: "6xl" }} 
-                fontWeight="bold" 
+              <Heading
+                as="h1"
+                fontSize={{ base: "4xl", md: "5xl", lg: "6xl" }}
+                fontWeight="bold"
                 color="brand.500"
                 mb={2}
                 letterSpacing="tight"
               >
                 THE <Text as="span" color="gray.900">FORTRESS</Text>
               </Heading>
-              
-              <Text 
-                fontSize="md" 
-                color="gray.600" 
+
+              <Text
+                fontSize="md"
+                color="gray.600"
                 mb={6}
                 fontWeight="medium"
                 letterSpacing="wide"
@@ -295,20 +295,20 @@ export default function TheFortress() {
               </Text>
 
               {/* Theme */}
-              <Box 
-                bg="brand.500" 
-                color="white" 
-                py={6} 
-                px={8} 
-                borderRadius="lg" 
+              <Box
+                bg="brand.500"
+                color="white"
+                py={6}
+                px={8}
+                borderRadius="lg"
                 mb={8}
                 transform="rotate(-1deg)"
                 boxShadow="lg"
               >
-                <Heading 
-                  as="h2" 
-                  fontSize={{ base: "2xl", md: "3xl" }} 
-                  fontWeight="bold" 
+                <Heading
+                  as="h2"
+                  fontSize={{ base: "2xl", md: "3xl" }}
+                  fontWeight="bold"
                   textAlign="center"
                   letterSpacing="wider"
                 >
@@ -316,9 +316,9 @@ export default function TheFortress() {
                 </Heading>
               </Box>
 
-              <Text 
-                fontSize={{ base: "lg", md: "xl" }} 
-                color="gray.700" 
+              <Text
+                fontSize={{ base: "lg", md: "xl" }}
+                color="gray.700"
                 lineHeight="relaxed"
                 mb={8}
               >
@@ -328,7 +328,7 @@ export default function TheFortress() {
 
             {/* Right Content - Magazine Cover */}
             <Box flex={1} display="flex" justifyContent="center">
-              <Box 
+              <Box
                 position="relative"
                 bg="white"
                 borderRadius="xl"
@@ -350,52 +350,24 @@ export default function TheFortress() {
                   overflow="hidden"
                   position="relative"
                 >
-                  {/* Mock Magazine Cover */}
-                  <Box 
-                    position="absolute" 
-                    top={0} 
-                    left={0} 
-                    right={0} 
+                  {/* Magazine Cover */}
+                  <Box
+                    position="absolute"
+                    top={0}
+                    left={0}
+                    right={0}
                     bottom={0}
                     bgGradient="linear(to-b, white 0%, gray.100 100%)"
                   />
                   <Box position="relative" zIndex={2} textAlign="center" p={6}>
                     <Image
-                      src="/logo.png"
-                      alt="Rotary Logo"
-                      width="40px"
-                      height="auto"
-                      mx="auto"
-                      mb={4}
+                      src="/the-fortress.jpg"
+                      alt="The Fortress - Official Publication of Rotary Club of Zamboanga City West"
+                      width="100%"
+                      height="100%"
+                      objectFit="cover"
+                      borderRadius="md"
                     />
-                    <Text fontSize="2xl" fontWeight="bold" color="brand.500" mb={2}>
-                      THE FORTRESS
-                    </Text>
-                    <Text fontSize="lg" fontWeight="bold" color="brand.500" mb={4}>
-                      UNITE FOR GOOD
-                    </Text>
-                    <Box 
-                      bg="gray.300" 
-                      height="120px" 
-                      borderRadius="md" 
-                      mb={4}
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="center"
-                      overflow="hidden"
-                    >
-                      <Image
-                        src="/fort-pilar.png"
-                        alt="Fort Pilar - Historic Fortress of Zamboanga"
-                        width="100%"
-                        height="100%"
-                        objectFit="cover"
-                        borderRadius="md"
-                      />
-                    </Box>
-                    <Text fontSize="xs" color="gray.600">
-                      Official Publication of Rotary Club of Zamboanga City West
-                    </Text>
                   </Box>
                 </Box>
               </Box>
@@ -418,13 +390,13 @@ export default function TheFortress() {
 
           <SimpleGrid columns={{ base: 1, md: 2, lg: 2 }} gap={8}>
             {publicationIssues.map((issue) => (
-              <Box 
-                key={issue.id} 
-                bg="white" 
-                borderRadius="2xl" 
-                overflow="hidden" 
-                boxShadow="lg" 
-                border="1px solid" 
+              <Box
+                key={issue.id}
+                bg="white"
+                borderRadius="2xl"
+                overflow="hidden"
+                boxShadow="lg"
+                border="1px solid"
                 borderColor="gray.200"
                 _hover={{ transform: "translateY(-4px)", boxShadow: "xl" }}
                 transition="all 0.3s"
@@ -432,18 +404,18 @@ export default function TheFortress() {
                 <Box p={0}>
                   <Flex direction={{ base: "column", md: "row" }} h="full">
                     {/* Cover Image */}
-                    <Box 
-                      flex="0 0 200px" 
+                    <Box
+                      flex="0 0 200px"
                       position="relative"
                       minH={{ base: "200px", md: "auto" }}
                     >
                       {issue.isFeatured && (
-                        <Badge 
-                          position="absolute" 
-                          top={3} 
-                          left={3} 
+                        <Badge
+                          position="absolute"
+                          top={3}
+                          left={3}
                           zIndex={2}
-                          colorScheme="red" 
+                          colorScheme="red"
                           fontSize="xs"
                           px={2}
                           py={1}
@@ -687,7 +659,7 @@ export default function TheFortress() {
               ) : (
                 <Box flex={1} />
               )}
-              
+
               {/* Viewer Toggle */}
               {selectedPdfUrl && (
                 <Button
@@ -717,9 +689,9 @@ export default function TheFortress() {
                   <Text color="gray.500" fontSize="lg" mt={4}>
                     {error}
                   </Text>
-                  <Link 
-                    href={publicationIssues.find(issue => issue.issueNumber === selectedIssueTitle)?.file?.url || ""} 
-                    target="_blank" 
+                  <Link
+                    href={publicationIssues.find(issue => issue.issueNumber === selectedIssueTitle)?.file?.url || ""}
+                    target="_blank"
                     rel="noopener noreferrer"
                   >
                     <Button
@@ -786,9 +758,9 @@ export default function TheFortress() {
                         <Text color="gray.400" fontSize="sm" mt={2}>
                           This might be due to browser security restrictions
                         </Text>
-                        <Link 
-                          href={publicationIssues.find(issue => issue.issueNumber === selectedIssueTitle)?.file?.url || ""} 
-                          target="_blank" 
+                        <Link
+                          href={publicationIssues.find(issue => issue.issueNumber === selectedIssueTitle)?.file?.url || ""}
+                          target="_blank"
                           rel="noopener noreferrer"
                         >
                           <Button
@@ -850,9 +822,9 @@ export default function TheFortress() {
                   right={4}
                   zIndex={10}
                 >
-                  <Link 
-                    href={publicationIssues.find(issue => issue.issueNumber === selectedIssueTitle)?.file?.url || ""} 
-                    target="_blank" 
+                  <Link
+                    href={publicationIssues.find(issue => issue.issueNumber === selectedIssueTitle)?.file?.url || ""}
+                    target="_blank"
                     rel="noopener noreferrer"
                   >
                     <Button
