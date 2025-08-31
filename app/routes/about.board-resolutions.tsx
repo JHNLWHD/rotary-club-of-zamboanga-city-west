@@ -12,53 +12,69 @@ import {
 } from "@chakra-ui/react";
 import { ExternalLink, FileText, Calendar, Hash } from "lucide-react";
 import { PageHero } from "~/components/ui/PageHero";
+import { ComingSoon } from "~/components/ui/ComingSoon";
+import { useLoaderData } from "react-router";
+import type { LoaderFunctionArgs } from "react-router";
+import { fetchBoardResolutions } from "~/lib/contentful-api";
+import type { BoardResolution } from "~/lib/contentful-types";
 
-type BoardResolution = {
-  resolutionNumber: string;
-  title: string;
-  dateSigned: string;
-  googleDriveLink: string;
-};
-
-// Sample board resolutions data - replace with actual data from CMS or database
-const boardResolutions: BoardResolution[] = [
+// Fallback board resolutions data when CMS is unavailable
+const fallbackBoardResolutions: BoardResolution[] = [
   {
     resolutionNumber: "2024-001",
     title: "Approval of Annual Budget for Fiscal Year 2024-2025",
-    dateSigned: "July 15, 2024",
+    dateSigned: new Date("2024-07-15"),
     googleDriveLink: "https://drive.google.com/file/d/example1/view"
   },
   {
     resolutionNumber: "2024-002",
     title: "Establishment of Community Service Projects Committee",
-    dateSigned: "August 3, 2024",
+    dateSigned: new Date("2024-08-03"),
     googleDriveLink: "https://drive.google.com/file/d/example2/view"
   },
   {
     resolutionNumber: "2024-003",
     title: "Amendment to Club Bylaws Section 3.2",
-    dateSigned: "September 12, 2024",
+    dateSigned: new Date("2024-09-12"),
     googleDriveLink: "https://drive.google.com/file/d/example3/view"
   },
   {
     resolutionNumber: "2024-004",
     title: "Approval of Partnership with Local Schools for Literacy Program",
-    dateSigned: "October 8, 2024",
+    dateSigned: new Date("2024-10-08"),
     googleDriveLink: "https://drive.google.com/file/d/example4/view"
   },
   {
     resolutionNumber: "2024-005",
     title: "Establishment of Youth Leadership Development Fund",
-    dateSigned: "November 20, 2024",
+    dateSigned: new Date("2024-11-20"),
     googleDriveLink: "https://drive.google.com/file/d/example5/view"
   },
   {
     resolutionNumber: "2024-006",
     title: "Approval of International Service Project in Partnership with District 3860",
-    dateSigned: "December 5, 2024",
+    dateSigned: new Date("2024-12-05"),
     googleDriveLink: "https://drive.google.com/file/d/example6/view"
   }
 ];
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  try {
+    const boardResolutionsFromCms = await fetchBoardResolutions();
+    
+    // Use CMS data if available, otherwise return empty array to show ComingSoon
+    // Fallback data is only used in case of actual errors
+    return {
+      boardResolutions: boardResolutionsFromCms,
+    };
+  } catch (error) {
+    console.error('Error loading board resolutions:', error);
+    // Return fallback data only when there's an actual error
+    return {
+      boardResolutions: fallbackBoardResolutions,
+    };
+  }
+}
 
 export function meta() {
   return [
@@ -78,8 +94,18 @@ export function meta() {
 }
 
 export default function BoardResolutions() {
+  const { boardResolutions } = useLoaderData<typeof loader>();
+  
   const handleResolutionClick = (link: string) => {
     window.open(link, '_blank', 'noopener,noreferrer');
+  };
+
+  const formatDateForDisplay = (date: Date): string => {
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
   };
 
   return (
@@ -102,73 +128,83 @@ export default function BoardResolutions() {
             </Text>
           </Box>
 
-          {/* Board Resolutions Grid */}
-          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
-            {boardResolutions.map((resolution, index) => (
-              <Box 
-                key={index} 
-                bg="white"
-                border="1px solid"
-                borderColor="gray.200"
-                _hover={{ 
-                  transform: "translateY(-4px)",
-                  boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
-                  borderColor: "brand.300"
-                }}
-                transition="all 0.3s ease-out"
-                borderRadius="xl"
-                overflow="hidden"
-              >
-                <Box p={6} pb={3}>
-                  <Flex align="center" gap={3} mb={3}>
-                    <Icon as={Hash} color="brand.500" boxSize={5} />
-                    <Badge 
-                      colorScheme="brand" 
-                      variant="solid" 
-                      fontSize="sm"
-                      px={3}
-                      py={1}
-                      borderRadius="full"
-                    >
-                      {resolution.resolutionNumber}
-                    </Badge>
-                  </Flex>
-                  <Heading size="md" lineHeight="tight" color="gray.800">
-                    {resolution.title}
-                  </Heading>
-                </Box>
-                
-                <Box p={6} pt={0}>
-                  <Stack gap={4}>
-                    <Flex align="center" gap={2} color="gray.600">
-                      <Icon as={Calendar} boxSize={4} />
-                      <Text fontSize="sm" fontWeight="medium">
-                        {resolution.dateSigned}
-                      </Text>
+          {/* Board Resolutions Grid or Coming Soon */}
+          {boardResolutions.length > 0 ? (
+            <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
+              {boardResolutions.map((resolution, index) => (
+                <Box 
+                  key={index} 
+                  bg="white"
+                  border="1px solid"
+                  borderColor="gray.200"
+                  _hover={{ 
+                    transform: "translateY(-4px)",
+                    boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
+                    borderColor: "brand.300"
+                  }}
+                  transition="all 0.3s ease-out"
+                  borderRadius="xl"
+                  overflow="hidden"
+                >
+                  <Box p={6} pb={3}>
+                    <Flex align="center" gap={3} mb={3}>
+                      <Icon as={Hash} color="brand.500" boxSize={5} />
+                      <Badge 
+                        colorScheme="brand" 
+                        variant="solid" 
+                        fontSize="sm"
+                        px={3}
+                        py={1}
+                        borderRadius="full"
+                      >
+                        {resolution.resolutionNumber}
+                      </Badge>
                     </Flex>
-                    
-                    <Button
-                      colorScheme="brand"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleResolutionClick(resolution.googleDriveLink)}
-                      _hover={{
-                        bg: "brand.50",
-                        borderColor: "brand.400"
-                      }}
-                      w="full"
-                    >
-                      <Flex align="center" gap={2}>
-                        <ExternalLink size={16} />
-                        Learn More
-                        <FileText size={16} />
+                    <Heading size="md" lineHeight="tight" color="gray.800">
+                      {resolution.title}
+                    </Heading>
+                  </Box>
+                  
+                  <Box p={6} pt={0}>
+                    <Stack gap={4}>
+                      <Flex align="center" gap={2} color="gray.600">
+                        <Icon as={Calendar} boxSize={4} />
+                        <Text fontSize="sm" fontWeight="medium">
+                          {formatDateForDisplay(resolution.dateSigned)}
+                        </Text>
                       </Flex>
-                    </Button>
-                  </Stack>
+                      
+                      <Button
+                        colorScheme="brand"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleResolutionClick(resolution.googleDriveLink)}
+                        _hover={{
+                          bg: "brand.50",
+                          borderColor: "brand.400"
+                        }}
+                        w="full"
+                      >
+                        <Flex align="center" gap={2}>
+                          <ExternalLink size={16} />
+                          Learn More
+                          <FileText size={16} />
+                        </Flex>
+                      </Button>
+                    </Stack>
+                  </Box>
                 </Box>
-              </Box>
-            ))}
-          </SimpleGrid>
+              ))}
+            </SimpleGrid>
+          ) : (
+            <ComingSoon
+              title="📋 Board Resolutions Coming Soon"
+              message="Official board resolutions and governance documents will be available here soon. Check back for updates on our club's official decisions and policies."
+              colorScheme="brand"
+              size="lg"
+              maxWidth="600px"
+            />
+          )}
 
           {/* Additional Information */}
           <Box 

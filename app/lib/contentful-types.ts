@@ -173,3 +173,10 @@ export type InteractClubOfZamboangaCityWest = {
   clubLeadership: ClubLeadership[];
   isActive: boolean;
 };
+
+export type BoardResolution = {
+  resolutionNumber: string;
+  title: string;
+  dateSigned: Date;
+  googleDriveLink: string;
+};

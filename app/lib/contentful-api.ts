@@ -14,7 +14,8 @@ import type {
   FoundationGiving,
   RotaractClubOfSouthernCityColleges,
   InteractClubOfZamboangaCityWest,
-  ClubLeadership
+  ClubLeadership,
+  BoardResolution
 } from './contentful-types';
 import slugify from 'slugify';
 
@@ -32,6 +33,7 @@ const CONTENT_TYPES = {
   FOUNDATION_GIVING: 'foundationGiving',
   ROTARACT_CLUB_OF_SOUTHERN_CITY_COLLEGES: 'rotaractClubOfSouthernCityColleges',
   INTERACT_CLUB_OF_ZAMBOANGA_CITY_WEST: 'interactClubOfZamboangaCityWest',
+  BOARD_RESOLUTION: 'boardResolution',
 } as const;
 
 function extractContentfulEntryFields<T>(contentfulEntry: any): T {
@@ -583,5 +585,32 @@ export async function fetchInteractClubOfZamboangaCityWest(): Promise<InteractCl
   } catch (error) {
     console.error('Error fetching Interact Club of Zamboanga City West:', error);
     return null;
+  }
+}
+
+export async function fetchBoardResolutions(): Promise<BoardResolution[]> {
+  try {
+    const contentfulResponse = await contentfulClient.getEntries({
+      content_type: CONTENT_TYPES.BOARD_RESOLUTION,
+      order: ['-fields.dateSigned'],
+      limit: 100,
+    });
+
+    if (contentfulResponse.items.length === 0) {
+      return [];
+    }
+
+    const boardResolutions: BoardResolution[] = contentfulResponse.items.map((entry) => {
+      const fields = extractContentfulEntryFields<BoardResolution>(entry);
+      return {
+        ...fields,
+        dateSigned: new Date(fields.dateSigned),
+      };
+    });
+
+    return boardResolutions;
+  } catch (error) {
+    console.error('Error fetching board resolutions:', error);
+    return [];
   }
 } 
