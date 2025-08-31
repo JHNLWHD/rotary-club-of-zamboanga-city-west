@@ -15,6 +15,12 @@ const aboutUsLinks = [
   { label: "Contact Us", href: "/contact" },
 ];
 
+const newGenerationLinks = [
+  { label: "Rotaract Club of Zamboanga City West", href: "https://rotaract.rotaryzcwest.org", color: "gold.500", isExternal: true },
+  { label: "Rotaract Club of Southern City Colleges", href: "/new-generation/rotaract-southern-city-colleges", color: "cranberry.500" },
+  { label: "Interact Club of Zamboanga City West", href: "/new-generation/interact-zamboanga-city-west", color: "interact.500" },
+];
+
 const mainNavLinks = [
   { label: "Home", href: "/" },
   { label: "The Fortress", href: "/the-fortress" },
@@ -83,6 +89,7 @@ function HamburgerIcon({ color = "currentColor" }: { color?: string }) {
 export function GlobalLayout({ children, transparentHeader = false, contactData }: { children: ReactNode, transparentHeader?: boolean, contactData?: ContactData }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [aboutUsMenuOpen, setAboutUsMenuOpen] = useState(false);
+  const [newGenerationMenuOpen, setNewGenerationMenuOpen] = useState(false);
 
   const navTextColor = transparentHeader ? "white" : "gray.700";
   const navTextShadow = transparentHeader ? "0 1px 3px rgba(0,0,0,0.7)" : undefined;
@@ -231,6 +238,73 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
               </Menu.Root>
             </Box>
 
+            {/* New Generation Links */}
+            <Box
+              position="relative"
+              onClick={() => setNewGenerationMenuOpen(!newGenerationMenuOpen)}
+            >
+              <Menu.Root open={newGenerationMenuOpen} onOpenChange={(details) => setNewGenerationMenuOpen(details.open)}>
+                <Menu.Trigger
+                  asChild
+                >
+                  <Button
+                    variant="ghost"
+                    fontWeight="medium"
+                    color={navTextColor}
+                    fontSize="sm"
+                    px={2}
+                    py={2}
+                    borderRadius="md"
+                    _hover={{ color: navHoverColor, bg: navHoverBg }}
+                    transition="all 0.2s"
+                    minW="auto"
+                    textShadow={navTextShadow}
+                  >
+                    New Generation <ChevronDown size={14} style={{ marginLeft: '4px' }} />
+                  </Button>
+                </Menu.Trigger>
+                <Menu.Content
+                  bg="white"
+                  border="1px solid"
+                  borderColor="gray.200"
+                  boxShadow="lg"
+                  borderRadius="lg"
+                  py={2}
+                  minW="220px"
+                  position="absolute"
+                  top="100%"
+                  left={0}
+                  mt={1}
+                  zIndex={50}
+                >
+                  {newGenerationLinks.map((link) => (
+                    <Menu.Item
+                      key={link.href}
+                      value={link.href}
+                      asChild
+                    >
+                      <Link 
+                        href={link.href} 
+                        px={4}
+                        py={3}
+                        fontSize="sm"
+                        fontWeight="medium"
+                        color={link.color}
+                        _hover={{ bg: "gray.50", color: link.color }}
+                        _focus={{ bg: "gray.50", color: link.color }}
+                        transition="all 0.2s"
+                        textDecoration="none"
+                        display="block"
+                        {...(link.isExternal && { target: "_blank", rel: "noopener noreferrer" })}
+                      >
+                        {link.label}
+                      </Link>
+                    </Menu.Item>
+                  ))}
+                </Menu.Content>
+              </Menu.Root>
+            </Box>
+
             {/* Other Nav Links */}
             {mainNavLinks.slice(1).map((link) => (
               <Link
@@ -338,6 +412,28 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
               ))}
             </Box>
             
+            {/* New Generation Links */}
+            <Box mb={4}>
+              <Text fontWeight="bold" color="white" mb={2} fontSize="sm" textTransform="uppercase" letterSpacing="wider">
+                New Generation
+              </Text>
+              {newGenerationLinks.map((link) => (
+                <Box key={link.href} mb={2} ml={2}>
+                  <Link 
+                    href={link.href} 
+                    fontWeight="medium" 
+                    color={link.color} 
+                    fontSize="sm"
+                    _hover={{ color: "gold.400" }} 
+                    onClick={() => setMobileMenuOpen(false)}
+                    {...(link.isExternal && { target: "_blank", rel: "noopener noreferrer" })}
+                  >
+                    {link.label}
+                  </Link>
+                </Box>
+              ))}
+            </Box>
+
             {/* Other Nav Links */}
             {mainNavLinks.map((link) => (
               <Box key={link.href} mb={2}>
@@ -475,6 +571,28 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
                     </Link>
                   ))}
                   
+                  {/* New Generation Links */}
+                  <Box mt={4}>
+                    <Text fontSize="xs" fontWeight="bold" color="gray.300" textTransform="uppercase" letterSpacing="wider">
+                      New Generation
+                    </Text>
+                    {newGenerationLinks.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        color="gray.300"
+                        fontSize="sm"
+                        display="block"
+                        mb={3}
+                        _hover={{ color: "brand.400", textDecoration: "none" }}
+                        transition="color 0.2s"
+                        {...(link.isExternal && { target: "_blank", rel: "noopener noreferrer" })}
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                  </Box>
+
                   {/* Main Nav Links */}
                   <Box mt={4}>
                     {mainNavLinks.map((link) => (

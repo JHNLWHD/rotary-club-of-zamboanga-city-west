@@ -40,6 +40,18 @@ const config = defineConfig({
           800: { value: "#800c40" },
           900: { value: "#640936" },
         },
+        interact: {
+          50: { value: "#eff6ff" },
+          100: { value: "#dbeafe" },
+          200: { value: "#bfdbfe" },
+          300: { value: "#93c5fd" },
+          400: { value: "#60a5fa" },
+          500: { value: "#3b82f6" }, // Primary Light Blue
+          600: { value: "#2563eb" },
+          700: { value: "#1d4ed8" },
+          800: { value: "#1e40af" },
+          900: { value: "#1e3a8a" },
+        },
         gray: {
           50: { value: "#F8F9FA" }, // light gray
           200: { value: "#e9ecef" },

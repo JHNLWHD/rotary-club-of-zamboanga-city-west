@@ -154,3 +154,15 @@ export type HomepageContact = {
   contactInfo: ContactInfo;
   isActive: boolean;
 };
+
+export type RotaractClubOfSouthernCityColleges = {
+  calendarOfActivitiesLink: string;
+  clubLeadership: Officer[];
+  isActive: boolean;
+};
+
+export type InteractClubOfZamboangaCityWest = {
+  calendarOfActivitiesLink: string;
+  clubLeadership: Officer[];
+  isActive: boolean;
+};

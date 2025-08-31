@@ -14,5 +14,7 @@ export default [
   route("service-projects/:slug", "routes/service-projects.$slug.tsx"),
   route("donate", "routes/donate.tsx"),
   route("thank-you", "routes/thank-you.tsx"),
+  route("new-generation/rotaract-southern-city-colleges", "routes/new-generation.rotaract-southern-city-colleges.tsx"),
+  route("new-generation/interact-zamboanga-city-west", "routes/new-generation.interact-zamboanga-city-west.tsx"),
   route("*", "routes/$.tsx"),
 ] satisfies RouteConfig;

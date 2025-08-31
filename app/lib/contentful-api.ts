@@ -11,7 +11,9 @@ import type {
   HomepageContact,
   Officer,
   RotaryAnns,
-  FoundationGiving
+  FoundationGiving,
+  RotaractClubOfSouthernCityColleges,
+  InteractClubOfZamboangaCityWest
 } from './contentful-types';
 import slugify from 'slugify';
 
@@ -27,6 +29,8 @@ const CONTENT_TYPES = {
   STAT_ITEM: 'statItem',
   SERVICE_AREA: 'serviceArea',
   FOUNDATION_GIVING: 'foundationGiving',
+  ROTARACT_CLUB_OF_SOUTHERN_CITY_COLLEGES: 'rotaractClubOfSouthernCityColleges',
+  INTERACT_CLUB_OF_ZAMBOANGA_CITY_WEST: 'interactClubOfZamboangaCityWest',
 } as const;
 
 function extractContentfulEntryFields<T>(contentfulEntry: any): T {
@@ -509,6 +513,76 @@ export async function fetchAllHomepageSections() {
     return result;
   } catch (error) {
     console.error('Error fetching all homepage sections:', error);
+    return null;
+  }
+}
+
+export async function fetchRotaractClubOfSouthernCityColleges(): Promise<RotaractClubOfSouthernCityColleges | null> {
+  try {
+    const contentfulResponse = await contentfulClient.getEntries({
+      content_type: CONTENT_TYPES.ROTARACT_CLUB_OF_SOUTHERN_CITY_COLLEGES,
+      'fields.isActive': true,
+      include: 2,
+      limit: 1,
+    });
+
+    if (contentfulResponse.items.length === 0) {
+      return null;
+    }
+
+    const rotaractEntry = contentfulResponse.items[0];
+    const rotaractFields = extractContentfulEntryFields<RotaractClubOfSouthernCityColleges>(rotaractEntry);
+
+    // Process the club leadership references
+    const processedClubLeadership: Officer[] = rotaractFields.clubLeadership.map((leaderEntry) => {
+      const leaderFields = extractContentfulEntryFields<Officer>(leaderEntry);
+      return {
+        ...leaderFields,
+        photo: buildContentfulAssetMetadata(leaderFields.photo),
+      };
+    });
+
+    return {
+      ...rotaractFields,
+      clubLeadership: processedClubLeadership,
+    };
+  } catch (error) {
+    console.error('Error fetching Rotaract Club of Southern City Colleges:', error);
+    return null;
+  }
+}
+
+export async function fetchInteractClubOfZamboangaCityWest(): Promise<InteractClubOfZamboangaCityWest | null> {
+  try {
+    const contentfulResponse = await contentfulClient.getEntries({
+      content_type: CONTENT_TYPES.INTERACT_CLUB_OF_ZAMBOANGA_CITY_WEST,
+      'fields.isActive': true,
+      include: 2,
+      limit: 1,
+    });
+
+    if (contentfulResponse.items.length === 0) {
+      return null;
+    }
+
+    const interactEntry = contentfulResponse.items[0];
+    const interactFields = extractContentfulEntryFields<InteractClubOfZamboangaCityWest>(interactEntry);
+
+    // Process the club leadership references
+    const processedClubLeadership: Officer[] = interactFields.clubLeadership.map((leaderEntry) => {
+      const leaderFields = extractContentfulEntryFields<Officer>(leaderEntry);
+      return {
+        ...leaderFields,
+        photo: buildContentfulAssetMetadata(leaderFields.photo),
+      };
+    });
+
+    return {
+      ...interactFields,
+      clubLeadership: processedClubLeadership,
+    };
+  } catch (error) {
+    console.error('Error fetching Interact Club of Zamboanga City West:', error);
     return null;
   }
 } 
