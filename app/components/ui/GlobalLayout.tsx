@@ -34,21 +34,21 @@ type ContactData = {
 
 function TopBar({ transparent, contactData }: { transparent: boolean; contactData?: ContactData }) {
   return (
-    <Flex 
-      bg={transparent ? "blackAlpha.300" : "white"} 
-      color={transparent ? "white" : "gray.700"} 
-      fontSize="xs" 
-      px={{ base: 2, md: 12 }} 
+    <Flex
+      bg={transparent ? "blackAlpha.300" : "white"}
+      color={transparent ? "white" : "gray.700"}
+      fontSize="xs"
+      px={{ base: 2, md: 12 }}
       py={2}
-      align="center" 
+      align="center"
 
       justify="space-between"
       display={{ base: "none", md: "flex" }}
     >
       <Flex gap={2} align="center">
-        <Link 
-          href={contactData?.contactInfo?.facebookUrl || "https://www.facebook.com/RCZCwest"} 
-          target="_blank" 
+        <Link
+          href={contactData?.contactInfo?.facebookUrl || "https://www.facebook.com/RCZCwest"}
+          target="_blank"
           rel="noopener noreferrer"
         >
           <Facebook size={18} color={transparent ? "white" : "#6C757D"} />
@@ -103,54 +103,47 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
 
   return (
     <Flex direction="column" minHeight="100vh" position="relative">
-      <Box 
-        position="absolute" 
-        top={0} 
-        left={0} 
-        right={0} 
+      <Box
+        position="absolute"
+        top={0}
+        left={0}
+        right={0}
         zIndex={21}
       >
         <TopBar transparent={transparentHeader} contactData={contactData} />
       </Box>
-      <Box 
-        as="header" 
+      <Box
+        as="header"
         bg={transparentHeader ? "transparent" : "white"}
-        position="absolute" 
+        position="absolute"
         top={{ base: "0px", md: "32px" }}
-        left={0} 
-        right={0} 
-        zIndex={20} 
+        left={0}
+        right={0}
+        zIndex={20}
         borderBottom={transparentHeader ? "none" : "1px solid #E2E8F0"}
       >
         <Flex align="center" px={{ base: 4, md: 12 }} height={20} gap={4}>
-          {/* Logo and Club Name (left) */}
-          <Flex align="center" gap={2} minW="0" flex="0 0 auto" maxW={{ base: "180px", md: "280px" }}>
+          {/* Logo (left) */}
+          <Flex align="center" gap={3} minW="0" flex="0 0 auto">
             <Image
               src="/logo.png"
               alt="Rotary Club of Zamboanga City West Logo"
-              width={{ base: '80px', md: '120px' }}
+              width={{ base: "160px", md: "160px" }}
               height="auto"
               objectFit="contain"
               flexShrink={0}
             />
-            <Box 
-              fontWeight="bold" 
-              fontSize={{ base: "xs", md: "sm" }} 
-              color={clubNameColor}
-              overflow="hidden"
-              display="flex" 
-              alignItems="center" 
-              height="100%"
-              lineHeight={1.2}
-              textShadow={clubNameShadow}
+            <Text
+              color={transparentHeader ? "white" : "gray.700"}
+              fontSize={{ base: "sm", md: "md" }}
+              fontWeight="semibold"
+              display={{ base: "none", md: "block" }}
+              textShadow={transparentHeader ? "0 1px 3px rgba(0,0,0,0.7)" : undefined}
             >
-              <Box>
-                <Box>Rotary Club of</Box>
-                <Box>Zamboanga City West</Box>
-              </Box>
-            </Box>
+              | Service Above Self
+            </Text>
           </Flex>
-          
+
           {/* Nav Links (center) */}
           <Flex align="center" gap={3} flex={1} justify="center" minW={0} display={{ base: "none", lg: "flex" }}>
             {/* Home Link */}
@@ -171,7 +164,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
             >
               Home
             </Link>
-            
+
             {/* About Us Dropdown */}
             <Box
               position="relative"
@@ -217,8 +210,8 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
                       value={link.href}
                       asChild
                     >
-                      <Link 
-                        href={link.href} 
+                      <Link
+                        href={link.href}
                         px={4}
                         py={3}
                         fontSize="sm"
@@ -283,8 +276,8 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
                       value={link.href}
                       asChild
                     >
-                      <Link 
-                        href={link.href} 
+                      <Link
+                        href={link.href}
                         px={4}
                         py={3}
                         fontSize="sm"
@@ -327,12 +320,12 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
               </Link>
             ))}
           </Flex>
-          
+
           {/* Right CTAs */}
           <Flex align="center" gap={2} flex="0 0 auto" display={{ base: "none", lg: "flex" }}>
-            <Link 
-              href="https://rotaract.rotaryzcwest.org/?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=rotaract_referral" 
-              target="_blank" 
+            <Link
+              href="https://rotaract.rotaryzcwest.org/?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=rotaract_referral"
+              target="_blank"
               rel="noopener noreferrer"
               _hover={{ transform: "scale(1.02)", textDecoration: "none" }}
               transition="all 0.2s"
@@ -345,14 +338,14 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
                 </Box>
               </Flex>
             </Link>
-            <Link 
-              href="https://www.rotary.org/en/get-involved/ways-to-give?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=foundation_giving" 
-              target="_blank" 
+            <Link
+              href="https://www.rotary.org/en/get-involved/ways-to-give?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=foundation_giving"
+              target="_blank"
               rel="noopener noreferrer"
-              bg="brand.500" 
-              color="white" 
-              _hover={{ bg: "brand.600", transform: "translateY(-1px)" }} 
-              py={3} 
+              bg="brand.500"
+              color="white"
+              _hover={{ bg: "brand.600", transform: "translateY(-1px)" }}
+              py={3}
               px={7}
               borderRadius="md"
               fontSize="sm"
@@ -383,12 +376,12 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
         </Flex>
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <Box 
-            bg="blackAlpha.900" 
+          <Box
+            bg="blackAlpha.900"
             backdropFilter="blur(10px)"
-            px={6} 
-            py={4} 
-            display={{ md: "none" }} 
+            px={6}
+            py={4}
+            display={{ md: "none" }}
             borderTop="none"
           >
             {/* About Us Section */}
@@ -398,12 +391,12 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
               </Text>
               {aboutUsLinks.map((link) => (
                 <Box key={link.href} mb={2} ml={2}>
-                  <Link 
-                    href={link.href} 
-                    fontWeight="medium" 
-                    color="gray.300" 
+                  <Link
+                    href={link.href}
+                    fontWeight="medium"
+                    color="gray.300"
                     fontSize="sm"
-                    _hover={{ color: "gold.400" }} 
+                    _hover={{ color: "gold.400" }}
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     {link.label}
@@ -411,7 +404,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
                 </Box>
               ))}
             </Box>
-            
+
             {/* New Generation Links */}
             <Box mb={4}>
               <Text fontWeight="bold" color="white" mb={2} fontSize="sm" textTransform="uppercase" letterSpacing="wider">
@@ -419,12 +412,12 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
               </Text>
               {newGenerationLinks.map((link) => (
                 <Box key={link.href} mb={2} ml={2}>
-                  <Link 
-                    href={link.href} 
-                    fontWeight="medium" 
-                    color={link.color} 
+                  <Link
+                    href={link.href}
+                    fontWeight="medium"
+                    color={link.color}
                     fontSize="sm"
-                    _hover={{ color: "gold.400" }} 
+                    _hover={{ color: "gold.400" }}
                     onClick={() => setMobileMenuOpen(false)}
                     {...(link.isExternal && { target: "_blank", rel: "noopener noreferrer" })}
                   >
@@ -437,21 +430,21 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
             {/* Other Nav Links */}
             {mainNavLinks.map((link) => (
               <Box key={link.href} mb={2}>
-                <Link 
-                  href={link.href} 
-                  fontWeight="medium" 
-                  color="white" 
-                  _hover={{ color: "gold.400" }} 
+                <Link
+                  href={link.href}
+                  fontWeight="medium"
+                  color="white"
+                  _hover={{ color: "gold.400" }}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {link.label}
                 </Link>
               </Box>
             ))}
-            
-            <Link 
-              href="https://rotaract.rotaryzcwest.org/?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=rotaract_referral" 
-              target="_blank" 
+
+            <Link
+              href="https://rotaract.rotaryzcwest.org/?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=rotaract_referral"
+              target="_blank"
               rel="noopener noreferrer"
               _hover={{ transform: "scale(1.02)", textDecoration: "none" }}
               transition="all 0.2s"
@@ -466,15 +459,15 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
                 </Box>
               </Flex>
             </Link>
-            <Link 
-              href="https://www.rotary.org/en/get-involved/ways-to-give?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=foundation_giving" 
-              target="_blank" 
+            <Link
+              href="https://www.rotary.org/en/get-involved/ways-to-give?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=foundation_giving"
+              target="_blank"
               rel="noopener noreferrer"
-              bg="brand.500" 
-              color="white" 
-              _hover={{ bg: "brand.600", transform: "translateY(-1px)" }} 
-              w="full" 
-              mt={2} 
+              bg="brand.500"
+              color="white"
+              _hover={{ bg: "brand.600", transform: "translateY(-1px)" }}
+              w="full"
+              mt={2}
               py={3}
               px={7}
               borderRadius="md"
@@ -504,15 +497,23 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
             <Flex direction={{ base: "column", lg: "row" }} gap={12}>
               {/* Club Info Section */}
               <Box flex={2}>
-                <Flex align="center" gap={3} mb={6}>
+                <Flex direction="column" align="start" mb={6}>
                   <Image
                     src="/logo.png"
                     alt="Rotary Club Logo"
-                    width="60px"
-                    height="auto"
+                    width="100%"
+                    height={{ base: "120px", md: "150px" }}
                     objectFit="contain"
+                    objectPosition="center"
+                    flexShrink={0}
+                    bg="white"
+                    borderRadius="lg"
+                    mb={4}
+                    onError={(e) => {
+                      e.currentTarget.src = "/logo.png";
+                    }}
                   />
-                  <Box>
+                  <Box textAlign="left">
                     <Text fontSize="xl" fontWeight="bold" color="white" lineHeight="shorter">
                       Rotary Club of Zamboanga City
                     </Text>
@@ -524,16 +525,16 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
                 <Text color="gray.300" lineHeight="relaxed" mb={6} maxW="400px">
                   Dedicated to serving our community through meaningful projects that create lasting positive change in Zamboanga City and beyond.
                 </Text>
-                
+
                 {/* Social Media */}
                 <Box>
                   <Text fontSize="sm" fontWeight="bold" color="white" mb={3} textTransform="uppercase" letterSpacing="wider">
                     Follow Us
                   </Text>
                   <Flex gap={4}>
-                    <Link 
-                      href={contactData?.contactInfo?.facebookUrl || "https://www.facebook.com/RCZCwest"} 
-                      target="_blank" 
+                    <Link
+                      href={contactData?.contactInfo?.facebookUrl || "https://www.facebook.com/RCZCwest"}
+                      target="_blank"
                       rel="noopener noreferrer"
                       p={2}
                       borderRadius="lg"
@@ -570,7 +571,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
                       {link.label}
                     </Link>
                   ))}
-                  
+
                   {/* New Generation Links */}
                   <Box mt={4}>
                     <Text fontSize="xs" fontWeight="bold" color="gray.300" textTransform="uppercase" letterSpacing="wider">
