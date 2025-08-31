@@ -7,14 +7,13 @@ import {
   useLocation,
   useLoaderData,
 } from "react-router";
-import { PostHogProvider } from 'posthog-js/react';
 
 import type { Route } from "./+types/root";
 import stylesheet from "./app.css?url";
 import { Provider } from "./components/ui/Provider";
+import { PHProvider } from "./components/ui/PostHogProvider";
 import { GlobalLayout } from "./components/ui/GlobalLayout";
 import { fetchHomepageContactSection } from "./lib/contentful-api";
-import { initializePostHog, posthog } from "./lib/posthog";
 import type { ContactInfo, MeetingInfo } from "./lib/contentful-types";
 import { Toaster } from "sonner";
 
@@ -109,19 +108,14 @@ export default function App() {
   const { contactData } = useLoaderData() as LoaderData;
   const isIndexPage = location.pathname === "/";
 
-  // Initialize PostHog on the client side
-  if (typeof window !== 'undefined') {
-    initializePostHog();
-  }
-
   return (
     <Provider>
-      <PostHogProvider client={posthog}>
+      <PHProvider>
         <GlobalLayout transparentHeader={isIndexPage} contactData={contactData}>
             <Outlet />
         </GlobalLayout>
         <Toaster position="top-right" richColors />
-      </PostHogProvider>
+      </PHProvider>
     </Provider>
   );
 }

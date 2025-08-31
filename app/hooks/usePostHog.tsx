@@ -1,7 +1,7 @@
-// Re-export PostHog React hooks for easier imports
+// Re-export the official PostHog React hook
 export { usePostHog } from 'posthog-js/react';
 
-// You can also create custom wrapper hooks if needed
+// You can also create custom convenience hooks if needed
 import { usePostHog as usePostHogOriginal } from 'posthog-js/react';
 import { useCallback } from 'react';
 
