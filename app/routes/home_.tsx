@@ -2,6 +2,7 @@ import { Box, Text } from "@chakra-ui/react";
 import { useLoaderData } from "react-router";
 import { HeroSection } from "../components/homepage/HeroSection";
 import { StatsSection } from "../components/homepage/StatsSection";
+import { VisionSection } from "../components/homepage/VisionSection";
 import { ServiceAreasSection } from "../components/homepage/ServiceAreasSection";
 import { ProjectHighlightsSection } from "../components/homepage/ProjectHighlightsSection";
 import { EventsSection } from "../components/homepage/EventsSection";
@@ -204,6 +205,8 @@ export default function Homepage() {
       />
 
       <StatsSection stats={statisticsSectionData} />
+
+      <VisionSection />
 
       <ServiceAreasSection serviceAreas={serviceAreasSectionData} />
 
