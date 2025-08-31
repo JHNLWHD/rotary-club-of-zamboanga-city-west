@@ -137,26 +137,27 @@ export default function ProjectDetail() {
   const formattedDate = new Date(project.date).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
+    timeZone: 'UTC'
   });
 
 
-  // Share content data
+  // Share content data - use consistent URL generation
   const shareContent = {
     title: project.title,
     description: project.shortDescription,
     date: project.date,
     venue: project.location,
-    shareableLink: `${typeof window !== 'undefined' ? window.location.origin : 'https://rotaryzcwest.org'}${project.slug}`,
+    shareableLink: `https://rotaryzcwest.org${project.slug}`,
   };
 
-  // Lightbox slides
-  const lightboxSlides = project.gallery?.map((image, index) => ({
+  // Lightbox slides - ensure consistent array processing
+  const lightboxSlides = (project.gallery || []).map((image, index) => ({
     src: image?.url || "/logo.png",
     alt: image?.title || `${project.title} - Photo ${index + 1}`,
     title: image?.title || `${project.title} - Photo ${index + 1}`,
     description: image?.description || "",
-  })) || [];
+  }));
 
   return (
     <Box bg="gray.50" minH="100vh" pt={{ base: 24, md: 28 }}>
