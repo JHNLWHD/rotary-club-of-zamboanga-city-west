@@ -23,12 +23,14 @@ export const meta: MetaFunction = () => {
       content: "Building tomorrow's leaders today at the Interact Club of Zamboanga City West. Inspiring high school students through leadership development, community service, and innovation." 
     },
     { property: "og:type", content: "website" },
+    { property: "og:image", content: "" },
     { name: "twitter:card", content: "summary" },
     { name: "twitter:title", content: "Interact Club of Zamboanga City West" },
     { 
       name: "twitter:description", 
       content: "Building tomorrow's leaders today at the Interact Club of Zamboanga City West. Inspiring high school students through leadership development, community service, and innovation." 
     },
+    { name: "twitter:image", content: "" },
     { name: "robots", content: "index, follow" },
     { name: "author", content: "Rotary Club of Zamboanga City West" },
   ];

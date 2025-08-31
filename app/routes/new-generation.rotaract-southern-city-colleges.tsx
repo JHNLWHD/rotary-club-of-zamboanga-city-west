@@ -23,12 +23,14 @@ export const meta: MetaFunction = () => {
       content: "Empowering young leaders through service at the Rotaract Club of Southern City Colleges. Join us in developing leadership skills, community service, and international understanding." 
     },
     { property: "og:type", content: "website" },
+    { property: "og:image", content: "" },
     { name: "twitter:card", content: "summary" },
     { name: "twitter:title", content: "Rotaract Club of Southern City Colleges" },
     { 
       name: "twitter:description", 
       content: "Empowering young leaders through service at the Rotaract Club of Southern City Colleges. Join us in developing leadership skills, community service, and international understanding." 
     },
+    { name: "twitter:image", content: "" },
     { name: "robots", content: "index, follow" },
     { name: "author", content: "Rotary Club of Zamboanga City West" },
   ];
