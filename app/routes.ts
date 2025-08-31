@@ -16,5 +16,7 @@ export default [
   route("thank-you", "routes/thank-you.tsx"),
   route("new-generation/rotaract-southern-city-colleges", "routes/new-generation.rotaract-southern-city-colleges.tsx"),
   route("new-generation/interact-zamboanga-city-west", "routes/new-generation.interact-zamboanga-city-west.tsx"),
+  route("sitemap.xml", "routes/sitemap[.]xml.tsx"),
+  route("robots.txt", "routes/robots[.]txt.tsx"),
   route("*", "routes/$.tsx"),
 ] satisfies RouteConfig;
