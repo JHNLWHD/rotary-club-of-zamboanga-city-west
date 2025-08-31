@@ -128,7 +128,15 @@ export default function InteractSCCPage() {
                   {interactData.clubLeadership.map((officer, index) => (
                     <OfficerCard
                       key={index}
-                      officer={officer}
+                      officer={{
+                        name: officer.name,
+                        role: officer.position,
+                        designation: officer.positionDescription,
+                        photo: officer.photo,
+                        type: "Executive",
+                        isActive: true,
+                        isFeatured: false,
+                      }}
                       colorScheme="interact"
                     />
                   ))}

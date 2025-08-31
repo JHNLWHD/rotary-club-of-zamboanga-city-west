@@ -82,6 +82,13 @@ export type Officer = {
   isFeatured: boolean;
 };
 
+export type ClubLeadership = {
+  name: string;
+  position: string;
+  positionDescription: string;
+  photo?: ProcessedAsset;
+};
+
 export type RotaryAnns = {
   name: string;
   role: string;
@@ -157,12 +164,12 @@ export type HomepageContact = {
 
 export type RotaractClubOfSouthernCityColleges = {
   calendarOfActivitiesLink: string;
-  clubLeadership: Officer[];
+  clubLeadership: ClubLeadership[];
   isActive: boolean;
 };
 
 export type InteractClubOfZamboangaCityWest = {
   calendarOfActivitiesLink: string;
-  clubLeadership: Officer[];
+  clubLeadership: ClubLeadership[];
   isActive: boolean;
 };

@@ -13,7 +13,8 @@ import type {
   RotaryAnns,
   FoundationGiving,
   RotaractClubOfSouthernCityColleges,
-  InteractClubOfZamboangaCityWest
+  InteractClubOfZamboangaCityWest,
+  ClubLeadership
 } from './contentful-types';
 import slugify from 'slugify';
 
@@ -533,8 +534,8 @@ export async function fetchRotaractClubOfSouthernCityColleges(): Promise<Rotarac
     const rotaractFields = extractContentfulEntryFields<RotaractClubOfSouthernCityColleges>(rotaractEntry);
 
     // Process the club leadership references
-    const processedClubLeadership: Officer[] = rotaractFields.clubLeadership.map((leaderEntry) => {
-      const leaderFields = extractContentfulEntryFields<Officer>(leaderEntry);
+    const processedClubLeadership: ClubLeadership[] = rotaractFields.clubLeadership.map((leaderEntry) => {
+      const leaderFields = extractContentfulEntryFields<ClubLeadership>(leaderEntry);
       return {
         ...leaderFields,
         photo: buildContentfulAssetMetadata(leaderFields.photo),
@@ -567,8 +568,8 @@ export async function fetchInteractClubOfZamboangaCityWest(): Promise<InteractCl
     const interactFields = extractContentfulEntryFields<InteractClubOfZamboangaCityWest>(interactEntry);
 
     // Process the club leadership references
-    const processedClubLeadership: Officer[] = interactFields.clubLeadership.map((leaderEntry) => {
-      const leaderFields = extractContentfulEntryFields<Officer>(leaderEntry);
+    const processedClubLeadership: ClubLeadership[] = interactFields.clubLeadership.map((leaderEntry) => {
+      const leaderFields = extractContentfulEntryFields<ClubLeadership>(leaderEntry);
       return {
         ...leaderFields,
         photo: buildContentfulAssetMetadata(leaderFields.photo),
