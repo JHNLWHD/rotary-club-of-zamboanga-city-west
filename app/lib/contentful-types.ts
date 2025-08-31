@@ -182,3 +182,12 @@ export type BoardResolution = {
   dateSigned: Date;
   googleDriveLink: string;
 };
+
+export type FortressIssue = {
+  id?: string;
+  issueNumber: string;
+  month: string;
+  rotaryYear: string;
+  file: ProcessedAsset;
+  isFeatured: boolean;
+};

@@ -15,7 +15,8 @@ import type {
   RotaractClubOfSouthernCityColleges,
   InteractClubOfZamboangaCityWest,
   ClubLeadership,
-  BoardResolution
+  BoardResolution,
+  FortressIssue
 } from './contentful-types';
 import slugify from 'slugify';
 
@@ -34,6 +35,7 @@ const CONTENT_TYPES = {
   ROTARACT_CLUB_OF_SOUTHERN_CITY_COLLEGES: 'rotaractClubOfSouthernCityColleges',
   INTERACT_CLUB_OF_ZAMBOANGA_CITY_WEST: 'interactClubOfZamboangaCityWest',
   BOARD_RESOLUTION: 'boardResolution',
+  THE_FORTRESS: 'theFortress',
 } as const;
 
 function extractContentfulEntryFields<T>(contentfulEntry: any): T {
@@ -611,6 +613,34 @@ export async function fetchBoardResolutions(): Promise<BoardResolution[]> {
     return boardResolutions;
   } catch (error) {
     console.error('Error fetching board resolutions:', error);
+    return [];
+  }
+}
+
+export async function fetchTheFortress(): Promise<FortressIssue[]> {
+  try {
+    const contentfulResponse = await contentfulClient.getEntries({
+      content_type: CONTENT_TYPES.THE_FORTRESS,
+      order: ['-fields.isFeatured', '-fields.rotaryYear', '-fields.month'],
+      limit: 100,
+    });
+
+    if (contentfulResponse.items.length === 0) {
+      return [];
+    }
+
+    const processedIssues: FortressIssue[] = contentfulResponse.items.map((issueEntry: any) => {
+      const issueFields = extractContentfulEntryFields<FortressIssue>(issueEntry);
+      return {
+        ...issueFields,
+        id: issueFields.id || issueEntry.sys?.id || `fortress-issue-${Date.now()}`,
+        file: buildContentfulAssetMetadata(issueFields.file),
+      };
+    });
+
+    return processedIssues;
+  } catch (error) {
+    console.error('Error fetching The Fortress:', error);
     return [];
   }
 } 
