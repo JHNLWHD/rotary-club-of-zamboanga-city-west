@@ -521,7 +521,6 @@ export async function fetchRotaractClubOfSouthernCityColleges(): Promise<Rotarac
   try {
     const contentfulResponse = await contentfulClient.getEntries({
       content_type: CONTENT_TYPES.ROTARACT_CLUB_OF_SOUTHERN_CITY_COLLEGES,
-      'fields.isActive': true,
       include: 2,
       limit: 1,
     });
@@ -556,7 +555,6 @@ export async function fetchInteractClubOfZamboangaCityWest(): Promise<InteractCl
   try {
     const contentfulResponse = await contentfulClient.getEntries({
       content_type: CONTENT_TYPES.INTERACT_CLUB_OF_ZAMBOANGA_CITY_WEST,
-      'fields.isActive': true,
       include: 2,
       limit: 1,
     });
