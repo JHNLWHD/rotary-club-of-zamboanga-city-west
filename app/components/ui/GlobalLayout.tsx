@@ -126,7 +126,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
           {/* Logo (left) */}
           <Flex align="center" gap={3} minW="0" flex="0 0 auto">
             <Image
-              src="/logo.png"
+              src={transparentHeader ? "/logo-white.png" : "/logo.png"}
               alt="Rotary Club of Zamboanga City West Logo"
               width={{ base: "160px", md: "160px" }}
               height="auto"
@@ -140,7 +140,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
               display={{ base: "none", md: "block" }}
               textShadow={transparentHeader ? "0 1px 3px rgba(0,0,0,0.7)" : undefined}
             >
-              | Service Above Self
+              | The Great West
             </Text>
           </Flex>
 
