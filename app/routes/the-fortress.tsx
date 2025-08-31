@@ -404,50 +404,6 @@ export default function TheFortress() {
         </Container>
       </Box>
 
-      {/* Publication Stats */}
-      <Box py={16} bg="white">
-        <Container maxW="1200px">
-          <SimpleGrid columns={{ base: 2, md: 4 }} gap={8}>
-            <Box textAlign="center" p={6} bg="blue.50" borderRadius="xl">
-              <Calendar size={40} color="#3182CE" style={{ margin: "0 auto 16px" }} />
-              <Heading as="h3" fontSize="2xl" color="brand.500" mb={2}>
-                Quarterly
-              </Heading>
-              <Text color="gray.600" fontSize="sm">
-                Published every quarter
-              </Text>
-            </Box>
-            <Box textAlign="center" p={6} bg="green.50" borderRadius="xl">
-              <Users size={40} color="#38A169" style={{ margin: "0 auto 16px" }} />
-              <Heading as="h3" fontSize="2xl" color="green.600" mb={2}>
-                85+
-              </Heading>
-              <Text color="gray.600" fontSize="sm">
-                Members featured
-              </Text>
-            </Box>
-            <Box textAlign="center" p={6} bg="purple.50" borderRadius="xl">
-              <Award size={40} color="#805AD5" style={{ margin: "0 auto 16px" }} />
-              <Heading as="h3" fontSize="2xl" color="purple.600" mb={2}>
-                45 Years
-              </Heading>
-              <Text color="gray.600" fontSize="sm">
-                Of club history
-              </Text>
-            </Box>
-            <Box textAlign="center" p={6} bg="orange.50" borderRadius="xl">
-              <Download size={40} color="#DD6B20" style={{ margin: "0 auto 16px" }} />
-              <Heading as="h3" fontSize="2xl" color="orange.600" mb={2}>
-                Digital
-              </Heading>
-              <Text color="gray.600" fontSize="sm">
-                Available online
-              </Text>
-            </Box>
-          </SimpleGrid>
-        </Container>
-      </Box>
-
       {/* Publication Issues Section */}
       <Box py={16} bg="gray.50">
         <Container maxW="1200px">
