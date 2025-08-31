@@ -5,9 +5,34 @@ import { OfficerCard } from "~/components/ui/OfficerCard";
 import { ButtonLink } from "~/components/ui/ButtonLink";
 import { ComingSoon } from "~/components/ui/ComingSoon";
 import { useLoaderData } from "react-router";
-import type { LoaderFunctionArgs } from "react-router";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { fetchInteractClubOfZamboangaCityWest } from "~/lib/contentful-api";
 import type { InteractClubOfZamboangaCityWest } from "~/lib/contentful-types";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Interact Club of Zamboanga City West | Building Tomorrow's Leaders Today" },
+    { 
+      name: "description", 
+      content: "Building tomorrow's leaders today at the Interact Club of Zamboanga City West. Inspiring high school students through leadership development, community service, and innovation." 
+    },
+    { name: "keywords", content: "Interact Club, Zamboanga City West, high school leadership, youth development, community service, student leadership, innovation, creativity" },
+    { property: "og:title", content: "Interact Club of Zamboanga City West" },
+    { 
+      property: "og:description", 
+      content: "Building tomorrow's leaders today at the Interact Club of Zamboanga City West. Inspiring high school students through leadership development, community service, and innovation." 
+    },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+    { name: "twitter:title", content: "Interact Club of Zamboanga City West" },
+    { 
+      name: "twitter:description", 
+      content: "Building tomorrow's leaders today at the Interact Club of Zamboanga City West. Inspiring high school students through leadership development, community service, and innovation." 
+    },
+    { name: "robots", content: "index, follow" },
+    { name: "author", content: "Rotary Club of Zamboanga City West" },
+  ];
+};
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const interactData = await fetchInteractClubOfZamboangaCityWest();

@@ -5,9 +5,34 @@ import { OfficerCard } from "~/components/ui/OfficerCard";
 import { ButtonLink } from "~/components/ui/ButtonLink";
 import { ComingSoon } from "~/components/ui/ComingSoon";
 import { useLoaderData } from "react-router";
-import type { LoaderFunctionArgs } from "react-router";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { fetchRotaractClubOfSouthernCityColleges } from "~/lib/contentful-api";
 import type { RotaractClubOfSouthernCityColleges } from "~/lib/contentful-types";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Rotaract Club of Southern City Colleges | Rotary Club of Zamboanga City West" },
+    { 
+      name: "description", 
+      content: "Empowering young leaders through service at the Rotaract Club of Southern City Colleges. Join us in developing leadership skills, community service, and international understanding." 
+    },
+    { name: "keywords", content: "Rotaract, Southern City Colleges, youth leadership, community service, Zamboanga City, leadership development, international understanding" },
+    { property: "og:title", content: "Rotaract Club of Southern City Colleges" },
+    { 
+      property: "og:description", 
+      content: "Empowering young leaders through service at the Rotaract Club of Southern City Colleges. Join us in developing leadership skills, community service, and international understanding." 
+    },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+    { name: "twitter:title", content: "Rotaract Club of Southern City Colleges" },
+    { 
+      name: "twitter:description", 
+      content: "Empowering young leaders through service at the Rotaract Club of Southern City Colleges. Join us in developing leadership skills, community service, and international understanding." 
+    },
+    { name: "robots", content: "index, follow" },
+    { name: "author", content: "Rotary Club of Zamboanga City West" },
+  ];
+};
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const rotaractData = await fetchRotaractClubOfSouthernCityColleges();
