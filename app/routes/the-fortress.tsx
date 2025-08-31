@@ -11,74 +11,231 @@ import {
   Button,
   Link,
 } from "@chakra-ui/react";
-import { Download, Calendar, Users, Award, FileText, Eye } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useLoaderData } from "react-router";
+import { Download, Calendar, Users, Award, FileText, Eye, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { fetchTheFortress } from "../lib/contentful-api";
+import type { FortressIssue } from "../lib/contentful-types";
+import type { Route } from "./+types/the-fortress";
+import "../styles/react-pdf.css";
+
+// Client-side PDF components
+let Document: any = null;
+let Page: any = null;
+let pdfjs: any = null;
+
+type LoaderData = {
+  fortressIssues: FortressIssue[];
+};
+
+export async function loader({ request }: Route.LoaderArgs) {
+  try {
+    const fortressIssues = await fetchTheFortress();
+    return {
+      fortressIssues: fortressIssues || [],
+    };
+  } catch (error) {
+    console.error('Error loading fortress data on server:', error);
+    return {
+      fortressIssues: [],
+    };
+  }
+}
 
 export function meta() {
   return [
     { title: "The Fortress | Official Publication of Rotary Club of Zamboanga City West" },
-    { name: "description", content: "Read The Fortress, the official publication of Rotary Club of Zamboanga City West. Stay updated with club news, member spotlights, and community project updates." },
+    { name: "description", content: "Feel the spirit of Rotary through stories of fellowship, service, and impact that continue to shape lives in Zamboanga City and across wider communities." },
     { name: "keywords", content: "The Fortress, Rotary publication, club newsletter, Zamboanga City West, member news, project updates, UNITE FOR GOOD" },
-    
+
     // Open Graph tags
     { property: "og:title", content: "The Fortress | Official Publication of Rotary Club of Zamboanga City West" },
-    { property: "og:description", content: "Read The Fortress, the official publication of Rotary Club of Zamboanga City West." },
+    { property: "og:description", content: "Stories of fellowship, service, and impact shaping lives in Zamboanga City and beyond." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/the-fortress" },
-    
+    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
+
     // Canonical URL
     { rel: "canonical", href: "https://rotaryzcwest.org/the-fortress" },
   ];
 }
 
-// Mock data for publication issues
-const publicationIssues = [
+// Helper function to convert Google Drive share link to embed URL
+function getGoogleDriveEmbedUrl(shareUrl: string): string {
+  if (!shareUrl || typeof shareUrl !== 'string') return '';
+
+  // Extract file ID from Google Drive URL
+  const fileIdMatch = shareUrl.match(/\/file\/d\/([a-zA-Z0-9-_]+)/);
+  if (fileIdMatch) {
+    const fileId = fileIdMatch[1];
+    return `https://drive.google.com/file/d/${fileId}/preview`;
+  }
+
+  // If it's already a direct URL, return as is
+  return shareUrl;
+}
+
+// Helper function to get PDF URL from Contentful asset
+function getPdfUrlFromAsset(asset: any): string {
+  if (!asset || !asset.url) return '';
+
+  // Contentful assets already provide direct URLs
+  return asset.url;
+}
+
+// Helper function to get a proxy URL for CORS issues
+function getProxiedPdfUrl(originalUrl: string): string {
+  // For development, we might need a CORS proxy
+  // In production, you might want to serve PDFs through your own backend
+  return originalUrl;
+}
+
+// Default data for when Contentful is not available
+const defaultFortressIssues: FortressIssue[] = [
   {
-    id: 1,
-    title: "UNITE FOR GOOD",
-    date: "December 2024",
-    quarter: "Q4 2024",
-    cover: "/fort-pilar.png",
-    summary: "Our latest issue focuses on unity in service, featuring stories of community collaboration, peace-building initiatives, and the historical significance of Fort Pilar in bringing people together.",
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "COMMUNITY CHAMPIONS",
-    date: "September 2024",
-    quarter: "Q3 2024",
-    cover: "/fort-pilar.png",
-    summary: "Highlighting outstanding members who have made significant impacts in their communities, featuring project updates from our water sanitation initiatives and educational programs.",
-    featured: false,
-  },
-  {
-    id: 3,
-    title: "BUILDING BRIDGES",
-    date: "June 2024",
-    quarter: "Q2 2024",
-    cover: "/fort-pilar.png",
-    summary: "Stories of connection and partnership, showcasing our interfaith dialogue projects, youth mentorship programs, and collaborative efforts with local organizations.",
-    featured: false,
-  },
-  {
-    id: 4,
-    title: "HEALTH & HOPE",
-    date: "March 2024",
-    quarter: "Q1 2024",
-    cover: "/fort-pilar.png",
-    summary: "Dedicated to our health initiatives, featuring our medical missions, maternal health programs, and efforts to improve healthcare access in underserved communities.",
-    featured: false,
+    id: "1",
+    issueNumber: "ISSUE NO. 1",
+    month: "July 2025 Issue",
+    rotaryYear: "RY 2025-2026",
+    file: {
+      url: "",
+      title: "The Fortress Issue No. 1",
+      description: "July 2025 Issue",
+    },
+    isFeatured: false,
   },
 ];
 
 export default function TheFortress() {
+  const { fortressIssues } = useLoaderData() as LoaderData;
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPdfUrl, setSelectedPdfUrl] = useState<string>("");
+  const [selectedIssueTitle, setSelectedIssueTitle] = useState<string>("");
+  const [numPages, setNumPages] = useState<number | null>(null);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isClient, setIsClient] = useState(false);
+  const [pdfComponentsLoaded, setPdfComponentsLoaded] = useState(false);
+  const [useIframeFallback, setUseIframeFallback] = useState(false);
+
+  // Use Contentful data or fallback to default
+  const publicationIssues = fortressIssues?.length > 0 ? fortressIssues : defaultFortressIssues;
+
+  // Load PDF components only on client side
+  useEffect(() => {
+    setIsClient(true);
+
+    const loadPdfComponents = async () => {
+      try {
+        const reactPdf = await import('react-pdf');
+        Document = reactPdf.Document;
+        Page = reactPdf.Page;
+        pdfjs = reactPdf.pdfjs;
+
+        // Set up PDF.js worker using local file
+        pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+
+        // Note: CSS files are handled by the bundler or can be imported at the top level
+        // Removing dynamic CSS imports that cause Vite issues
+
+        setPdfComponentsLoaded(true);
+      } catch (error) {
+        console.error('Failed to load PDF components:', error);
+        setError('PDF viewer not available');
+      }
+    };
+
+    loadPdfComponents();
+  }, []);
+
+  const handleOpenPdfModal = (issue: FortressIssue) => {
+    console.log('Opening PDF modal for:', issue.issueNumber);
+    console.log('File asset:', issue.file);
+
+    // Get PDF URL from Contentful asset
+    const pdfUrl = getPdfUrlFromAsset(issue.file);
+    console.log('PDF URL:', pdfUrl);
+
+    // Check if PDF components are loaded
+    if (!pdfComponentsLoaded) {
+      console.log('PDF components not loaded yet');
+      setError('PDF viewer is still loading. Please try again in a moment.');
+      return;
+    }
+
+    if (!pdfUrl) {
+      setError('No PDF file available for this issue.');
+      return;
+    }
+
+    setSelectedPdfUrl(pdfUrl);
+    setSelectedIssueTitle(issue.issueNumber);
+    setPageNumber(1);
+    setError(null);
+    setLoading(true);
+    setUseIframeFallback(false);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedPdfUrl("");
+    setSelectedIssueTitle("");
+    setNumPages(null);
+    setPageNumber(1);
+    setError(null);
+    setUseIframeFallback(false);
+  };
+
+  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
+    console.log('PDF loaded successfully, pages:', numPages);
+    setNumPages(numPages);
+    setLoading(false);
+    setError(null);
+  };
+
+  const onDocumentLoadError = (error: Error) => {
+    console.error('PDF load error:', error);
+    console.error('Error details:', error.message);
+
+    // If it's a CORS error, worker setup failure, or version mismatch, try iframe fallback
+    if (error.message.includes('CORS') ||
+      error.message.includes('cross-origin') ||
+      error.message.includes('fetch') ||
+      error.message.includes('worker') ||
+      error.message.includes('Setting up fake worker failed') ||
+      error.message.includes('version') ||
+      error.message.includes('does not match')) {
+      console.log('PDF.js error detected (CORS/Worker/Version), switching to iframe fallback');
+      setUseIframeFallback(true);
+      setError(null);
+      setLoading(false);
+    } else {
+      setError(`Failed to load PDF: ${error.message}. Switching to browser viewer.`);
+      setUseIframeFallback(true);
+      setLoading(false);
+    }
+  };
+
+  const goToPrevPage = () => {
+    setPageNumber(prev => Math.max(prev - 1, 1));
+  };
+
+  const goToNextPage = () => {
+    setPageNumber(prev => Math.min(prev + 1, numPages || 1));
+  };
+
   return (
     <Box bg="gray.50" minH="100vh">
       {/* Hero Section */}
-      <Box 
-        position="relative" 
-        bg="white" 
+      <Box
+        position="relative"
+        bg="white"
         overflow="hidden"
-        py={{ base: 16, md: 20 }}
+        pt={{ base: 24, md: 28 }}
+        pb={{ base: 16, md: 20 }}
       >
         {/* Background Pattern */}
         <Box
@@ -90,7 +247,7 @@ export default function TheFortress() {
           backgroundImage="linear-gradient(135deg, rgba(0, 93, 170, 0.03) 0%, rgba(255, 255, 255, 1) 100%)"
           zIndex={1}
         />
-        
+
         <Container maxW="1200px" position="relative" zIndex={2}>
           <Flex direction={{ base: "column", lg: "row" }} align="center" gap={12}>
             {/* Left Content */}
@@ -115,20 +272,20 @@ export default function TheFortress() {
               </Flex>
 
               {/* Main Title */}
-              <Heading 
-                as="h1" 
-                fontSize={{ base: "4xl", md: "5xl", lg: "6xl" }} 
-                fontWeight="bold" 
+              <Heading
+                as="h1"
+                fontSize={{ base: "4xl", md: "5xl", lg: "6xl" }}
+                fontWeight="bold"
                 color="brand.500"
                 mb={2}
                 letterSpacing="tight"
               >
                 THE <Text as="span" color="gray.900">FORTRESS</Text>
               </Heading>
-              
-              <Text 
-                fontSize="md" 
-                color="gray.600" 
+
+              <Text
+                fontSize="md"
+                color="gray.600"
                 mb={6}
                 fontWeight="medium"
                 letterSpacing="wide"
@@ -138,20 +295,20 @@ export default function TheFortress() {
               </Text>
 
               {/* Theme */}
-              <Box 
-                bg="brand.500" 
-                color="white" 
-                py={6} 
-                px={8} 
-                borderRadius="lg" 
+              <Box
+                bg="brand.500"
+                color="white"
+                py={6}
+                px={8}
+                borderRadius="lg"
                 mb={8}
                 transform="rotate(-1deg)"
                 boxShadow="lg"
               >
-                <Heading 
-                  as="h2" 
-                  fontSize={{ base: "2xl", md: "3xl" }} 
-                  fontWeight="bold" 
+                <Heading
+                  as="h2"
+                  fontSize={{ base: "2xl", md: "3xl" }}
+                  fontWeight="bold"
                   textAlign="center"
                   letterSpacing="wider"
                 >
@@ -159,19 +316,19 @@ export default function TheFortress() {
                 </Heading>
               </Box>
 
-              <Text 
-                fontSize={{ base: "lg", md: "xl" }} 
-                color="gray.700" 
+              <Text
+                fontSize={{ base: "lg", md: "xl" }}
+                color="gray.700"
                 lineHeight="relaxed"
                 mb={8}
               >
-                Discover stories of service, community impact, and fellowship from our members as we work together to make a positive difference in Zamboanga City and beyond.
+                Feel the spirit of Rotary through stories of fellowship, service, and impact that continue to shape lives in Zamboanga City and across wider communities.
               </Text>
             </Box>
 
             {/* Right Content - Magazine Cover */}
             <Box flex={1} display="flex" justifyContent="center">
-              <Box 
+              <Box
                 position="relative"
                 bg="white"
                 borderRadius="xl"
@@ -193,52 +350,24 @@ export default function TheFortress() {
                   overflow="hidden"
                   position="relative"
                 >
-                  {/* Mock Magazine Cover */}
-                  <Box 
-                    position="absolute" 
-                    top={0} 
-                    left={0} 
-                    right={0} 
+                  {/* Magazine Cover */}
+                  <Box
+                    position="absolute"
+                    top={0}
+                    left={0}
+                    right={0}
                     bottom={0}
                     bgGradient="linear(to-b, white 0%, gray.100 100%)"
                   />
                   <Box position="relative" zIndex={2} textAlign="center" p={6}>
                     <Image
-                      src="/logo.png"
-                      alt="Rotary Logo"
-                      width="40px"
-                      height="auto"
-                      mx="auto"
-                      mb={4}
+                      src="/the-fortress.jpg"
+                      alt="The Fortress - Official Publication of Rotary Club of Zamboanga City West"
+                      width="100%"
+                      height="100%"
+                      objectFit="cover"
+                      borderRadius="md"
                     />
-                    <Text fontSize="2xl" fontWeight="bold" color="brand.500" mb={2}>
-                      THE FORTRESS
-                    </Text>
-                    <Text fontSize="lg" fontWeight="bold" color="brand.500" mb={4}>
-                      UNITE FOR GOOD
-                    </Text>
-                    <Box 
-                      bg="gray.300" 
-                      height="120px" 
-                      borderRadius="md" 
-                      mb={4}
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="center"
-                      overflow="hidden"
-                    >
-                      <Image
-                        src="/fort-pilar.png"
-                        alt="Fort Pilar - Historic Fortress of Zamboanga"
-                        width="100%"
-                        height="100%"
-                        objectFit="cover"
-                        borderRadius="md"
-                      />
-                    </Box>
-                    <Text fontSize="xs" color="gray.600">
-                      Official Publication of Rotary Club of Zamboanga City West
-                    </Text>
                   </Box>
                 </Box>
               </Box>
@@ -247,56 +376,12 @@ export default function TheFortress() {
         </Container>
       </Box>
 
-      {/* Publication Stats */}
-      <Box py={16} bg="white">
-        <Container maxW="1200px">
-          <SimpleGrid columns={{ base: 2, md: 4 }} gap={8}>
-            <Box textAlign="center" p={6} bg="blue.50" borderRadius="xl">
-              <Calendar size={40} color="#3182CE" style={{ margin: "0 auto 16px" }} />
-              <Heading as="h3" fontSize="2xl" color="brand.500" mb={2}>
-                Quarterly
-              </Heading>
-              <Text color="gray.600" fontSize="sm">
-                Published every quarter
-              </Text>
-            </Box>
-            <Box textAlign="center" p={6} bg="green.50" borderRadius="xl">
-              <Users size={40} color="#38A169" style={{ margin: "0 auto 16px" }} />
-              <Heading as="h3" fontSize="2xl" color="green.600" mb={2}>
-                85+
-              </Heading>
-              <Text color="gray.600" fontSize="sm">
-                Members featured
-              </Text>
-            </Box>
-            <Box textAlign="center" p={6} bg="purple.50" borderRadius="xl">
-              <Award size={40} color="#805AD5" style={{ margin: "0 auto 16px" }} />
-              <Heading as="h3" fontSize="2xl" color="purple.600" mb={2}>
-                45 Years
-              </Heading>
-              <Text color="gray.600" fontSize="sm">
-                Of club history
-              </Text>
-            </Box>
-            <Box textAlign="center" p={6} bg="orange.50" borderRadius="xl">
-              <Download size={40} color="#DD6B20" style={{ margin: "0 auto 16px" }} />
-              <Heading as="h3" fontSize="2xl" color="orange.600" mb={2}>
-                Digital
-              </Heading>
-              <Text color="gray.600" fontSize="sm">
-                Available online
-              </Text>
-            </Box>
-          </SimpleGrid>
-        </Container>
-      </Box>
-
       {/* Publication Issues Section */}
       <Box py={16} bg="gray.50">
         <Container maxW="1200px">
           <Box textAlign="center" mb={12}>
             <Heading as="h2" fontSize={{ base: "2xl", md: "3xl", lg: "4xl" }} color="gray.900" mb={4}>
-              Recent Issues
+              Issues
             </Heading>
             <Text fontSize={{ base: "md", md: "lg" }} color="gray.600" maxW="600px" mx="auto">
               Explore our latest publications featuring member stories, project updates, and community impact highlights.
@@ -305,13 +390,13 @@ export default function TheFortress() {
 
           <SimpleGrid columns={{ base: 1, md: 2, lg: 2 }} gap={8}>
             {publicationIssues.map((issue) => (
-              <Box 
-                key={issue.id} 
-                bg="white" 
-                borderRadius="2xl" 
-                overflow="hidden" 
-                boxShadow="lg" 
-                border="1px solid" 
+              <Box
+                key={issue.id}
+                bg="white"
+                borderRadius="2xl"
+                overflow="hidden"
+                boxShadow="lg"
+                border="1px solid"
                 borderColor="gray.200"
                 _hover={{ transform: "translateY(-4px)", boxShadow: "xl" }}
                 transition="all 0.3s"
@@ -319,18 +404,18 @@ export default function TheFortress() {
                 <Box p={0}>
                   <Flex direction={{ base: "column", md: "row" }} h="full">
                     {/* Cover Image */}
-                    <Box 
-                      flex="0 0 200px" 
+                    <Box
+                      flex="0 0 200px"
                       position="relative"
                       minH={{ base: "200px", md: "auto" }}
                     >
-                      {issue.featured && (
-                        <Badge 
-                          position="absolute" 
-                          top={3} 
-                          left={3} 
+                      {issue.isFeatured && (
+                        <Badge
+                          position="absolute"
+                          top={3}
+                          left={3}
                           zIndex={2}
-                          colorScheme="red" 
+                          colorScheme="red"
                           fontSize="xs"
                           px={2}
                           py={1}
@@ -339,8 +424,8 @@ export default function TheFortress() {
                         </Badge>
                       )}
                       <Image
-                        src={issue.cover}
-                        alt={`The Fortress ${issue.title} Cover`}
+                        src="/fort-pilar.png"
+                        alt={`The Fortress ${issue.issueNumber} Cover`}
                         w="full"
                         h="full"
                         objectFit="cover"
@@ -361,7 +446,7 @@ export default function TheFortress() {
                             THE FORTRESS
                           </Text>
                           <Text fontSize="md" fontWeight="semibold">
-                            {issue.title}
+                            {issue.issueNumber}
                           </Text>
                         </Box>
                       </Box>
@@ -371,39 +456,83 @@ export default function TheFortress() {
                     <Box p={6} flex={1} display="flex" flexDirection="column">
                       <Flex align="center" gap={2} mb={3}>
                         <Badge colorScheme="blue" fontSize="xs">
-                          {issue.quarter}
+                          {issue.month}
                         </Badge>
                         <Text fontSize="sm" color="gray.500">
-                          {issue.date}
+                          {issue.rotaryYear}
                         </Text>
                       </Flex>
 
-                      <Heading as="h3" fontSize="xl" color="gray.900" mb={3} lineHeight="shorter">
-                        {issue.title}
+                      <Heading as="h3" fontSize="xl" color="gray.900" mb={4} lineHeight="shorter">
+                        {issue.issueNumber}
                       </Heading>
 
-                      <Text color="gray.600" fontSize="sm" lineHeight="relaxed" mb={4} flex={1}>
-                        {issue.summary}
-                      </Text>
-
-                      <Flex gap={2} align="center">
-                        <Button
-                          size="sm"
-                          bg="brand.500"
-                          color="white"
-                          _hover={{ bg: "brand.600" }}
-                          disabled={!issue.featured}
-                        >
-                          {issue.featured ? "Read Online" : "Coming Soon"}
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          colorScheme="gray"
-                          disabled={!issue.featured}
-                        >
-                          Download PDF
-                        </Button>
+                      <Flex gap={3} align="center">
+                        {issue.file && issue.file.url ? (
+                          <Button
+                            size="sm"
+                            bg="brand.500"
+                            color="white"
+                            _hover={{ bg: "brand.600" }}
+                            onClick={() => handleOpenPdfModal(issue)}
+                            px={4}
+                            py={2}
+                            borderRadius="md"
+                          >
+                            <Flex align="center" gap={2}>
+                              <Eye size={16} />
+                              Read Online
+                            </Flex>
+                          </Button>
+                        ) : (
+                          <Button
+                            size="sm"
+                            bg="brand.500"
+                            color="white"
+                            _hover={{ bg: "brand.600" }}
+                            disabled
+                            px={4}
+                            py={2}
+                            borderRadius="md"
+                          >
+                            <Flex align="center" gap={2}>
+                              <Eye size={16} />
+                              Coming Soon
+                            </Flex>
+                          </Button>
+                        )}
+                        {issue.file && issue.file.url ? (
+                          <Link href={issue.file.url} target="_blank" rel="noopener noreferrer">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              colorScheme="gray"
+                              px={4}
+                              py={2}
+                              borderRadius="md"
+                            >
+                              <Flex align="center" gap={2}>
+                                <Download size={16} />
+                                Download
+                              </Flex>
+                            </Button>
+                          </Link>
+                        ) : (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            colorScheme="gray"
+                            disabled
+                            px={4}
+                            py={2}
+                            borderRadius="md"
+                          >
+                            <Flex align="center" gap={2}>
+                              <Download size={16} />
+                              Download
+                            </Flex>
+                          </Button>
+                        )}
                       </Flex>
                     </Box>
                   </Flex>
@@ -429,112 +558,295 @@ export default function TheFortress() {
         </Container>
       </Box>
 
-      {/* Content Sections */}
-      <Box py={16} bg="white">
-        <Container maxW="1200px">
-          <SimpleGrid columns={{ base: 1, lg: 2 }} gap={12}>
-            {/* What You'll Find */}
-            <Box 
-              bg="gray.50" 
-              p={8} 
-              borderRadius="2xl" 
-              boxShadow="lg"
-              border="1px solid"
+
+
+      {/* PDF Modal */}
+      {isModalOpen && (
+        <Box
+          position="fixed"
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          bg="blackAlpha.800"
+          zIndex={9999}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          p={4}
+        >
+          <Box
+            bg="white"
+            borderRadius="lg"
+            maxW="95vw"
+            maxH="95vh"
+            w="full"
+            h="full"
+            display="flex"
+            flexDirection="column"
+            boxShadow="2xl"
+          >
+            {/* Header */}
+            <Flex
+              bg="brand.500"
+              color="white"
+              p={4}
+              borderTopRadius="lg"
+              align="center"
+              justify="space-between"
+            >
+              <Flex align="center" gap={3}>
+                <FileText size={24} />
+                <Box>
+                  <Text fontSize="lg" fontWeight="bold">
+                    The Fortress - {selectedIssueTitle}
+                  </Text>
+                  <Text fontSize="sm" opacity={0.9}>
+                    Official Publication of Rotary Club of Zamboanga City West
+                  </Text>
+                </Box>
+              </Flex>
+              <Button
+                aria-label="Close modal"
+                onClick={handleCloseModal}
+                variant="ghost"
+                color="white"
+                _hover={{ bg: "whiteAlpha.200" }}
+                size="sm"
+                minW="auto"
+                p={2}
+              >
+                <X size={20} />
+              </Button>
+            </Flex>
+
+            {/* PDF Controls */}
+            <Flex
+              bg="gray.100"
+              p={2}
+              align="center"
+              justify="space-between"
+              borderBottom="1px solid"
               borderColor="gray.200"
             >
-              <Heading as="h3" fontSize="2xl" color="gray.900" mb={6}>
-                What You'll Find in The Fortress
-              </Heading>
-              <Stack gap={4}>
-                <Flex align="start" gap={3}>
-                  <Badge colorScheme="blue" fontSize="xs" px={2} py={1}>NEW</Badge>
-                  <Box>
-                    <Text fontWeight="bold" color="gray.900" mb={1}>
-                      Member Spotlights
-                    </Text>
-                    <Text color="gray.600" fontSize="sm">
-                      Get to know our Rotarians and their inspiring stories of service
-                    </Text>
-                  </Box>
+              {/* Page Navigation - only show if using react-pdf with multiple pages */}
+              {!useIframeFallback && numPages && numPages > 1 ? (
+                <Flex align="center" gap={4} flex={1} justify="center">
+                  <Button
+                    aria-label="Previous page"
+                    onClick={goToPrevPage}
+                    disabled={pageNumber <= 1}
+                    size="sm"
+                    minW="auto"
+                    p={2}
+                  >
+                    <ChevronLeft size={20} />
+                  </Button>
+                  <Text fontSize="sm" color="gray.600" minW="100px" textAlign="center">
+                    Page {pageNumber} of {numPages}
+                  </Text>
+                  <Button
+                    aria-label="Next page"
+                    onClick={goToNextPage}
+                    disabled={pageNumber >= numPages}
+                    size="sm"
+                    minW="auto"
+                    p={2}
+                  >
+                    <ChevronRight size={20} />
+                  </Button>
                 </Flex>
-                <Flex align="start" gap={3}>
-                  <Badge colorScheme="green" fontSize="xs" px={2} py={1}>FEATURED</Badge>
-                  <Box>
-                    <Text fontWeight="bold" color="gray.900" mb={1}>
-                      Project Updates
-                    </Text>
-                    <Text color="gray.600" fontSize="sm">
-                      Latest news on our community service projects and their impact
-                    </Text>
-                  </Box>
-                </Flex>
-                <Flex align="start" gap={3}>
-                  <Badge colorScheme="purple" fontSize="xs" px={2} py={1}>REGULAR</Badge>
-                  <Box>
-                    <Text fontWeight="bold" color="gray.900" mb={1}>
-                      Club Events
-                    </Text>
-                    <Text color="gray.600" fontSize="sm">
-                      Coverage of meetings, fellowships, and special celebrations
-                    </Text>
-                  </Box>
-                </Flex>
-                <Flex align="start" gap={3}>
-                  <Badge colorScheme="orange" fontSize="xs" px={2} py={1}>SPECIAL</Badge>
-                  <Box>
-                    <Text fontWeight="bold" color="gray.900" mb={1}>
-                      District News
-                    </Text>
-                    <Text color="gray.600" fontSize="sm">
-                      Updates from District 3850 and Rotary International
-                    </Text>
-                  </Box>
-                </Flex>
-              </Stack>
-            </Box>
+              ) : (
+                <Box flex={1} />
+              )}
 
-            {/* Subscribe/Access */}
-            <Box 
-              bg="brand.500" 
-              color="white" 
-              p={8} 
-              borderRadius="2xl" 
-              boxShadow="lg"
-            >
-              <Heading as="h3" fontSize="2xl" mb={6}>
-                Stay Connected with The Fortress
-              </Heading>
-              <Text mb={6} lineHeight="relaxed">
-                The Fortress keeps our Rotary family and the community informed about our service projects, achievements, and upcoming events. Our publication embodies our theme "Unite for Good" by sharing stories that inspire and connect us all.
-              </Text>
-              
-              <Box 
-                bg="whiteAlpha.200" 
-                p={6} 
-                borderRadius="xl" 
-                mb={6}
-              >
-                <Text fontSize="sm" mb={4} opacity={0.9}>
-                  <strong>Latest Issue Available:</strong> The "UNITE FOR GOOD" edition is now ready for reading online and download.
-                </Text>
+              {/* Viewer Toggle */}
+              {selectedPdfUrl && (
                 <Button
-                  size="lg"
-                  bg="white"
-                  color="brand.500"
-                  _hover={{ bg: "gray.100" }}
-                  w="full"
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setUseIframeFallback(!useIframeFallback)}
+                  fontSize="xs"
                 >
-                  Read Latest Issue
+                  {useIframeFallback ? "Try Advanced Viewer" : "Use Browser Viewer"}
                 </Button>
-              </Box>
+              )}
+            </Flex>
 
-              <Text fontSize="sm" opacity={0.8} textAlign="center">
-                For more information about The Fortress or to contribute content, contact our editorial team.
-              </Text>
+            {/* PDF Content */}
+            <Box
+              flex={1}
+              overflow="auto"
+              bg="gray.50"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              position="relative"
+            >
+              {error ? (
+                <Box textAlign="center" p={8}>
+                  <FileText size={48} color="#CBD5E0" />
+                  <Text color="gray.500" fontSize="lg" mt={4}>
+                    {error}
+                  </Text>
+                  <Link
+                    href={publicationIssues.find(issue => issue.issueNumber === selectedIssueTitle)?.file?.url || ""}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button
+                      mt={4}
+                      bg="brand.500"
+                      color="white"
+                      _hover={{ bg: "brand.600" }}
+                    >
+                      <Flex align="center" gap={2}>
+                        <Download size={16} />
+                        Download PDF Instead
+                      </Flex>
+                    </Button>
+                  </Link>
+                </Box>
+              ) : useIframeFallback && selectedPdfUrl ? (
+                <Box w="full" h="80vh" position="relative">
+                  <iframe
+                    src={selectedPdfUrl}
+                    width="100%"
+                    height="100%"
+                    style={{
+                      border: "none",
+                      borderRadius: "0 0 6px 6px",
+                    }}
+                    title={`The Fortress - ${selectedIssueTitle}`}
+                    onError={() => {
+                      console.log('Iframe also failed to load');
+                      setError('Unable to display PDF. Please use the download button.');
+                    }}
+                  />
+                  {/* Info overlay */}
+                  <Box
+                    position="absolute"
+                    top={4}
+                    left={4}
+                    bg="blackAlpha.700"
+                    color="white"
+                    px={3}
+                    py={2}
+                    borderRadius="md"
+                    fontSize="sm"
+                  >
+                    Browser PDF Viewer
+                  </Box>
+                </Box>
+              ) : selectedPdfUrl && isClient && pdfComponentsLoaded && Document && Page ? (
+                <Box>
+                  <Document
+                    file={selectedPdfUrl}
+                    onLoadSuccess={onDocumentLoadSuccess}
+                    onLoadError={onDocumentLoadError}
+                    loading={
+                      <Box textAlign="center" p={8}>
+                        <Text color="gray.500">Loading PDF...</Text>
+                      </Box>
+                    }
+                    error={
+                      <Box textAlign="center" p={8}>
+                        <FileText size={48} color="#CBD5E0" />
+                        <Text color="gray.500" fontSize="lg" mt={4}>
+                          Unable to load PDF viewer
+                        </Text>
+                        <Text color="gray.400" fontSize="sm" mt={2}>
+                          This might be due to browser security restrictions
+                        </Text>
+                        <Link
+                          href={publicationIssues.find(issue => issue.issueNumber === selectedIssueTitle)?.file?.url || ""}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Button
+                            mt={4}
+                            bg="brand.500"
+                            color="white"
+                            _hover={{ bg: "brand.600" }}
+                          >
+                            <Flex align="center" gap={2}>
+                              <Download size={16} />
+                              Download PDF Instead
+                            </Flex>
+                          </Button>
+                        </Link>
+                      </Box>
+                    }
+                  >
+                    <Page
+                      pageNumber={pageNumber}
+                      width={typeof window !== 'undefined' ? Math.min(window.innerWidth * 0.8, 800) : 800}
+                      renderAnnotationLayer={false}
+                      renderTextLayer={false}
+                      loading={
+                        <Box textAlign="center" p={4}>
+                          <Text color="gray.500">Loading page...</Text>
+                        </Box>
+                      }
+                      error={
+                        <Box textAlign="center" p={4}>
+                          <Text color="gray.500" fontSize="sm">
+                            Page failed to load
+                          </Text>
+                        </Box>
+                      }
+                    />
+                  </Document>
+                </Box>
+              ) : selectedPdfUrl && (!pdfComponentsLoaded || !isClient) ? (
+                <Box textAlign="center" p={8}>
+                  <FileText size={48} color="#CBD5E0" />
+                  <Text color="gray.500" fontSize="lg" mt={4}>
+                    Loading PDF viewer...
+                  </Text>
+                </Box>
+              ) : (
+                <Box textAlign="center" p={8}>
+                  <FileText size={48} color="#CBD5E0" />
+                  <Text color="gray.500" fontSize="lg" mt={4}>
+                    No PDF to display
+                  </Text>
+                </Box>
+              )}
+
+              {/* Download Button */}
+              {selectedPdfUrl && !error && (
+                <Box
+                  position="absolute"
+                  bottom={4}
+                  right={4}
+                  zIndex={10}
+                >
+                  <Link
+                    href={publicationIssues.find(issue => issue.issueNumber === selectedIssueTitle)?.file?.url || ""}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button
+                      size="sm"
+                      variant="solid"
+                      bg="white"
+                      color="brand.500"
+                      boxShadow="lg"
+                      _hover={{ bg: "gray.100" }}
+                    >
+                      <Flex align="center" gap={2}>
+                        <Download size={16} />
+                        Download
+                      </Flex>
+                    </Button>
+                  </Link>
+                </Box>
+              )}
             </Box>
-          </SimpleGrid>
-        </Container>
-      </Box>
+          </Box>
+        </Box>
+      )}
     </Box>
   );
 } 

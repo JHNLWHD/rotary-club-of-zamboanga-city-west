@@ -1,0 +1,28 @@
+/* React PDF styles */
+
+/* Basic PDF page styles */
+.react-pdf__Page {
+  position: relative;
+  margin: 0 auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.react-pdf__Page__canvas {
+  display: block;
+  margin: 0 auto;
+}
+
+/* Simplified PDF styles - no text or annotation layers needed */
+
+/* Document loading and error states */
+.react-pdf__Document {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.react-pdf__message {
+  padding: 20px;
+  color: #666;
+  font-family: sans-serif;
+}

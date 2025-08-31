@@ -28,6 +28,30 @@ const config = defineConfig({
           800: { value: "#c47516" },
           900: { value: "#b36414" },
         },
+        cranberry: {
+          50: { value: "#fdf2f7" },
+          100: { value: "#fce7f0" },
+          200: { value: "#f9c2d4" },
+          300: { value: "#f59cb8" },
+          400: { value: "#f177a0" },
+          500: { value: "#d41367" }, // Primary Cranberry
+          600: { value: "#b8105a" },
+          700: { value: "#9c0e4d" },
+          800: { value: "#800c40" },
+          900: { value: "#640936" },
+        },
+        interact: {
+          50: { value: "#eff6ff" },
+          100: { value: "#dbeafe" },
+          200: { value: "#bfdbfe" },
+          300: { value: "#93c5fd" },
+          400: { value: "#60a5fa" },
+          500: { value: "#3b82f6" }, // Primary Light Blue
+          600: { value: "#2563eb" },
+          700: { value: "#1d4ed8" },
+          800: { value: "#1e40af" },
+          900: { value: "#1e3a8a" },
+        },
         gray: {
           50: { value: "#F8F9FA" }, // light gray
           200: { value: "#e9ecef" },

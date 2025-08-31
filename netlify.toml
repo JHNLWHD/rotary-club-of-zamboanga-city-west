@@ -1,6 +1,22 @@
 [build]
-command = "react-router build"
+command = "npm run build"
 publish = "build/client"
 
 [dev]
-command = "react-router dev"
+command = "npm run dev"
+
+# React Router 7 SSR configuration
+[functions]
+directory = "build/server"
+node_bundler = "esbuild"
+
+# Serve static assets first, then fallback to SSR
+[[redirects]]
+from = "/*"
+to = "/.netlify/functions/server"
+status = 200
+force = false
+
+# Environment settings
+[build.environment]
+NODE_VERSION = "18"

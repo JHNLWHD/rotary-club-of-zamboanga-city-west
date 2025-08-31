@@ -1,17 +1,24 @@
 import { Box, Flex, Button, Link, Spacer, Image, Text } from "@chakra-ui/react";
-import { useBreakpointValue } from "@chakra-ui/react";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { MapPin, Phone, Mail, Clock, Facebook, ChevronDown, Heart } from "lucide-react";
-import { Menu } from "./menu";
+import { Menu } from "./Menu";
 import { useLocation } from "react-router";
+import type { ContactInfo, MeetingInfo } from "~/lib/contentful-types";
 
 const aboutUsLinks = [
   { label: "Club Leadership", href: "/about/leadership" },
   { label: "History", href: "/about/history" },
+  { label: "Board Resolutions", href: "/about/board-resolutions" },
   { label: "The Rotary Foundation Giving", href: "/about/foundation-giving" },
   { label: "Calendar of Activities", href: "/about/calendar" },
   { label: "Contact Us", href: "/contact" },
+];
+
+const newGenerationLinks = [
+  { label: "Rotaract Club of Zamboanga City West", href: "https://rotaract.rotaryzcwest.org", color: "gold.500", isExternal: true },
+  { label: "Rotaract Club of Southern City Colleges", href: "/new-generation/rotaract-southern-city-colleges", color: "cranberry.500" },
+  { label: "Interact Club of Zamboanga City West", href: "/new-generation/interact-zamboanga-city-west", color: "interact.500" },
 ];
 
 const mainNavLinks = [
@@ -20,78 +27,54 @@ const mainNavLinks = [
   { label: "Service Projects", href: "/service-projects" },
 ];
 
-function ButtonLink({ href, children, ...props }: { href: string; children: React.ReactNode; [key: string]: any }) {
-  return (
-    <Link
-      href={href}
-      bg="brand.500"
-      color="white"
-      fontWeight="bold"
-      px={7}
-      py={2}
-      borderRadius="md"
-      fontSize="sm"
-      _hover={{ bg: "brand.700" }}
-      style={{ display: 'inline-block', textAlign: 'center', textDecoration: 'none' }}
-      {...props}
-    >
-      {children}
-    </Link>
-  );
-}
+type ContactData = {
+  meetingInfo?: MeetingInfo;
+  contactInfo?: ContactInfo;
+};
 
-function TopBar({ transparent }: { transparent: boolean }) {
+function TopBar({ transparent, contactData }: { transparent: boolean; contactData?: ContactData }) {
   return (
-    <Flex 
-      bg={transparent ? "transparent" : "white"} 
-      color={transparent ? "white" : "gray.700"} 
-      fontSize="xs" 
-      px={{ base: 2, md: 12 }} 
-      py={2} 
-      align="center" 
+    <Flex
+      bg={transparent ? "blackAlpha.300" : "white"}
+      color={transparent ? "white" : "gray.700"}
+      fontSize="xs"
+      px={{ base: 2, md: 12 }}
+      py={2}
+      align="center"
+
       justify="space-between"
       display={{ base: "none", md: "flex" }}
     >
       <Flex gap={2} align="center">
-        <Link href="https://www.facebook.com/RCZCwest" target="_blank" rel="noopener noreferrer">
+        <Link
+          href={contactData?.contactInfo?.facebookUrl || "https://www.facebook.com/RCZCwest"}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <Facebook size={18} color={transparent ? "white" : "#6C757D"} />
         </Link>
       </Flex>
       <Flex gap={7} align="center" display={{ base: "none", md: "flex" }}>
         <Flex gap={1} align="center">
           <MapPin size={14} color={transparent ? "white" : "#6C757D"} />
-          <Text color={transparent ? "white" : "gray.700"} textShadow={transparent ? "0 1px 3px rgba(0,0,0,0.7)" : undefined}>914 Grand Astoria Hotel, Zamboanga City</Text>
+          <Text color={transparent ? "white" : "gray.700"} textShadow={transparent ? "0 1px 3px rgba(0,0,0,0.7)" : undefined}>
+            {contactData?.meetingInfo?.address || "914 Grand Astoria Hotel, Zamboanga City"}
+          </Text>
         </Flex>
         <Flex gap={1} align="center">
           <Mail size={14} color={transparent ? "white" : "#6C757D"} />
-          <Text color={transparent ? "white" : "gray.700"} textShadow={transparent ? "0 1px 3px rgba(0,0,0,0.7)" : undefined}>rotaryzcwest@gmail.com</Text>
+          <Text color={transparent ? "white" : "gray.700"} textShadow={transparent ? "0 1px 3px rgba(0,0,0,0.7)" : undefined}>
+            {contactData?.contactInfo?.email || "rotaryzcwest@gmail.com"}
+          </Text>
         </Flex>
         <Flex gap={1} align="center">
           <Clock size={14} color={transparent ? "white" : "#6C757D"} />
-          <Text color={transparent ? "white" : "gray.700"} textShadow={transparent ? "0 1px 3px rgba(0,0,0,0.7)" : undefined}>Tue 6:00 PM</Text>
+          <Text color={transparent ? "white" : "gray.700"} textShadow={transparent ? "0 1px 3px rgba(0,0,0,0.7)" : undefined}>
+            {contactData?.meetingInfo ? `${contactData.meetingInfo.day} ${contactData.meetingInfo.time}` : "Tue 6:00 PM"}
+          </Text>
         </Flex>
       </Flex>
     </Flex>
-  );
-}
-
-function CtaCard() {
-  return (
-    <Link 
-      href="https://rotaract.rotaryzcwest.org/?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=rotaract_referral" 
-      target="_blank" 
-      rel="noopener noreferrer"
-      _hover={{ transform: "scale(1.02)", textDecoration: "none" }}
-      transition="all 0.2s"
-    >
-      <Flex align="center" bg="gold.100" borderRadius="md" px={2} py={3} gap={2} minW="140px">
-        <Heart size={18} color="#D69E2E" fill="#D69E2E" />
-        <Box>
-          <Text fontSize="9px" color="gray.700" lineHeight={1.1}>Visit Now</Text>
-          <Text fontWeight="bold" color="brand.500" fontSize="11px" lineHeight={1.1}>Visit Rotaract Site</Text>
-        </Box>
-      </Flex>
-    </Link>
   );
 }
 
@@ -103,9 +86,10 @@ function HamburgerIcon({ color = "currentColor" }: { color?: string }) {
   );
 }
 
-export function GlobalLayout({ children, transparentHeader = false }: { children: ReactNode, transparentHeader?: boolean }) {
+export function GlobalLayout({ children, transparentHeader = false, contactData }: { children: ReactNode, transparentHeader?: boolean, contactData?: ContactData }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [aboutUsMenuOpen, setAboutUsMenuOpen] = useState(false);
+  const [newGenerationMenuOpen, setNewGenerationMenuOpen] = useState(false);
 
   const navTextColor = transparentHeader ? "white" : "gray.700";
   const navTextShadow = transparentHeader ? "0 1px 3px rgba(0,0,0,0.7)" : undefined;
@@ -117,62 +101,49 @@ export function GlobalLayout({ children, transparentHeader = false }: { children
   const location = useLocation();
   const isHomePage = location.pathname === "/" || location.pathname === "/home";
 
-  const showTopBar = useBreakpointValue({ base: false, md: true });
-
   return (
     <Flex direction="column" minHeight="100vh" position="relative">
-      {/* Top Bar - Absolutely positioned */}
-      {showTopBar && (
-        <Box 
-          position="absolute" 
-          top={0} 
-          left={0} 
-          right={0} 
-          zIndex={21}
-        >
-          <TopBar transparent={transparentHeader} />
-        </Box>
-      )}
-      {/* Main Header/Nav - Absolutely positioned */}
-      <Box 
-        as="header" 
+      <Box
+        position="absolute"
+        top={0}
+        left={0}
+        right={0}
+        zIndex={21}
+      >
+        <TopBar transparent={transparentHeader} contactData={contactData} />
+      </Box>
+      <Box
+        as="header"
         bg={transparentHeader ? "transparent" : "white"}
-        position="absolute" 
-        top="32px"
-        left={0} 
-        right={0} 
-        zIndex={20} 
+        position="absolute"
+        top={{ base: "0px", md: "32px" }}
+        left={0}
+        right={0}
+        zIndex={20}
         borderBottom={transparentHeader ? "none" : "1px solid #E2E8F0"}
       >
         <Flex align="center" px={{ base: 4, md: 12 }} height={20} gap={4}>
-          {/* Logo and Club Name (left) */}
-          <Flex align="center" gap={2} minW="0" flex="0 0 auto" maxW={{ base: "180px", md: "280px" }}>
+          {/* Logo (left) */}
+          <Flex align="center" gap={3} minW="0" flex="0 0 auto">
             <Image
-              src="/logo.png"
+              src={transparentHeader ? "/logo-white.png" : "/logo.png"}
               alt="Rotary Club of Zamboanga City West Logo"
-              width={{ base: '80px', md: '120px' }}
+              width={{ base: "160px", md: "160px" }}
               height="auto"
               objectFit="contain"
               flexShrink={0}
             />
-            <Box 
-              fontWeight="bold" 
-              fontSize={{ base: "xs", md: "sm" }} 
-              color={clubNameColor}
-              overflow="hidden"
-              display="flex" 
-              alignItems="center" 
-              height="100%"
-              lineHeight={1.2}
-              textShadow={clubNameShadow}
+            <Text
+              color={transparentHeader ? "white" : "gray.700"}
+              fontSize={{ base: "sm", md: "md" }}
+              fontWeight="semibold"
+              display={{ base: "none", md: "block" }}
+              textShadow={transparentHeader ? "0 1px 3px rgba(0,0,0,0.7)" : undefined}
             >
-              <Box>
-                <Box>Rotary Club of</Box>
-                <Box>Zamboanga City West</Box>
-              </Box>
-            </Box>
+              | The Great West
+            </Text>
           </Flex>
-          
+
           {/* Nav Links (center) */}
           <Flex align="center" gap={3} flex={1} justify="center" minW={0} display={{ base: "none", lg: "flex" }}>
             {/* Home Link */}
@@ -193,12 +164,11 @@ export function GlobalLayout({ children, transparentHeader = false }: { children
             >
               Home
             </Link>
-            
+
             {/* About Us Dropdown */}
             <Box
               position="relative"
-              onMouseEnter={() => setAboutUsMenuOpen(true)}
-              onMouseLeave={() => setAboutUsMenuOpen(false)}
+              onClick={() => setAboutUsMenuOpen(!aboutUsMenuOpen)}
             >
               <Menu.Root open={aboutUsMenuOpen} onOpenChange={(details) => setAboutUsMenuOpen(details.open)}>
                 <Menu.Trigger
@@ -240,8 +210,8 @@ export function GlobalLayout({ children, transparentHeader = false }: { children
                       value={link.href}
                       asChild
                     >
-                      <Link 
-                        href={link.href} 
+                      <Link
+                        href={link.href}
                         px={4}
                         py={3}
                         fontSize="sm"
@@ -252,6 +222,73 @@ export function GlobalLayout({ children, transparentHeader = false }: { children
                         transition="all 0.2s"
                         textDecoration="none"
                         display="block"
+                      >
+                        {link.label}
+                      </Link>
+                    </Menu.Item>
+                  ))}
+                </Menu.Content>
+              </Menu.Root>
+            </Box>
+
+            {/* New Generation Links */}
+            <Box
+              position="relative"
+              onClick={() => setNewGenerationMenuOpen(!newGenerationMenuOpen)}
+            >
+              <Menu.Root open={newGenerationMenuOpen} onOpenChange={(details) => setNewGenerationMenuOpen(details.open)}>
+                <Menu.Trigger
+                  asChild
+                >
+                  <Button
+                    variant="ghost"
+                    fontWeight="medium"
+                    color={navTextColor}
+                    fontSize="sm"
+                    px={2}
+                    py={2}
+                    borderRadius="md"
+                    _hover={{ color: navHoverColor, bg: navHoverBg }}
+                    transition="all 0.2s"
+                    minW="auto"
+                    textShadow={navTextShadow}
+                  >
+                    New Generation <ChevronDown size={14} style={{ marginLeft: '4px' }} />
+                  </Button>
+                </Menu.Trigger>
+                <Menu.Content
+                  bg="white"
+                  border="1px solid"
+                  borderColor="gray.200"
+                  boxShadow="lg"
+                  borderRadius="lg"
+                  py={2}
+                  minW="220px"
+                  position="absolute"
+                  top="100%"
+                  left={0}
+                  mt={1}
+                  zIndex={50}
+                >
+                  {newGenerationLinks.map((link) => (
+                    <Menu.Item
+                      key={link.href}
+                      value={link.href}
+                      asChild
+                    >
+                      <Link
+                        href={link.href}
+                        px={4}
+                        py={3}
+                        fontSize="sm"
+                        fontWeight="medium"
+                        color={link.color}
+                        _hover={{ bg: "gray.50", color: link.color }}
+                        _focus={{ bg: "gray.50", color: link.color }}
+                        transition="all 0.2s"
+                        textDecoration="none"
+                        display="block"
+                        {...(link.isExternal && { target: "_blank", rel: "noopener noreferrer" })}
                       >
                         {link.label}
                       </Link>
@@ -283,12 +320,12 @@ export function GlobalLayout({ children, transparentHeader = false }: { children
               </Link>
             ))}
           </Flex>
-          
+
           {/* Right CTAs */}
           <Flex align="center" gap={2} flex="0 0 auto" display={{ base: "none", lg: "flex" }}>
-            <Link 
-              href="https://rotaract.rotaryzcwest.org/?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=rotaract_referral" 
-              target="_blank" 
+            <Link
+              href="https://rotaract.rotaryzcwest.org/?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=rotaract_referral"
+              target="_blank"
               rel="noopener noreferrer"
               _hover={{ transform: "scale(1.02)", textDecoration: "none" }}
               transition="all 0.2s"
@@ -301,14 +338,14 @@ export function GlobalLayout({ children, transparentHeader = false }: { children
                 </Box>
               </Flex>
             </Link>
-            <Link 
-              href="https://www.rotary.org/en/get-involved/ways-to-give?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=foundation_giving" 
-              target="_blank" 
+            <Link
+              href="https://www.rotary.org/en/get-involved/ways-to-give?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=foundation_giving"
+              target="_blank"
               rel="noopener noreferrer"
-              bg="brand.500" 
-              color="white" 
-              _hover={{ bg: "brand.600", transform: "translateY(-1px)" }} 
-              py={3} 
+              bg="brand.500"
+              color="white"
+              _hover={{ bg: "brand.600", transform: "translateY(-1px)" }}
+              py={3}
               px={7}
               borderRadius="md"
               fontSize="sm"
@@ -339,12 +376,12 @@ export function GlobalLayout({ children, transparentHeader = false }: { children
         </Flex>
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <Box 
-            bg="blackAlpha.900" 
+          <Box
+            bg="blackAlpha.900"
             backdropFilter="blur(10px)"
-            px={6} 
-            py={4} 
-            display={{ md: "none" }} 
+            px={6}
+            py={4}
+            display={{ md: "none" }}
             borderTop="none"
           >
             {/* About Us Section */}
@@ -354,12 +391,12 @@ export function GlobalLayout({ children, transparentHeader = false }: { children
               </Text>
               {aboutUsLinks.map((link) => (
                 <Box key={link.href} mb={2} ml={2}>
-                  <Link 
-                    href={link.href} 
-                    fontWeight="medium" 
-                    color="gray.300" 
+                  <Link
+                    href={link.href}
+                    fontWeight="medium"
+                    color="gray.300"
                     fontSize="sm"
-                    _hover={{ color: "gold.400" }} 
+                    _hover={{ color: "gold.400" }}
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     {link.label}
@@ -367,25 +404,47 @@ export function GlobalLayout({ children, transparentHeader = false }: { children
                 </Box>
               ))}
             </Box>
-            
+
+            {/* New Generation Links */}
+            <Box mb={4}>
+              <Text fontWeight="bold" color="white" mb={2} fontSize="sm" textTransform="uppercase" letterSpacing="wider">
+                New Generation
+              </Text>
+              {newGenerationLinks.map((link) => (
+                <Box key={link.href} mb={2} ml={2}>
+                  <Link
+                    href={link.href}
+                    fontWeight="medium"
+                    color={link.color}
+                    fontSize="sm"
+                    _hover={{ color: "gold.400" }}
+                    onClick={() => setMobileMenuOpen(false)}
+                    {...(link.isExternal && { target: "_blank", rel: "noopener noreferrer" })}
+                  >
+                    {link.label}
+                  </Link>
+                </Box>
+              ))}
+            </Box>
+
             {/* Other Nav Links */}
             {mainNavLinks.map((link) => (
               <Box key={link.href} mb={2}>
-                <Link 
-                  href={link.href} 
-                  fontWeight="medium" 
-                  color="white" 
-                  _hover={{ color: "gold.400" }} 
+                <Link
+                  href={link.href}
+                  fontWeight="medium"
+                  color="white"
+                  _hover={{ color: "gold.400" }}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {link.label}
                 </Link>
               </Box>
             ))}
-            
-            <Link 
-              href="https://rotaract.rotaryzcwest.org/?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=rotaract_referral" 
-              target="_blank" 
+
+            <Link
+              href="https://rotaract.rotaryzcwest.org/?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=rotaract_referral"
+              target="_blank"
               rel="noopener noreferrer"
               _hover={{ transform: "scale(1.02)", textDecoration: "none" }}
               transition="all 0.2s"
@@ -400,15 +459,15 @@ export function GlobalLayout({ children, transparentHeader = false }: { children
                 </Box>
               </Flex>
             </Link>
-            <Link 
-              href="https://www.rotary.org/en/get-involved/ways-to-give?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=foundation_giving" 
-              target="_blank" 
+            <Link
+              href="https://www.rotary.org/en/get-involved/ways-to-give?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=foundation_giving"
+              target="_blank"
               rel="noopener noreferrer"
-              bg="brand.500" 
-              color="white" 
-              _hover={{ bg: "brand.600", transform: "translateY(-1px)" }} 
-              w="full" 
-              mt={2} 
+              bg="brand.500"
+              color="white"
+              _hover={{ bg: "brand.600", transform: "translateY(-1px)" }}
+              w="full"
+              mt={2}
               py={3}
               px={7}
               borderRadius="md"
@@ -438,15 +497,23 @@ export function GlobalLayout({ children, transparentHeader = false }: { children
             <Flex direction={{ base: "column", lg: "row" }} gap={12}>
               {/* Club Info Section */}
               <Box flex={2}>
-                <Flex align="center" gap={3} mb={6}>
+                <Flex direction="column" align="start" mb={6}>
                   <Image
                     src="/logo.png"
                     alt="Rotary Club Logo"
-                    width="60px"
-                    height="auto"
+                    width="100%"
+                    height={{ base: "120px", md: "150px" }}
                     objectFit="contain"
+                    objectPosition="center"
+                    flexShrink={0}
+                    bg="white"
+                    borderRadius="lg"
+                    mb={4}
+                    onError={(e) => {
+                      e.currentTarget.src = "/logo.png";
+                    }}
                   />
-                  <Box>
+                  <Box textAlign="left">
                     <Text fontSize="xl" fontWeight="bold" color="white" lineHeight="shorter">
                       Rotary Club of Zamboanga City
                     </Text>
@@ -458,16 +525,16 @@ export function GlobalLayout({ children, transparentHeader = false }: { children
                 <Text color="gray.300" lineHeight="relaxed" mb={6} maxW="400px">
                   Dedicated to serving our community through meaningful projects that create lasting positive change in Zamboanga City and beyond.
                 </Text>
-                
+
                 {/* Social Media */}
                 <Box>
                   <Text fontSize="sm" fontWeight="bold" color="white" mb={3} textTransform="uppercase" letterSpacing="wider">
                     Follow Us
                   </Text>
                   <Flex gap={4}>
-                    <Link 
-                      href="https://www.facebook.com/RCZCwest" 
-                      target="_blank" 
+                    <Link
+                      href={contactData?.contactInfo?.facebookUrl || "https://www.facebook.com/RCZCwest"}
+                      target="_blank"
                       rel="noopener noreferrer"
                       p={2}
                       borderRadius="lg"
@@ -504,7 +571,29 @@ export function GlobalLayout({ children, transparentHeader = false }: { children
                       {link.label}
                     </Link>
                   ))}
-                  
+
+                  {/* New Generation Links */}
+                  <Box mt={4}>
+                    <Text fontSize="xs" fontWeight="bold" color="gray.300" textTransform="uppercase" letterSpacing="wider">
+                      New Generation
+                    </Text>
+                    {newGenerationLinks.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        color="gray.300"
+                        fontSize="sm"
+                        display="block"
+                        mb={3}
+                        _hover={{ color: "brand.400", textDecoration: "none" }}
+                        transition="color 0.2s"
+                        {...(link.isExternal && { target: "_blank", rel: "noopener noreferrer" })}
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                  </Box>
+
                   {/* Main Nav Links */}
                   <Box mt={4}>
                     {mainNavLinks.map((link) => (
@@ -565,19 +654,23 @@ export function GlobalLayout({ children, transparentHeader = false }: { children
                     <MapPin size={16} color="white" style={{ marginTop: '2px', flexShrink: 0 }} />
                     <Box>
                       <Text color="gray.300" fontSize="sm" lineHeight="relaxed">
-                        Grand Astoria Hotel<br />
-                        914 Mayor Jaldon Street<br />
+                        {contactData?.meetingInfo?.location || "Grand Astoria Hotel"}<br />
+                        {contactData?.meetingInfo?.address || "914 Mayor Jaldon Street"}<br />
                         Zamboanga City, Philippines
                       </Text>
                     </Box>
                   </Flex>
                   <Flex align="center" gap={3}>
                     <Mail size={16} color="white" style={{ flexShrink: 0 }} />
-                    <Text color="gray.300" fontSize="sm">rotaryzcwest@gmail.com</Text>
+                    <Text color="gray.300" fontSize="sm">
+                      {contactData?.contactInfo?.email || "rotaryzcwest@gmail.com"}
+                    </Text>
                   </Flex>
                   <Flex align="center" gap={3}>
                     <Clock size={16} color="white" style={{ flexShrink: 0 }} />
-                    <Text color="gray.300" fontSize="sm">Every Tuesday, 6:00 PM</Text>
+                    <Text color="gray.300" fontSize="sm">
+                      {contactData?.meetingInfo ? `Every ${contactData.meetingInfo.day}, ${contactData.meetingInfo.time}` : "Every Tuesday, 6:00 PM"}
+                    </Text>
                   </Flex>
                 </Flex>
               </Box>
