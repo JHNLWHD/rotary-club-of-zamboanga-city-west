@@ -683,7 +683,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
           <Box maxWidth="1200px" mx="auto" px={{ base: 4, md: 8 }}>
             <Flex direction={{ base: "column", md: "row" }} align="center" justify="space-between" gap={4}>
               <Text fontSize="sm" color="gray.400" textAlign={{ base: "center", md: "left" }}>
-                © {new Date().getFullYear()} Rotary Club of Zamboanga City West. All rights reserved.
+                © 2025 Rotary Club of Zamboanga City West. All rights reserved.
               </Text>
               <Flex gap={6} align="center">
                 <Link href="/privacy" color="gray.400" fontSize="sm" _hover={{ color: "brand.400" }}>

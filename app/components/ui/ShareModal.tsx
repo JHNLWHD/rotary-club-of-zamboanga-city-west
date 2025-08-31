@@ -46,9 +46,24 @@ type ShareModalProps = {
 function ShareModal({ isOpen, onClose, content, contentType }: ShareModalProps) {
   if (!isOpen || !content) return null;
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(content.shareableLink);
-    toast.success(`${contentType === 'event' ? 'Event' : 'Project'} link copied to clipboard!`);
+  const copyToClipboard = async () => {
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        await navigator.clipboard.writeText(content.shareableLink);
+        toast.success(`${contentType === 'event' ? 'Event' : 'Project'} link copied to clipboard!`);
+      } else {
+        // Fallback for browsers without clipboard API
+        const textArea = document.createElement('textarea');
+        textArea.value = content.shareableLink;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        toast.success(`${contentType === 'event' ? 'Event' : 'Project'} link copied to clipboard!`);
+      }
+    } catch (error) {
+      toast.error('Failed to copy link to clipboard');
+    }
     onClose();
   };
 
