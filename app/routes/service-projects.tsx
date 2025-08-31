@@ -42,7 +42,7 @@ export function meta() {
     { property: "og:description", content: "Be inspired by service as our projects transform lives—addressing urgent needs with dedication, resilience, and compassion." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/service-projects" },
-    { property: "og:image", content: "https://rotaryzcwest.org/og-service-projects.jpg" },
+    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
     { property: "og:image:alt", content: "Rotary Club of Zamboanga City West service projects and community initiatives" },
     { property: "og:site_name", content: "Rotary Club of Zamboanga City West" },
     

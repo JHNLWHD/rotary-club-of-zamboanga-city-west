@@ -43,6 +43,30 @@ export async function loader({ request }: Route.LoaderArgs): Promise<LoaderData>
   }
 }
 
+export const meta: Route.MetaFunction = () => [
+  { title: "Rotary Club of Zamboanga City West | Service Above Self" },
+  { name: "description", content: "Rotary Club of Zamboanga City West serves our community through meaningful projects focused on peacebuilding, education, healthcare, clean water, and community development. Service Above Self since 1979." },
+  
+  // Open Graph fallback tags
+  { property: "og:title", content: "Rotary Club of Zamboanga City West | Service Above Self" },
+  { property: "og:description", content: "Rotary Club of Zamboanga City West serves our community through meaningful projects focused on peacebuilding, education, healthcare, clean water, and community development." },
+  { property: "og:type", content: "website" },
+  { property: "og:url", content: "https://rotaryzcwest.org" },
+  { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
+  { property: "og:image:width", content: "1200" },
+  { property: "og:image:height", content: "630" },
+  { property: "og:image:alt", content: "Rotary Club of Zamboanga City West community service projects" },
+  { property: "og:site_name", content: "Rotary Club of Zamboanga City West" },
+  { property: "og:locale", content: "en_US" },
+  
+  // Twitter Card fallback tags
+  { name: "twitter:card", content: "summary_large_image" },
+  { name: "twitter:title", content: "Rotary Club of Zamboanga City West | Service Above Self" },
+  { name: "twitter:description", content: "Rotary Club of Zamboanga City West serves our community through meaningful projects. Service Above Self since 1979." },
+  { name: "twitter:image", content: "https://rotaryzcwest.org/og-image.jpg" },
+  { name: "twitter:image:alt", content: "Rotary Club of Zamboanga City West community service projects" },
+];
+
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {

@@ -24,6 +24,7 @@ export function meta() {
     { property: "og:description", content: "Stories of fellowship, service, and impact shaping lives in Zamboanga City and beyond." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/the-fortress" },
+    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
     
     // Canonical URL
     { rel: "canonical", href: "https://rotaryzcwest.org/the-fortress" },

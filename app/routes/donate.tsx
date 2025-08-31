@@ -17,6 +17,7 @@ export function meta() {
     { property: "og:description", content: "Support our community service projects by making a donation." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/donate" },
+    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
     
     // Canonical URL
     { rel: "canonical", href: "https://rotaryzcwest.org/donate" },

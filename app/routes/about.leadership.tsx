@@ -59,6 +59,7 @@ export function meta() {
     { property: "og:description", content: "Meet the visionary leaders guiding our club's mission of Service Above Self." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/about/leadership" },
+    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
     
     // Canonical URL
     { rel: "canonical", href: "https://rotaryzcwest.org/about/leadership" },

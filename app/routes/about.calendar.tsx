@@ -84,6 +84,7 @@ export function meta() {
     { property: "og:description", content: "Stay connected with our events, regular meetings, and community service projects throughout the year." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/about/calendar" },
+    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
 
     // Canonical URL
     { rel: "canonical", href: "https://rotaryzcwest.org/about/calendar" },

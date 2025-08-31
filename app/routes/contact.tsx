@@ -15,6 +15,7 @@ export function meta() {
     { property: "og:description", content: "Get in touch with Rotary Club of Zamboanga City West." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/contact" },
+    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
     
     // Canonical URL
     { rel: "canonical", href: "https://rotaryzcwest.org/contact" },

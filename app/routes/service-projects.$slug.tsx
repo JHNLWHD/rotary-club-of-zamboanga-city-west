@@ -93,7 +93,7 @@ export function meta({ data }: Route.MetaArgs) {
     { property: "og:description", content: project.shortDescription },
     { property: "og:type", content: "article" },
     { property: "og:url", content: `https://rotaryzcwest.org${project.slug}` },
-    { property: "og:image", content: project.headerImage?.url || "https://rotaryzcwest.org/logo.png" },
+    { property: "og:image", content: project.headerImage?.url || "https://rotaryzcwest.org/og-image.jpg" },
     
     // Canonical URL
     { rel: "canonical", href: `https://rotaryzcwest.org${project.slug}` },

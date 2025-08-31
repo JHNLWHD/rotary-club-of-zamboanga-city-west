@@ -17,6 +17,7 @@ export function meta() {
     { property: "og:description", content: "Discover the rich history of Rotary Club of Zamboanga City West, founded in 1979." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/about/history" },
+    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
 
     // Canonical URL
     { rel: "canonical", href: "https://rotaryzcwest.org/about/history" },

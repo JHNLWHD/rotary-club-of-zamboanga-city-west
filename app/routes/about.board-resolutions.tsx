@@ -87,6 +87,7 @@ export function meta() {
     { property: "og:description", content: "Access official board resolutions and governance documents of our Rotary club." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/about/board-resolutions" },
+    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
     
     // Canonical URL
     { rel: "canonical", href: "https://rotaryzcwest.org/about/board-resolutions" },
