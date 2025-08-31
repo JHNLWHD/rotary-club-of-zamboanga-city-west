@@ -780,7 +780,7 @@ export default function TheFortress() {
                   >
                     <Page
                       pageNumber={pageNumber}
-                      width={typeof window !== 'undefined' ? Math.min(window.innerWidth * 0.8, 800) : 800}
+                      width={800}
                       renderAnnotationLayer={false}
                       renderTextLayer={false}
                       loading={
