@@ -685,17 +685,6 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
               <Text fontSize="sm" color="gray.400" textAlign={{ base: "center", md: "left" }}>
                 © 2025 Rotary Club of Zamboanga City West. All rights reserved.
               </Text>
-              <Flex gap={6} align="center">
-                <Link href="/privacy" color="gray.400" fontSize="sm" _hover={{ color: "brand.400" }}>
-                  Privacy Policy
-                </Link>
-                <Link href="/terms" color="gray.400" fontSize="sm" _hover={{ color: "brand.400" }}>
-                  Terms of Service
-                </Link>
-                <Link href="/sitemap" color="gray.400" fontSize="sm" _hover={{ color: "brand.400" }}>
-                  Sitemap
-                </Link>
-              </Flex>
             </Flex>
           </Box>
         </Box>
