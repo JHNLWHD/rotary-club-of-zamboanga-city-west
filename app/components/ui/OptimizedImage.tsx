@@ -11,6 +11,7 @@ type OptimizedImageProps = ChakraImageProps & {
   width?: number;
   height?: number;
   priority?: boolean;
+  disableOptimization?: boolean; // Add option to disable optimization
 };
 
 function OptimizedImageComponent({
@@ -22,6 +23,7 @@ function OptimizedImageComponent({
   width,
   height,
   priority = false,
+  disableOptimization = false,
   ...props
 }: OptimizedImageProps) {
   const [isImageLoaded, setIsImageLoaded] = useState(!lazy || priority);
@@ -59,34 +61,58 @@ function OptimizedImageComponent({
     setHasImageError(false);
   };
 
-  const handleImageError = () => {
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    console.warn('Image failed to load:', src, 'Optimized URL:', getOptimizedImageUrl(src));
     setHasImageError(true);
     setIsImageLoaded(true);
-    if (imageRef.current && fallbackSrc) {
+    
+    // Try fallback image
+    if (imageRef.current && fallbackSrc && fallbackSrc !== src) {
       imageRef.current.src = fallbackSrc;
     }
   };
 
   // Generate optimized image URL for Contentful images
   const getOptimizedImageUrl = (originalSrc: string) => {
-    if (!originalSrc.includes('images.ctfassets.net')) {
+    if (!originalSrc) {
       return originalSrc;
     }
 
-    const url = new URL(originalSrc);
-    const params = new URLSearchParams();
-    
-    if (width) params.set('w', width.toString());
-    if (height) params.set('h', height.toString());
-    if (quality) params.set('q', quality.toString());
-    params.set('f', 'webp'); // Use WebP format for better compression
-    params.set('fit', 'fill'); // Ensure proper fitting
+    // For non-Contentful images, return as-is
+    if (!originalSrc.includes('images.ctfassets.net') && !originalSrc.includes('ctfassets.net')) {
+      return originalSrc;
+    }
 
-    url.search = params.toString();
-    return url.toString();
+    try {
+      // Handle Contentful URLs that might not have protocol
+      const fullUrl = originalSrc.startsWith('//') ? `https:${originalSrc}` : originalSrc;
+      
+      // Simple approach: just add basic optimization params to the URL
+      const separator = fullUrl.includes('?') ? '&' : '?';
+      let optimizedUrl = fullUrl;
+      
+      const params = [];
+      if (width) params.push(`w=${width}`);
+      if (height) params.push(`h=${height}`);
+      if (quality && quality !== 75) params.push(`q=${quality}`); // Only add if different from default
+      
+      // Only add format optimization for larger images
+      if (width && width > 200) {
+        params.push('f=webp');
+      }
+      
+      if (params.length > 0) {
+        optimizedUrl = `${fullUrl}${separator}${params.join('&')}`;
+      }
+      
+      return optimizedUrl;
+    } catch (error) {
+      console.warn('Failed to optimize image URL:', originalSrc, error);
+      return originalSrc; // Return original URL if optimization fails
+    }
   };
 
-  const optimizedSrc = getOptimizedImageUrl(src);
+  const optimizedSrc = disableOptimization ? src : getOptimizedImageUrl(src);
   const shouldShowImage = isImageInView;
 
   return (
