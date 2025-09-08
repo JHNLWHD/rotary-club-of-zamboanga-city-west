@@ -20,3 +20,7 @@ force = false
 # Environment settings
 [build.environment]
 NODE_VERSION = "18"
+
+# Forms configuration
+[forms]
+settings = { autodetect = true }

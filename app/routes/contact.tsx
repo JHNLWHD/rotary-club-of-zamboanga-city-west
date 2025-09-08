@@ -2,7 +2,15 @@ import { Box, Container } from "@chakra-ui/react";
 import { ContactSection } from "../components/homepage/ContactSection";
 import { ComingSoon } from "../components/ui/ComingSoon";
 import { useRouteLoaderData } from "react-router";
+import { redirect } from "react-router";
+import type { ActionFunctionArgs } from "react-router";
 import type { ContactInfo, MeetingInfo } from "~/lib/contentful-types";
+
+export async function action({ request }: ActionFunctionArgs) {
+  // Handle form submission - Netlify will process the form data
+  // We just need to redirect to the thank you page
+  return redirect("/thank-you");
+}
 
 export function meta() {
   return [
