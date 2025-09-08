@@ -95,9 +95,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
   const navTextShadow = transparentHeader ? "0 1px 3px rgba(0,0,0,0.7)" : undefined;
   const navHoverColor = transparentHeader ? undefined : "brand.500";
   const navHoverBg = transparentHeader ? "whiteAlpha.200" : "gray.100";
-  const clubNameColor = transparentHeader ? "white" : "brand.500";
-  const clubNameShadow = transparentHeader ? "0 2px 4px rgba(0,0,0,0.7)" : undefined;
-
+  
   const location = useLocation();
   const isHomePage = location.pathname === "/" || location.pathname === "/home";
 
