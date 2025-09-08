@@ -363,12 +363,18 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
         {mobileMenuOpen && (
           <Box
             bg="white"
-            boxShadow="lg"
+            position="fixed"
+            top="80px"
+            left={0}
+            right={0}
+            bottom={0}
+            zIndex={30}
             px={6}
-            py={4}
+            py={6}
             display={{ base: "none", sm: "block", xl: "none" }}
             borderTop="1px solid"
             borderColor="gray.200"
+            overflowY="auto"
           >
             {/* About Us Section */}
             <Box mb={4}>
