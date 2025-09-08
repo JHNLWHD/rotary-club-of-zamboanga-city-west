@@ -134,7 +134,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
               flexShrink={0}
             />
             <Text
-              color={transparentHeader ? "white" : "gray.700"}
+              color={transparentHeader ? "white" : "black"}
               fontSize={{ base: "sm", md: "md" }}
               fontWeight="semibold"
               display={{ base: "none", md: "block" }}
@@ -362,16 +362,17 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <Box
-            bg="blackAlpha.900"
-            backdropFilter="blur(10px)"
+            bg="white"
+            boxShadow="lg"
             px={6}
             py={4}
             display={{ base: "none", sm: "block", xl: "none" }}
-            borderTop="none"
+            borderTop="1px solid"
+            borderColor="gray.200"
           >
             {/* About Us Section */}
             <Box mb={4}>
-              <Text fontWeight="bold" color="white" mb={2} fontSize="sm" textTransform="uppercase" letterSpacing="wider">
+              <Text fontWeight="bold" color="black" mb={2} fontSize="sm" textTransform="uppercase" letterSpacing="wider">
                 About Us
               </Text>
               {aboutUsLinks.map((link) => (
@@ -379,9 +380,9 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
                   <Link
                     href={link.href}
                     fontWeight="medium"
-                    color="gray.300"
+                    color="black"
                     fontSize="sm"
-                    _hover={{ color: "gold.400" }}
+                    _hover={{ color: "brand.500" }}
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     {link.label}
@@ -392,7 +393,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
 
             {/* New Generation Links */}
             <Box mb={4}>
-              <Text fontWeight="bold" color="white" mb={2} fontSize="sm" textTransform="uppercase" letterSpacing="wider">
+              <Text fontWeight="bold" color="black" mb={2} fontSize="sm" textTransform="uppercase" letterSpacing="wider">
                 New Generation
               </Text>
               {newGenerationLinks.map((link) => (
@@ -402,7 +403,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
                     fontWeight="medium"
                     color={link.color}
                     fontSize="sm"
-                    _hover={{ color: "gold.400" }}
+                    _hover={{ color: "brand.500" }}
                     onClick={() => setMobileMenuOpen(false)}
                     {...(link.isExternal && { target: "_blank", rel: "noopener noreferrer" })}
                   >
@@ -418,8 +419,8 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
                 <Link
                   href={link.href}
                   fontWeight="medium"
-                  color="white"
-                  _hover={{ color: "gold.400" }}
+                  color="black"
+                  _hover={{ color: "brand.500" }}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {link.label}
