@@ -324,21 +324,6 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
           {/* Right CTAs */}
           <Flex align="center" gap={2} flex="0 0 auto" display={{ base: "none", lg: "flex" }}>
             <Link
-              href="https://rotaract.rotaryzcwest.org/?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=rotaract_referral"
-              target="_blank"
-              rel="noopener noreferrer"
-              _hover={{ transform: "scale(1.02)", textDecoration: "none" }}
-              transition="all 0.2s"
-            >
-              <Flex align="center" bg="gold.100" borderRadius="md" px={2} py={3} gap={2} minW="140px">
-                <Heart size={18} color="#f7a81b" fill="#f7a81b" />
-                <Box>
-                  <Text fontSize="9px" color="gray.700" lineHeight={1.1}>Visit Now</Text>
-                  <Text fontWeight="bold" color="brand.500" fontSize="11px" lineHeight={1.1}>Visit Rotaract Site</Text>
-                </Box>
-              </Flex>
-            </Link>
-            <Link
               href="https://www.rotary.org/en/get-involved/ways-to-give?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=foundation_giving"
               target="_blank"
               rel="noopener noreferrer"
@@ -442,23 +427,6 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
               </Box>
             ))}
 
-            <Link
-              href="https://rotaract.rotaryzcwest.org/?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=rotaract_referral"
-              target="_blank"
-              rel="noopener noreferrer"
-              _hover={{ transform: "scale(1.02)", textDecoration: "none" }}
-              transition="all 0.2s"
-              display="block"
-              mb={2}
-            >
-              <Flex align="center" bg="gold.100" borderRadius="md" px={2} py={3} gap={2} minW="140px">
-                <Heart size={18} color="#f7a81b" fill="#f7a81b" />
-                <Box>
-                  <Text fontSize="9px" color="gray.700" lineHeight={1.1}>Visit Now</Text>
-                  <Text fontWeight="bold" color="brand.500" fontSize="11px" lineHeight={1.1}>Visit Rotaract Site</Text>
-                </Box>
-              </Flex>
-            </Link>
             <Link
               href="https://www.rotary.org/en/get-involved/ways-to-give?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=foundation_giving"
               target="_blank"
