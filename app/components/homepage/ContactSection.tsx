@@ -36,9 +36,9 @@ export function ContactSection({ meetingInfo, contactInfo }: ContactSectionProps
               method="POST"
               data-netlify="true"
               data-netlify-honeypot="bot-field"
-              action="/contact?success=true"
             >
               <input type="hidden" name="form-name" value="contact" />
+              <input type="hidden" name="_redirect" value="/contact?success=true" />
               
               <Box display="none">
                 <label>
