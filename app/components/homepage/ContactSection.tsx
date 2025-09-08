@@ -34,6 +34,7 @@ export function ContactSection({ meetingInfo, contactInfo }: ContactSectionProps
             <form
               name="contact"
               method="POST"
+              action="/thank-you"
               data-netlify="true"
               data-netlify-honeypot="bot-field"
             >

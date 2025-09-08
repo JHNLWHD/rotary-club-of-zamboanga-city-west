@@ -10,12 +10,21 @@ command = "npm run dev"
 directory = "build/server"
 node_bundler = "esbuild"
 
-# Serve static assets first, then fallback to SSR
+# Handle form submissions first (before SSR)
+[[redirects]]
+from = "/thank-you"
+to = "/thank-you"
+status = 200
+force = false
+conditions = {Method = ["POST"]}
+
+# Serve static assets first, then fallback to SSR  
 [[redirects]]
 from = "/*"
 to = "/.netlify/functions/server"
 status = 200
 force = false
+conditions = {Method = ["GET", "HEAD"]}
 
 # Environment settings
 [build.environment]

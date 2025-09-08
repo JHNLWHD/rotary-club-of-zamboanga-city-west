@@ -4,7 +4,6 @@ import { ComingSoon } from "../components/ui/ComingSoon";
 import { useRouteLoaderData, useSearchParams } from "react-router";
 import { CheckCircle, Home } from "lucide-react";
 import type { ContactInfo, MeetingInfo } from "~/lib/contentful-types";
-import { redirect } from "react-router";
 
 export function meta() {
   return [
@@ -24,12 +23,10 @@ export function meta() {
   ];
 }
 
-// Handle form submission - Netlify will process the form data
-export async function action() {
-  // Netlify will handle the form processing automatically
-  // We just redirect to thank-you to show confirmation
-  return redirect("/thank-you");
-}
+// Remove the action function to let Netlify handle the form submission directly
+// export async function action() {
+//   return redirect("/thank-you");
+// }
 
 export default function Contact() {
   const [searchParams] = useSearchParams();
