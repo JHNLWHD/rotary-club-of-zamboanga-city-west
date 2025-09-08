@@ -7,15 +7,7 @@ import {
   Link,
   Container,
 } from "@chakra-ui/react";
-import { CheckCircle, Home, Mail } from "lucide-react";
-import { redirect } from "react-router";
-import type { ActionFunctionArgs } from "react-router";
-
-export async function action({ request }: ActionFunctionArgs) {
-  // Handle form submission and redirect to GET request
-  // Netlify will process the form data, we just need to handle the redirect
-  return redirect("/thank-you");
-}
+import { CheckCircle, Home } from "lucide-react";
 
 export function meta() {
   return [
