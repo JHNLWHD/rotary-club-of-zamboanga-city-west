@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Box, 
   Button, 
@@ -44,6 +44,12 @@ type ShareModalProps = {
 };
 
 function ShareModal({ isOpen, onClose, content, contentType }: ShareModalProps) {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   if (!isOpen || !content) return null;
 
   const copyToClipboard = async () => {
@@ -68,6 +74,11 @@ function ShareModal({ isOpen, onClose, content, contentType }: ShareModalProps) 
   };
 
   const formatDate = (date: string) => {
+    // Ensure consistent date formatting for hydration
+    if (!isMounted) {
+      // Return a consistent fallback for SSR
+      return 'Loading...';
+    }
     return new Date(date).toLocaleDateString('en-US', { 
       year: 'numeric', 
       month: 'long', 

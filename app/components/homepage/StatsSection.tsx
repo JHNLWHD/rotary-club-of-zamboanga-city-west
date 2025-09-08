@@ -1,8 +1,15 @@
 import { Box, SimpleGrid, Text } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
 import type { StatItem } from "~/lib/contentful-types";
 import { AnimatedStat } from "../ui/AnimatedStat";
 
-export function StatsSection({ stats }: { stats: StatItem[] }): JSX.Element {
+export function StatsSection({ stats }: { stats: StatItem[] }): React.JSX.Element {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   if (!stats?.length) {
     return (
       <Box as="section" py={20} bgGradient="linear(to-b, gray.50, white)" id="stats">
@@ -26,7 +33,10 @@ export function StatsSection({ stats }: { stats: StatItem[] }): JSX.Element {
               if (stat.endValue >= 1000000) {
                 formattedValue = `₱${(stat.endValue / 1000000).toFixed(0)}M${stat.suffix}`;
               } else {
-                formattedValue = `₱${stat.endValue.toLocaleString()}${stat.suffix}`;
+                // Use consistent formatting for hydration
+                formattedValue = isMounted 
+                  ? `₱${stat.endValue.toLocaleString()}${stat.suffix}`
+                  : `₱${stat.endValue}${stat.suffix}`;
               }
             }
 

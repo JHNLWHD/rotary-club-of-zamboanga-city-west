@@ -7,7 +7,7 @@ type EventsSectionProps = {
   events: Event[];
 };
 
-export function EventsSection({ events }: EventsSectionProps): JSX.Element {
+export function EventsSection({ events }: EventsSectionProps): React.JSX.Element {
   return (
     <Box as="section" py={20} bgGradient="linear(to-b, gray.50, white)" id="events">
       <Box maxW="1200px" mx="auto" px={{ base: 4, md: 8 }}>
