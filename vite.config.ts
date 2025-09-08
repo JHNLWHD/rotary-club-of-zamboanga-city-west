@@ -18,24 +18,28 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          chakra: ['@chakra-ui/react', '@emotion/react'],
-          contentful: ['contentful', '@contentful/rich-text-html-renderer'],
-          utils: ['lucide-react', 'keen-slider', 'slugify'],
-          icons: ['react-icons'],
-          pdf: ['pdfjs-dist', 'react-pdf'],
+        manualChunks: (id) => {
+          // Group Chakra UI and Emotion together
+          if (id.includes('@chakra-ui') || id.includes('@emotion')) {
+            return 'chakra';
+          }
+          // Group Contentful related packages
+          if (id.includes('contentful')) {
+            return 'contentful';
+          }
+          // Group utility libraries
+          if (id.includes('lucide-react') || id.includes('keen-slider') || id.includes('slugify')) {
+            return 'utils';
+          }
+          // Group PDF related packages
+          if (id.includes('pdfjs-dist') || id.includes('react-pdf')) {
+            return 'pdf';
+          }
+          // Let other packages be handled automatically
+          return null;
         },
       },
     },
     chunkSizeWarningLimit: 1000,
-  },
-  optimizeDeps: {
-    include: [
-      '@chakra-ui/react', 
-      '@emotion/react',
-      'contentful',
-      'lucide-react',
-      'keen-slider/react'
-    ],
   },
 });
