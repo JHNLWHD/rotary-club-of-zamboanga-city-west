@@ -58,185 +58,170 @@ function ButtonLink({ href, children, ...props }: { href: string; children: Reac
 
 export default function ThankYou() {
   return (
-    <Container maxW="800px" py={{ base: 12, md: 20 }}>
-      <Stack gap={8} textAlign="center" align="center">
-        {/* Success Icon */}
-        <Box
-          bg="green.100"
-          borderRadius="full"
-          p={6}
-          border="3px solid"
-          borderColor="green.400"
-        >
-          <CheckCircle size={64} color="#38A169" />
-        </Box>
+    <Box py={{ base: 16, md: 24, lg: 32 }} minH="100vh" display="flex" alignItems="center">
+      <Container maxW="800px" py={{ base: 8, md: 12 }}>
+        <Stack gap={{ base: 8, md: 12 }} textAlign="center" align="center">
+          {/* Success Icon */}
+          <Box
+            bg="green.100"
+            borderRadius="full"
+            p={{ base: 6, md: 8 }}
+            border="3px solid"
+            borderColor="green.400"
+            mt={{ base: 4, md: 8 }}
+          >
+            <CheckCircle size={64} color="#38A169" />
+          </Box>
 
-        {/* Success Message */}
-        <Stack gap={4} align="center">
-          <Heading 
-            as="h1" 
-            fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }} 
-            fontWeight="bold" 
-            color="gray.900"
-            lineHeight="shorter"
+          {/* Success Message */}
+          <Stack gap={{ base: 4, md: 6 }} align="center">
+            <Heading 
+              as="h1" 
+              fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }} 
+              fontWeight="bold" 
+              color="gray.900"
+              lineHeight="shorter"
+            >
+              Thank You!
+            </Heading>
+            <Heading 
+              as="h2" 
+              fontSize={{ base: "xl", md: "2xl" }} 
+              fontWeight="bold" 
+              color="green.600"
+              lineHeight="shorter"
+            >
+              Your Message Has Been Sent
+            </Heading>
+            <Text 
+              fontSize={{ base: "lg", md: "xl" }} 
+              color="gray.600" 
+              maxW="600px" 
+              lineHeight="relaxed"
+              px={{ base: 4, md: 0 }}
+            >
+              Thank you for reaching out to Rotary Club of Zamboanga City West! We've received your message and will respond within 7 days.
+            </Text>
+          </Stack>
+
+          {/* Action Buttons */}
+          <Box mt={{ base: 4, md: 6 }}>
+            <ButtonLink 
+              href="/home"
+              bg="brand.500"
+              color="white"
+              _hover={{ bg: "brand.600" }}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              gap={2}
+              px={8}
+              py={4}
+              fontSize="lg"
+              mx="auto"
+            >
+              <Flex alignItems="center" justifyContent="center">
+                <Home size={20} />
+              </Flex>
+              Back to Homepage
+            </ButtonLink>
+          </Box>
+
+          {/* What's Next Section */}
+          <Box 
+            bg="blue.50" 
+            p={{ base: 6, md: 8 }} 
+            borderRadius="xl" 
+            border="1px solid" 
+            borderColor="blue.200"
+            w="full" 
+            maxW="500px"
+            mt={{ base: 8, md: 12 }}
+            mx={{ base: 4, md: 0 }}
           >
-            Thank You!
-          </Heading>
-          <Heading 
-            as="h2" 
-            fontSize={{ base: "xl", md: "2xl" }} 
-            fontWeight="bold" 
-            color="green.600"
-            lineHeight="shorter"
-          >
-            Your Message Has Been Sent
-          </Heading>
+            <Text fontSize="lg" fontWeight="bold" color="gray.900" mb={4} textAlign="center">
+              What happens next?
+            </Text>
+            
+              <Stack gap={3} textAlign="left">
+                <Flex align="center" gap={3}>
+                  <Box 
+                    bg="blue.500" 
+                    color="white" 
+                    borderRadius="full" 
+                    w={8} 
+                    h={8} 
+                    display="flex" 
+                    alignItems="center" 
+                    justifyContent="center" 
+                    fontSize="sm" 
+                    fontWeight="bold"
+                    flexShrink={0}
+                  >
+                    1
+                  </Box>
+                  <Text color="gray.700" fontSize="sm">
+                    We'll review your message and determine the best person to respond
+                  </Text>
+                </Flex>
+                
+                <Flex align="center" gap={3}>
+                  <Box 
+                    bg="blue.500" 
+                    color="white" 
+                    borderRadius="full" 
+                    w={8} 
+                    h={8} 
+                    display="flex" 
+                    alignItems="center" 
+                    justifyContent="center" 
+                    fontSize="sm" 
+                    fontWeight="bold"
+                    flexShrink={0}
+                  >
+                    2
+                  </Box>
+                  <Text color="gray.700" fontSize="sm">
+                    You'll receive a personalized response within 7 days
+                  </Text>
+                </Flex>
+                
+                <Flex align="center" gap={3}>
+                  <Box 
+                    bg="blue.500" 
+                    color="white" 
+                    borderRadius="full" 
+                    w={8} 
+                    h={8} 
+                    display="flex" 
+                    alignItems="center" 
+                    justifyContent="center" 
+                    fontSize="sm" 
+                    fontWeight="bold"
+                    flexShrink={0}
+                  >
+                    3
+                  </Box>
+                  <Text color="gray.700" fontSize="sm">
+                    We'll invite you to learn more about our community projects
+                  </Text>
+                </Flex>
+              </Stack>
+            </Box>
+
+          {/* Footer Message */}
           <Text 
-            fontSize={{ base: "lg", md: "xl" }} 
-            color="gray.600" 
-            maxW="600px" 
-            lineHeight="relaxed"
+            fontSize="sm" 
+            color="gray.500" 
+            textAlign="center" 
+            maxW="400px"
+            px={{ base: 4, md: 0 }}
+            mt={{ base: 4, md: 6 }}
           >
-            Thank you for reaching out to Rotary Club of Zamboanga City West! We've received your message and will respond within 24 hours.
+            Thank you for your interest in Rotary Club of Zamboanga City West. Together, we can make a difference in our community!
           </Text>
         </Stack>
-
-        {/* Action Buttons */}
-        <Box>
-          <ButtonLink 
-            href="/home"
-            bg="brand.500"
-            color="white"
-            _hover={{ bg: "brand.600" }}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            gap={2}
-            px={8}
-            py={4}
-            fontSize="lg"
-            mx="auto"
-          >
-            <Flex alignItems="center" justifyContent="center">
-              <Home size={20} />
-            </Flex>
-            Back to Homepage
-          </ButtonLink>
-        </Box>
-
-        {/* What's Next Section */}
-        <Box 
-          bg="blue.50" 
-          p={8} 
-          borderRadius="xl" 
-          border="1px solid" 
-          borderColor="blue.200"
-          w="full" 
-          maxW="500px"
-          mt={8}
-        >
-          <Text fontSize="lg" fontWeight="bold" color="gray.900" mb={4} textAlign="center">
-            What happens next?
-          </Text>
-          
-          <Stack gap={3} textAlign="left">
-            <Flex align="center" gap={3}>
-              <Box 
-                bg="blue.500" 
-                color="white" 
-                borderRadius="full" 
-                w={8} 
-                h={8} 
-                display="flex" 
-                alignItems="center" 
-                justifyContent="center" 
-                fontSize="sm" 
-                fontWeight="bold"
-                flexShrink={0}
-              >
-                1
-              </Box>
-              <Text color="gray.700" fontSize="sm">
-                We'll review your message and determine the best person to respond
-              </Text>
-            </Flex>
-            
-            <Flex align="center" gap={3}>
-              <Box 
-                bg="blue.500" 
-                color="white" 
-                borderRadius="full" 
-                w={8} 
-                h={8} 
-                display="flex" 
-                alignItems="center" 
-                justifyContent="center" 
-                fontSize="sm" 
-                fontWeight="bold"
-                flexShrink={0}
-              >
-                2
-              </Box>
-              <Text color="gray.700" fontSize="sm">
-                You'll receive a personalized response within 24 hours
-              </Text>
-            </Flex>
-            
-            <Flex align="center" gap={3}>
-              <Box 
-                bg="blue.500" 
-                color="white" 
-                borderRadius="full" 
-                w={8} 
-                h={8} 
-                display="flex" 
-                alignItems="center" 
-                justifyContent="center" 
-                fontSize="sm" 
-                fontWeight="bold"
-                flexShrink={0}
-              >
-                3
-              </Box>
-              <Text color="gray.700" fontSize="sm">
-                We'll invite you to learn more about our community projects
-              </Text>
-            </Flex>
-          </Stack>
-        </Box>
-
-        {/* Contact Alternative */}
-        <Box 
-          bg="gray.50" 
-          p={6} 
-          borderRadius="xl" 
-          border="1px solid" 
-          borderColor="gray.200"
-          w="full" 
-          maxW="400px"
-        >
-          <Text fontSize="md" fontWeight="bold" color="gray.900" mb={4} textAlign="center">
-            Need immediate assistance?
-          </Text>
-          
-          <Stack gap={3}>
-            <Flex align="center" gap={3} justify="center">
-              <Mail size={18} color="#3182CE" />
-              <Text color="gray.700" fontSize="sm">rotaryzcwest@gmail.com</Text>
-            </Flex>
-            
-            <Flex align="center" gap={3} justify="center">
-              <Box as="span" fontSize="18px" color="#3182CE">📞</Box>
-              <Text color="gray.700" fontSize="sm">0926 430 4580</Text>
-            </Flex>
-          </Stack>
-        </Box>
-
-        {/* Footer Message */}
-        <Text fontSize="sm" color="gray.500" textAlign="center" maxW="400px">
-          Thank you for your interest in Rotary Club of Zamboanga City West. Together, we can make a difference in our community!
-        </Text>
-      </Stack>
-    </Container>
+      </Container>
+    </Box>
   );
 } 
