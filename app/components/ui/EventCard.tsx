@@ -1,13 +1,15 @@
-import { Box, Text, Image, Heading } from "@chakra-ui/react";
+import { Box, Text, Heading } from "@chakra-ui/react";
 import { ButtonLink } from "./ButtonLink";
+import { OptimizedImage } from "./OptimizedImage";
 import type { Event } from "~/lib/contentful-types";
+import { memo } from "react";
 
 type EventCardProps = {
   event: Event;
   showLearnMoreButton?: boolean;
 };
 
-export function EventCard({ event, showLearnMoreButton = true }: EventCardProps): React.JSX.Element {
+function EventCardComponent({ event, showLearnMoreButton = true }: EventCardProps): React.JSX.Element {
   return (
     <Box
       as="article"
@@ -27,15 +29,17 @@ export function EventCard({ event, showLearnMoreButton = true }: EventCardProps)
       flexDirection="column"
     >
       <Box position="relative" flexShrink={0}>
-        <Image
+        <OptimizedImage
           src={event.image?.url || "/logo.png"}
           alt={`${event.title} - Rotary event in Zamboanga City`}
-          width="100%"
-          height="240px"
+          w="100%"
+          h="240px"
           objectFit="cover"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = "/logo.png";
-          }}
+          width={400}
+          height={240}
+          fallbackSrc="/logo.png"
+          lazy={true}
+          quality={80}
         />
         {event.isFeatured && (
           <Box
@@ -101,3 +105,5 @@ export function EventCard({ event, showLearnMoreButton = true }: EventCardProps)
     </Box>
   );
 }
+
+export const EventCard = memo(EventCardComponent);

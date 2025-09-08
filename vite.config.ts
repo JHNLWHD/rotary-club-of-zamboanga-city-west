@@ -15,4 +15,28 @@ export default defineConfig({
   ssr: {
     external: ["posthog-js", "posthog-js/react"],
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          chakra: ['@chakra-ui/react', '@emotion/react'],
+          contentful: ['contentful', '@contentful/rich-text-html-renderer'],
+          utils: ['lucide-react', 'keen-slider', 'slugify'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000,
+  },
+  optimizeDeps: {
+    include: [
+      'react', 
+      'react-dom', 
+      '@chakra-ui/react', 
+      '@emotion/react',
+      'contentful',
+      'lucide-react',
+      'keen-slider/react'
+    ],
+  },
 });

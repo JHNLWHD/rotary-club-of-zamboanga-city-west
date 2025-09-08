@@ -1,7 +1,8 @@
-import { Box, Heading, Text, Image } from "@chakra-ui/react";
+import { Box, Heading, Text } from "@chakra-ui/react";
 import type { Officer } from "~/lib/contentful-types";
 import { Users } from "lucide-react";
-import { useState } from "react";
+import { useState, memo, useMemo } from "react";
+import { OptimizedImage } from "./OptimizedImage";
 
 type OfficerCardProps = {
   officer: Officer;
@@ -9,34 +10,35 @@ type OfficerCardProps = {
   colorScheme?: "brand" | "cranberry" | "interact";
 };
 
-export function OfficerCard({ 
+function OfficerCardComponent({ 
   officer, 
   colorScheme = "brand" 
 }: OfficerCardProps): React.JSX.Element {
   const [imageLoadError, setImageLoadError] = useState(false);
   
-  const colors = {
-    brand: {
-      primary: "#005DAA",
-      border: "brand.500",
-      text: "brand.500",
-      bg: "blue.50"
-    },
-    cranberry: {
-      primary: "#d41367",
-      border: "cranberry.500",
-      text: "cranberry.500", 
-      bg: "cranberry.50"
-    },
-    interact: {
-      primary: "#3b82f6",
-      border: "interact.500",
-      text: "interact.500",
-      bg: "interact.50"
-    }
-  };
-  
-  const currentColors = colors[colorScheme];
+  const currentColors = useMemo(() => {
+    const colors = {
+      brand: {
+        primary: "#005DAA",
+        border: "brand.500",
+        text: "brand.500",
+        bg: "blue.50"
+      },
+      cranberry: {
+        primary: "#d41367",
+        border: "cranberry.500",
+        text: "cranberry.500", 
+        bg: "cranberry.50"
+      },
+      interact: {
+        primary: "#3b82f6",
+        border: "interact.500",
+        text: "interact.500",
+        bg: "interact.50"
+      }
+    };
+    return colors[colorScheme];
+  }, [colorScheme]);
   
   return (
     <Box
@@ -71,12 +73,16 @@ export function OfficerCard({
           overflow="hidden"
         >
           {officer.photo?.url && !imageLoadError ? (
-            <Image
+            <OptimizedImage
               src={officer.photo.url}
               alt={officer.name}
               boxSize="100%"
               objectFit="cover"
+              width={100}
+              height={100}
+              fallbackSrc=""
               onError={() => setImageLoadError(true)}
+              borderRadius="full"
             />
           ) : (
             <Users size={40} color={currentColors.primary} />
@@ -97,3 +103,5 @@ export function OfficerCard({
     </Box>
   );
 }
+
+export const OfficerCard = memo(OfficerCardComponent);

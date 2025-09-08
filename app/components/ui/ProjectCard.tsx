@@ -1,9 +1,11 @@
-import { Box, Text, Image, Flex, Heading } from "@chakra-ui/react";
+import { Box, Text, Flex, Heading } from "@chakra-ui/react";
 import { ButtonLink } from "./ButtonLink";
+import { OptimizedImage } from "./OptimizedImage";
 import type { Project } from "~/lib/contentful-types";
 import { MapPinIcon } from "lucide-react";
+import { memo } from "react";
 
-export function ProjectCard({ project }: { project: Project }) {
+function ProjectCardComponent({ project }: { project: Project }) {
     return (
         <Box 
         as="article"
@@ -24,15 +26,17 @@ export function ProjectCard({ project }: { project: Project }) {
         flexDirection="column"
       >
         <Box position="relative" flexShrink={0}>
-          <Image 
+          <OptimizedImage 
             src={project.headerImage?.url ?? "/logo.png"} 
             alt={project?.title ?? "Project Image"}
-            width="100%" 
-            height="220px"
+            width={400}
+            height={220}
+            w="100%" 
+            h="220px"
             objectFit="cover"
-            onError={(e) => { 
-              (e.target as HTMLImageElement).src = "/logo.png"; 
-            }}
+            fallbackSrc="/logo.png"
+            lazy={true}
+            quality={80}
           />
           
           {project.date && (
@@ -115,3 +119,5 @@ export function ProjectCard({ project }: { project: Project }) {
       </Box>
     )
 }
+
+export const ProjectCard = memo(ProjectCardComponent);

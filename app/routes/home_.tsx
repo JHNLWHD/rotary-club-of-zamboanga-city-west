@@ -3,11 +3,28 @@ import { useLoaderData } from "react-router";
 import { HeroSection } from "../components/homepage/HeroSection";
 import { StatsSection } from "../components/homepage/StatsSection";
 import { VisionSection } from "../components/homepage/VisionSection";
-import { ServiceAreasSection } from "../components/homepage/ServiceAreasSection";
-import { ProjectHighlightsSection } from "../components/homepage/ProjectHighlightsSection";
-import { EventsSection } from "../components/homepage/EventsSection";
-import { OfficersSection } from "../components/homepage/OfficersSection";
-import { ContactSection } from "../components/homepage/ContactSection";
+import { LazySection, createLazySection } from "../components/ui/LazySection";
+
+// Lazy load non-critical sections
+const LazyServiceAreasSection = createLazySection(
+  () => import("../components/homepage/ServiceAreasSection").then(m => ({ default: m.ServiceAreasSection }))
+);
+
+const LazyProjectHighlightsSection = createLazySection(
+  () => import("../components/homepage/ProjectHighlightsSection").then(m => ({ default: m.ProjectHighlightsSection }))
+);
+
+const LazyEventsSection = createLazySection(
+  () => import("../components/homepage/EventsSection").then(m => ({ default: m.EventsSection }))
+);
+
+const LazyOfficersSection = createLazySection(
+  () => import("../components/homepage/OfficersSection").then(m => ({ default: m.OfficersSection }))
+);
+
+const LazyContactSection = createLazySection(
+  () => import("../components/homepage/ContactSection").then(m => ({ default: m.ContactSection }))
+);
 import { fetchAllHomepageSections } from "../lib/contentful-api";
 import type { Route } from "./+types/home_";
 import type {
@@ -208,19 +225,19 @@ export default function Homepage() {
 
       <VisionSection />
 
-      <ServiceAreasSection serviceAreas={serviceAreasSectionData} />
+      <LazyServiceAreasSection serviceAreas={serviceAreasSectionData} />
 
-      <ProjectHighlightsSection 
+      <LazyProjectHighlightsSection 
         projects={projectHighlightsSectionData} 
         viewAllLink="/service-projects"
       />
 
-      <EventsSection events={eventsSectionData} />
+      <LazyEventsSection events={eventsSectionData} />
 
-      <OfficersSection officers={officersSectionData} />
+      <LazyOfficersSection officers={officersSectionData} />
 
       {meetingInformationData && contactInformationData ? (
-        <ContactSection 
+        <LazyContactSection 
           meetingInfo={meetingInformationData}
           contactInfo={contactInformationData}
         />

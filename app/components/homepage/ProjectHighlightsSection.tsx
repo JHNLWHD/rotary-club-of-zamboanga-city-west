@@ -3,13 +3,14 @@ import { SectionHeader } from "../ui/SectionHeader";
 import { ButtonLink } from "../ui/ButtonLink";
 import type { Project } from "../../lib/contentful-types";
 import { ProjectCard } from "../ui/ProjectCard";
+import { memo } from "react";
 
 type ProjectHighlightsSectionProps = {
   projects: Project[];
   viewAllLink: string;
 };
 
-export function ProjectHighlightsSection({ projects, viewAllLink }: ProjectHighlightsSectionProps) {
+function ProjectHighlightsSectionComponent({ projects, viewAllLink }: ProjectHighlightsSectionProps) {
   return (
     <Box as="section" py={20} bgGradient="linear(to-b, gray.50, white)" id="projects">
       <Box maxW="1200px" mx="auto" px={{ base: 4, md: 8 }}>
@@ -59,4 +60,6 @@ export function ProjectHighlightsSection({ projects, viewAllLink }: ProjectHighl
       </Box>
     </Box>
   );
-} 
+}
+
+export const ProjectHighlightsSection = memo(ProjectHighlightsSectionComponent); 

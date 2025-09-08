@@ -1,11 +1,13 @@
-import { Box, Heading, Text, Image, Link } from "@chakra-ui/react";
+import { Box, Heading, Text, Link } from "@chakra-ui/react";
 import type { ServiceArea } from "../../lib/contentful-types";
+import { memo } from "react";
+import { OptimizedImage } from "./OptimizedImage";
 
 type ServiceAreaCardProps = {
     serviceArea: ServiceArea;
 };
   
-export function ServiceAreaCard({ serviceArea }: ServiceAreaCardProps) {
+function ServiceAreaCardComponent({ serviceArea }: ServiceAreaCardProps) {
     return (
       <Box 
         textAlign="center" 
@@ -46,7 +48,7 @@ export function ServiceAreaCard({ serviceArea }: ServiceAreaCardProps) {
             opacity="0.7"
           />
           
-          <Image 
+          <OptimizedImage 
             src={serviceArea.icon?.url ?? ""} 
             alt={serviceArea.title}
             boxSize="60px"
@@ -54,6 +56,9 @@ export function ServiceAreaCard({ serviceArea }: ServiceAreaCardProps) {
             filter="brightness(1.1) contrast(1.1)"
             position="relative"
             zIndex="1"
+            width={60}
+            height={60}
+            fallbackSrc=""
           />
         </Box>
         
@@ -95,3 +100,5 @@ export function ServiceAreaCard({ serviceArea }: ServiceAreaCardProps) {
       </Box>
     );
   }
+
+export const ServiceAreaCard = memo(ServiceAreaCardComponent);

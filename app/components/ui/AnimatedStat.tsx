@@ -1,11 +1,11 @@
 import { Box, Heading, Text } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo, useMemo } from "react";
 import { useCountUp } from "~/hooks/useCountUp";
 import { getIconByName } from "~/lib/icon-mapper";
 import type { StatItem } from "~/lib/contentful-types";
 import { Users } from "lucide-react";
 
-export function AnimatedStat({ 
+function AnimatedStatComponent({ 
     endValue, 
     suffix = "", 
     label, 
@@ -18,15 +18,18 @@ export function AnimatedStat({
   }: StatItem) {
     const { count, ref } = useCountUp(endValue, duration);
     const [isMounted, setIsMounted] = useState(false);
-    const IconComponent = getIconByName(iconName, Users);
+    
+    const IconComponent = useMemo(() => getIconByName(iconName, Users), [iconName]);
 
     useEffect(() => {
       setIsMounted(true);
     }, []);
   
     // Use consistent initial value to prevent hydration mismatch
-    const displayValue = formatValue ? formatValue : 
-      isMounted ? `${count.toLocaleString()}${suffix}` : `0${suffix}`;
+    const displayValue = useMemo(() => {
+      return formatValue ? formatValue : 
+        isMounted ? `${count.toLocaleString()}${suffix}` : `0${suffix}`;
+    }, [formatValue, isMounted, count, suffix]);
   
     return (
       <Box 
@@ -73,3 +76,5 @@ export function AnimatedStat({
       </Box>
     );
   }
+
+export const AnimatedStat = memo(AnimatedStatComponent);

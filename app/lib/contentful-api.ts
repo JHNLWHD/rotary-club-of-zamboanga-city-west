@@ -1,5 +1,6 @@
 
 import { contentfulClient } from './contentful';
+import { withCache, createCacheKey } from './contentful-cache';
 import type {
   StatItem, 
   ServiceArea,
@@ -67,29 +68,33 @@ function buildContentfulAssetMetadata(contentfulAsset: any): ProcessedAsset {
 
 
 export async function fetchHomepageHeroSection(): Promise<HomepageHero | null> {
-  try {
-    const contentfulResponse = await contentfulClient.getEntries({
-      content_type: CONTENT_TYPES.HOMEPAGE_HERO,
-      'fields.isActive': true,
-      limit: 1,
-    });
+  const cacheKey = createCacheKey('fetchHomepageHeroSection');
+  
+  return withCache(cacheKey, async () => {
+    try {
+      const contentfulResponse = await contentfulClient.getEntries({
+        content_type: CONTENT_TYPES.HOMEPAGE_HERO,
+        'fields.isActive': true,
+        limit: 1,
+      });
 
-    if (contentfulResponse.items.length === 0) {
+      if (contentfulResponse.items.length === 0) {
+        return null;
+      }
+
+      const heroEntry = contentfulResponse.items[0];
+      const heroFields = extractContentfulEntryFields<HomepageHero>(heroEntry);
+
+      return {
+        ...heroFields,
+        backgroundImage: buildContentfulAssetMetadata(heroFields.backgroundImage),
+        carouselImages: heroFields.carouselImages?.map((image) => buildContentfulAssetMetadata(image)) || [],
+      };
+    } catch (error) {
+      console.error('Error fetching homepage hero section:', error);
       return null;
     }
-
-    const heroEntry = contentfulResponse.items[0];
-    const heroFields = extractContentfulEntryFields<HomepageHero>(heroEntry);
-
-    return {
-      ...heroFields,
-      backgroundImage: buildContentfulAssetMetadata(heroFields.backgroundImage),
-      carouselImages: heroFields.carouselImages?.map((image) => buildContentfulAssetMetadata(image)) || [],
-    };
-  } catch (error) {
-    console.error('Error fetching homepage hero section:', error);
-    return null;
-  }
+  }, 600); // Cache for 10 minutes
 }
 
 export async function fetchHomepageStatisticsSection(): Promise<StatItem[] | null> {
@@ -152,32 +157,36 @@ export async function fetchHomepageServiceAreasSection(): Promise<ServiceArea[] 
 }
 
 export async function fetchFeaturedProjectHighlights(): Promise<Project[] | null> {
-  try {
-    const contentfulResponse = await contentfulClient.getEntries({
-      content_type: CONTENT_TYPES.SERVICE_PROJECT,
-      'fields.isActive': true,
-      'fields.isFeatured': true,
-      limit: 3,
-      order: ['-fields.date'],
-    });
+  const cacheKey = createCacheKey('fetchFeaturedProjectHighlights');
+  
+  return withCache(cacheKey, async () => {
+    try {
+      const contentfulResponse = await contentfulClient.getEntries({
+        content_type: CONTENT_TYPES.SERVICE_PROJECT,
+        'fields.isActive': true,
+        'fields.isFeatured': true,
+        limit: 3,
+        order: ['-fields.date'],
+      });
 
-    if (contentfulResponse.items.length === 0) {
+      if (contentfulResponse.items.length === 0) {
+        return [];
+      }
+
+      return contentfulResponse.items.map((projectEntry) => {
+        const projectFields = extractContentfulEntryFields<Project>(projectEntry);
+        return {
+          ...projectFields,
+          headerImage: buildContentfulAssetMetadata(projectFields.headerImage),
+          gallery: projectFields.gallery?.map((image: any) => buildContentfulAssetMetadata(image)) || [],
+          slug: `/service-projects/${projectFields.slug || slugify(projectFields.title, { lower: true })}`,
+        };
+      });
+    } catch (error) {
+      console.error('Error fetching featured project highlights:', error);
       return [];
     }
-
-    return contentfulResponse.items.map((projectEntry) => {
-      const projectFields = extractContentfulEntryFields<Project>(projectEntry);
-      return {
-        ...projectFields,
-        headerImage: buildContentfulAssetMetadata(projectFields.headerImage),
-        gallery: projectFields.gallery?.map((image: any) => buildContentfulAssetMetadata(image)) || [],
-        slug: `/service-projects/${projectFields.slug || slugify(projectFields.title, { lower: true })}`,
-      };
-    });
-  } catch (error) {
-    console.error('Error fetching featured project highlights:', error);
-    return [];
-  }
+  }, 300); // Cache for 5 minutes
 }
 
 export async function fetchFeaturedEvents(): Promise<Event[] | null> {
