@@ -8,7 +8,7 @@ type ContactSectionProps = {
   contactInfo: ContactInfo
 };
 
-export function ContactSection({ meetingInfo, contactInfo }: ContactSectionProps): JSX.Element {
+export function ContactSection({ meetingInfo, contactInfo }: ContactSectionProps): React.JSX.Element {
   return (
     <Box as="section" py={20} bgGradient="linear(to-b, gray.50, white)" id="contact">
       <Box maxW="1200px" mx="auto" px={{ base: 4, md: 8 }}>

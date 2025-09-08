@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 export function useCountUp(end: number, duration: number = 2000, start: number = 0) {
-    const [count, setCount] = useState(start);
+    const [count, setCount] = useState(0); // Always start with 0 for consistent SSR/client hydration
     const [hasAnimated, setHasAnimated] = useState(false);
     const [isClient, setIsClient] = useState(false);
     const ref = useRef<HTMLDivElement>(null);

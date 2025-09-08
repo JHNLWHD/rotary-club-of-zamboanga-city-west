@@ -50,8 +50,9 @@ function groupEventsByMonth(events: Event[]): GroupedEvents {
 function formatEventDate(dateString: string): { day: string; month: string; weekday: string } {
   try {
     const date = new Date(dateString);
+    // Use consistent UTC formatting to prevent hydration mismatches
     return {
-      day: date.getDate().toString(),
+      day: date.getUTCDate().toString(),
       month: date.toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' }),
       weekday: date.toLocaleDateString('en-US', { weekday: 'short', timeZone: 'UTC' })
     };

@@ -1,7 +1,7 @@
 import { Box, Flex, Button, Link, Spacer, Image, Text } from "@chakra-ui/react";
 import type { ReactNode } from "react";
-import { useState } from "react";
-import { MapPin, Phone, Mail, Clock, Facebook, ChevronDown, Heart } from "lucide-react";
+import { useState, useEffect } from "react";
+import { MapPin, Mail, Clock, Facebook, ChevronDown } from "lucide-react";
 import { Menu } from "./Menu";
 import { useLocation } from "react-router";
 import type { ContactInfo, MeetingInfo } from "~/lib/contentful-types";
@@ -43,7 +43,7 @@ function TopBar({ transparent, contactData }: { transparent: boolean; contactDat
       align="center"
 
       justify="space-between"
-      display={{ base: "none", md: "flex" }}
+      display={{ base: "none", xl: "flex" }}
     >
       <Flex gap={2} align="center">
         <Link
@@ -54,7 +54,7 @@ function TopBar({ transparent, contactData }: { transparent: boolean; contactDat
           <Facebook size={18} color={transparent ? "white" : "#6C757D"} />
         </Link>
       </Flex>
-      <Flex gap={7} align="center" display={{ base: "none", md: "flex" }}>
+      <Flex gap={7} align="center" display={{ base: "none", xl: "flex" }}>
         <Flex gap={1} align="center">
           <MapPin size={14} color={transparent ? "white" : "#6C757D"} />
           <Text color={transparent ? "white" : "gray.700"} textShadow={transparent ? "0 1px 3px rgba(0,0,0,0.7)" : undefined}>
@@ -90,16 +90,22 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [aboutUsMenuOpen, setAboutUsMenuOpen] = useState(false);
   const [newGenerationMenuOpen, setNewGenerationMenuOpen] = useState(false);
+  const [currentYear, setCurrentYear] = useState(2025); // Default fallback to prevent hydration mismatch
 
   const navTextColor = transparentHeader ? "white" : "gray.700";
   const navTextShadow = transparentHeader ? "0 1px 3px rgba(0,0,0,0.7)" : undefined;
   const navHoverColor = transparentHeader ? undefined : "brand.500";
   const navHoverBg = transparentHeader ? "whiteAlpha.200" : "gray.100";
-  const clubNameColor = transparentHeader ? "white" : "brand.500";
-  const clubNameShadow = transparentHeader ? "0 2px 4px rgba(0,0,0,0.7)" : undefined;
-
+  
   const location = useLocation();
   const isHomePage = location.pathname === "/" || location.pathname === "/home";
+
+  // Set current year on client-side only to prevent SSR hydration errors
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setCurrentYear(new Date().getFullYear());
+    }
+  }, []);
 
   return (
     <Flex direction="column" minHeight="100vh" position="relative">
@@ -116,7 +122,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
         as="header"
         bg={transparentHeader ? "transparent" : "white"}
         position="absolute"
-        top={{ base: "0px", md: "32px" }}
+        top={{ base: "0px", xl: "32px" }}
         left={0}
         right={0}
         zIndex={20}
@@ -134,7 +140,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
               flexShrink={0}
             />
             <Text
-              color={transparentHeader ? "white" : "gray.700"}
+              color={transparentHeader ? "white" : "black"}
               fontSize={{ base: "sm", md: "md" }}
               fontWeight="semibold"
               display={{ base: "none", md: "block" }}
@@ -145,7 +151,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
           </Flex>
 
           {/* Nav Links (center) */}
-          <Flex align="center" gap={3} flex={1} justify="center" minW={0} display={{ base: "none", lg: "flex" }}>
+          <Flex align="center" gap={3} flex={1} justify="center" minW={0} display={{ base: "none", xl: "flex" }}>
             {/* Home Link */}
             <Link
               href="/"
@@ -322,22 +328,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
           </Flex>
 
           {/* Right CTAs */}
-          <Flex align="center" gap={2} flex="0 0 auto" display={{ base: "none", lg: "flex" }}>
-            <Link
-              href="https://rotaract.rotaryzcwest.org/?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=rotaract_referral"
-              target="_blank"
-              rel="noopener noreferrer"
-              _hover={{ transform: "scale(1.02)", textDecoration: "none" }}
-              transition="all 0.2s"
-            >
-              <Flex align="center" bg="gold.100" borderRadius="md" px={2} py={3} gap={2} minW="140px">
-                <Heart size={18} color="#f7a81b" fill="#f7a81b" />
-                <Box>
-                  <Text fontSize="9px" color="gray.700" lineHeight={1.1}>Visit Now</Text>
-                  <Text fontWeight="bold" color="brand.500" fontSize="11px" lineHeight={1.1}>Visit Rotaract Site</Text>
-                </Box>
-              </Flex>
-            </Link>
+          <Flex align="center" gap={2} flex="0 0 auto" display={{ base: "none", xl: "flex" }}>
             <Link
               href="https://www.rotary.org/en/get-involved/ways-to-give?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=foundation_giving"
               target="_blank"
@@ -358,11 +349,11 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
             </Link>
           </Flex>
           {/* Spacer to push hamburger to the right on mobile */}
-          <Spacer display={{ base: "block", lg: "none" }} />
+          <Spacer display={{ base: "block", xl: "none" }} />
           {/* Hamburger for mobile */}
           <Button
             aria-label="Open menu"
-            display={{ base: "flex", md: "none" }}
+            display={{ base: "flex", xl: "none" }}
             variant="ghost"
             ml={2}
             onClick={() => setMobileMenuOpen((v) => !v)}
@@ -377,16 +368,23 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <Box
-            bg="blackAlpha.900"
-            backdropFilter="blur(10px)"
+            bg="white"
+            position="fixed"
+            top="80px"
+            left={0}
+            right={0}
+            bottom={0}
+            zIndex={30}
             px={6}
-            py={4}
-            display={{ md: "none" }}
-            borderTop="none"
+            py={6}
+            display={{ base: "block", xl: "none" }}
+            borderTop="1px solid"
+            borderColor="gray.200"
+            overflowY="auto"
           >
             {/* About Us Section */}
             <Box mb={4}>
-              <Text fontWeight="bold" color="white" mb={2} fontSize="sm" textTransform="uppercase" letterSpacing="wider">
+              <Text fontWeight="bold" color="black" mb={2} fontSize="sm" textTransform="uppercase" letterSpacing="wider">
                 About Us
               </Text>
               {aboutUsLinks.map((link) => (
@@ -394,9 +392,9 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
                   <Link
                     href={link.href}
                     fontWeight="medium"
-                    color="gray.300"
+                    color="black"
                     fontSize="sm"
-                    _hover={{ color: "gold.400" }}
+                    _hover={{ color: "brand.500" }}
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     {link.label}
@@ -407,7 +405,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
 
             {/* New Generation Links */}
             <Box mb={4}>
-              <Text fontWeight="bold" color="white" mb={2} fontSize="sm" textTransform="uppercase" letterSpacing="wider">
+              <Text fontWeight="bold" color="black" mb={2} fontSize="sm" textTransform="uppercase" letterSpacing="wider">
                 New Generation
               </Text>
               {newGenerationLinks.map((link) => (
@@ -417,7 +415,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
                     fontWeight="medium"
                     color={link.color}
                     fontSize="sm"
-                    _hover={{ color: "gold.400" }}
+                    _hover={{ color: "brand.500" }}
                     onClick={() => setMobileMenuOpen(false)}
                     {...(link.isExternal && { target: "_blank", rel: "noopener noreferrer" })}
                   >
@@ -433,8 +431,8 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
                 <Link
                   href={link.href}
                   fontWeight="medium"
-                  color="white"
-                  _hover={{ color: "gold.400" }}
+                  color="black"
+                  _hover={{ color: "brand.500" }}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {link.label}
@@ -442,23 +440,6 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
               </Box>
             ))}
 
-            <Link
-              href="https://rotaract.rotaryzcwest.org/?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=rotaract_referral"
-              target="_blank"
-              rel="noopener noreferrer"
-              _hover={{ transform: "scale(1.02)", textDecoration: "none" }}
-              transition="all 0.2s"
-              display="block"
-              mb={2}
-            >
-              <Flex align="center" bg="gold.100" borderRadius="md" px={2} py={3} gap={2} minW="140px">
-                <Heart size={18} color="#f7a81b" fill="#f7a81b" />
-                <Box>
-                  <Text fontSize="9px" color="gray.700" lineHeight={1.1}>Visit Now</Text>
-                  <Text fontWeight="bold" color="brand.500" fontSize="11px" lineHeight={1.1}>Visit Rotaract Site</Text>
-                </Box>
-              </Flex>
-            </Link>
             <Link
               href="https://www.rotary.org/en/get-involved/ways-to-give?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=foundation_giving"
               target="_blank"
@@ -683,7 +664,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
           <Box maxWidth="1200px" mx="auto" px={{ base: 4, md: 8 }}>
             <Flex direction={{ base: "column", md: "row" }} align="center" justify="space-between" gap={4}>
               <Text fontSize="sm" color="gray.400" textAlign={{ base: "center", md: "left" }}>
-                © 2025 Rotary Club of Zamboanga City West. All rights reserved.
+                © {currentYear} Rotary Club of Zamboanga City West. All rights reserved.
               </Text>
             </Flex>
           </Box>

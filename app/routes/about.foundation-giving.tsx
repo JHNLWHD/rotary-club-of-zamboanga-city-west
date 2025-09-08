@@ -19,7 +19,6 @@ import {
   CartesianGrid, 
   Tooltip, 
   ResponsiveContainer,
-  Legend,
   LabelList
 } from "recharts";
 import { useLoaderData } from "react-router";

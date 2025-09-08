@@ -1,4 +1,5 @@
 import { Box, Heading, Text } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
 import { useCountUp } from "~/hooks/useCountUp";
 import { getIconByName } from "~/lib/icon-mapper";
 import type { StatItem } from "~/lib/contentful-types";
@@ -16,9 +17,16 @@ export function AnimatedStat({
     formatValue
   }: StatItem) {
     const { count, ref } = useCountUp(endValue, duration);
+    const [isMounted, setIsMounted] = useState(false);
     const IconComponent = getIconByName(iconName, Users);
+
+    useEffect(() => {
+      setIsMounted(true);
+    }, []);
   
-    const displayValue = formatValue ? formatValue : `${count.toLocaleString()}${suffix}`;
+    // Use consistent initial value to prevent hydration mismatch
+    const displayValue = formatValue ? formatValue : 
+      isMounted ? `${count.toLocaleString()}${suffix}` : `0${suffix}`;
   
     return (
       <Box 

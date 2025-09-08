@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Static Forms for Netlify Detection</title>
+  <meta name="robots" content="noindex">
+</head>
+<body>
+  <!-- This file enables Netlify to detect forms in our React Router 7 SSR app -->
+  <!-- These static forms mirror the forms in our React components -->
+  
+  <!-- Contact Form -->
+  <form 
+    name="contact" 
+    method="POST" 
+    data-netlify="true" 
+    data-netlify-honeypot="bot-field"
+    action="/thank-you"
+    style="display: none;"
+  >
+    <input type="hidden" name="form-name" value="contact" />
+    <p style="display: none;">
+      <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+    </p>
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <textarea name="message"></textarea>
+    <button type="submit">Submit</button>
+  </form>
+</body>
+</html>

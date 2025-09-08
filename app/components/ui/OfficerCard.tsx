@@ -12,7 +12,7 @@ type OfficerCardProps = {
 export function OfficerCard({ 
   officer, 
   colorScheme = "brand" 
-}: OfficerCardProps): JSX.Element {
+}: OfficerCardProps): React.JSX.Element {
   const [imageLoadError, setImageLoadError] = useState(false);
   
   const colors = {

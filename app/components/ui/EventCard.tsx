@@ -7,7 +7,7 @@ type EventCardProps = {
   showLearnMoreButton?: boolean;
 };
 
-export function EventCard({ event, showLearnMoreButton = true }: EventCardProps): JSX.Element {
+export function EventCard({ event, showLearnMoreButton = true }: EventCardProps): React.JSX.Element {
   return (
     <Box
       as="article"

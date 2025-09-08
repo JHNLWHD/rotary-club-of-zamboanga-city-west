@@ -10,7 +10,7 @@ type OfficersSectionProps = {
 
 
 
-export function OfficersSection({ officers }: OfficersSectionProps): JSX.Element {
+export function OfficersSection({ officers }: OfficersSectionProps): React.JSX.Element {
   const sortedOfficers = sortOfficersByRoleHierarchy(officers);
   return (
     <Box as="section" py={20} bg="white" id="team">
