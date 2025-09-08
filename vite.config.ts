@@ -19,10 +19,11 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom'],
           chakra: ['@chakra-ui/react', '@emotion/react'],
           contentful: ['contentful', '@contentful/rich-text-html-renderer'],
           utils: ['lucide-react', 'keen-slider', 'slugify'],
+          icons: ['react-icons'],
+          pdf: ['pdfjs-dist', 'react-pdf'],
         },
       },
     },
@@ -30,8 +31,6 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: [
-      'react', 
-      'react-dom', 
       '@chakra-ui/react', 
       '@emotion/react',
       'contentful',

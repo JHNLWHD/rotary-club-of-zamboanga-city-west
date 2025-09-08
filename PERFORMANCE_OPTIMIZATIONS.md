@@ -6,12 +6,14 @@ This document outlines all the performance optimizations implemented in the Rota
 
 ### 1. Vite Configuration Enhancements
 - **Manual Code Splitting**: Configured `rollupOptions.manualChunks` to separate vendor libraries
-  - `vendor`: React core libraries
-  - `chakra`: Chakra UI and Emotion
+  - `chakra`: Chakra UI and Emotion libraries
   - `contentful`: Contentful CMS libraries
   - `utils`: Utility libraries (Lucide React, Keen Slider, etc.)
+  - `icons`: React Icons library
+  - `pdf`: PDF-related libraries
 - **Dependency Pre-bundling**: Added `optimizeDeps` configuration for faster development builds
 - **Chunk Size Warning**: Set appropriate warning limit to monitor bundle sizes
+- **React Router 7 Compatibility**: Removed React from manual chunks as it's externalized by React Router 7
 
 ### 2. Dynamic Imports & Lazy Loading
 - **Route-level Code Splitting**: Implemented lazy loading for non-critical homepage sections:
