@@ -1,6 +1,6 @@
 import { Box, Flex, Button, Link, Spacer, Image, Text } from "@chakra-ui/react";
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MapPin, Mail, Clock, Facebook, ChevronDown } from "lucide-react";
 import { Menu } from "./Menu";
 import { useLocation } from "react-router";
@@ -90,6 +90,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [aboutUsMenuOpen, setAboutUsMenuOpen] = useState(false);
   const [newGenerationMenuOpen, setNewGenerationMenuOpen] = useState(false);
+  const [currentYear, setCurrentYear] = useState(2025); // Default fallback to prevent hydration mismatch
 
   const navTextColor = transparentHeader ? "white" : "gray.700";
   const navTextShadow = transparentHeader ? "0 1px 3px rgba(0,0,0,0.7)" : undefined;
@@ -98,6 +99,13 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
   
   const location = useLocation();
   const isHomePage = location.pathname === "/" || location.pathname === "/home";
+
+  // Set current year on client-side only to prevent SSR hydration errors
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setCurrentYear(new Date().getFullYear());
+    }
+  }, []);
 
   return (
     <Flex direction="column" minHeight="100vh" position="relative">
@@ -656,7 +664,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
           <Box maxWidth="1200px" mx="auto" px={{ base: 4, md: 8 }}>
             <Flex direction={{ base: "column", md: "row" }} align="center" justify="space-between" gap={4}>
               <Text fontSize="sm" color="gray.400" textAlign={{ base: "center", md: "left" }}>
-                © 2025 Rotary Club of Zamboanga City West. All rights reserved.
+                © {currentYear} Rotary Club of Zamboanga City West. All rights reserved.
               </Text>
             </Flex>
           </Box>
