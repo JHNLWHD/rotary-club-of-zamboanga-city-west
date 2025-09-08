@@ -22,7 +22,7 @@ export function ImageDebug({ src, alt, width = 300, height = 200 }: ImageDebugPr
       const params = [];
       if (width) params.push(`w=${width}`);
       if (height) params.push(`h=${height}`);
-      if (width || height) params.push('fit=fill');
+      if (width || height) params.push('fit=pad', 'bg=rgb:ffffff00');
       
       return params.length > 0 ? `${fullUrl}${separator}${params.join('&')}` : fullUrl;
     } catch (error) {

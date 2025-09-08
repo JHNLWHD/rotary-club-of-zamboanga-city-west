@@ -97,9 +97,17 @@ function OptimizedImageComponent({
       if (width) params.push(`w=${width}`);
       if (height) params.push(`h=${height}`);
       
-      // Add fit parameter to ensure proper scaling
+      // Add fit parameter based on objectFit prop
       if (width || height) {
-        params.push('fit=fill');
+        // Use different fit strategies based on objectFit
+        if (props.objectFit === 'contain') {
+          params.push('fit=pad'); // Maintains aspect ratio and centers the image
+          params.push('bg=rgb:ffffff00'); // Transparent background for padded images
+        } else if (props.objectFit === 'cover') {
+          params.push('fit=fill'); // Fills the space, may crop
+        } else {
+          params.push('fit=scale'); // Default scaling
+        }
       }
       
       // Only add quality if it's significantly different from default and we're resizing
