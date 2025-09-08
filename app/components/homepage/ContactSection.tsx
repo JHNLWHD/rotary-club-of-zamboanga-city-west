@@ -1,8 +1,7 @@
-import { Box, Flex, VStack, Heading, Text, Input, Textarea, Button, Image, Link, createToaster } from "@chakra-ui/react";
+import { Box, Flex, VStack, Heading, Text, Input, Textarea, Button, Image, Link } from "@chakra-ui/react";
 import { SectionHeader } from "../ui/SectionHeader";
 import type { ContactInfo, MeetingInfo } from "~/lib/contentful-types";
 import { CalendarIcon, FacebookIcon, MailIcon, MapPinIcon } from "lucide-react";
-import { useState, useEffect } from "react";
 
 type ContactSectionProps = {
   meetingInfo: MeetingInfo
@@ -10,69 +9,6 @@ type ContactSectionProps = {
 };
 
 export function ContactSection({ meetingInfo, contactInfo }: ContactSectionProps): React.JSX.Element {
-  const [isSubmittingForm, setIsSubmittingForm] = useState(false);
-  const [isClient, setIsClient] = useState(false);
-  const toaster = createToaster({
-    placement: "top",
-  });
-
-  // Prevent hydration errors by ensuring client-side only interactions
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  function encodeFormData(data: Record<string, string>): string {
-    return Object.keys(data)
-      .map(key => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
-      .join("&");
-  }
-
-  async function handleFormSubmission(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    
-    // Only allow form submission on client-side to prevent hydration issues
-    if (!isClient || typeof window === 'undefined') return;
-    
-    setIsSubmittingForm(true);
-
-    const form = event.currentTarget;
-    const formData = new FormData(form);
-    const data: Record<string, string> = {};
-    
-    // Convert FormData to regular object
-    formData.forEach((value, key) => {
-      data[key] = value.toString();
-    });
-
-    try {
-      const response = await fetch("/", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: encodeFormData({
-          "form-name": "contact",
-          ...data
-        })
-      });
-
-      if (response.ok) {
-        // Redirect to thank you page on success
-        window.location.href = "/thank-you";
-      } else {
-        throw new Error("Form submission failed");
-      }
-    } catch (error) {
-      console.error("Form submission error:", error);
-      toaster.create({
-        title: "Error sending message",
-        description: "There was a problem sending your message. Please try again.",
-        type: "error",
-        duration: 5000,
-      });
-    } finally {
-      setIsSubmittingForm(false);
-    }
-  }
-
   return (
     <Box as="section" py={20} bgGradient="linear(to-b, gray.50, white)" id="contact">
       <Box maxW="1200px" mx="auto" px={{ base: 4, md: 8 }}>
@@ -100,8 +36,7 @@ export function ContactSection({ meetingInfo, contactInfo }: ContactSectionProps
               method="POST"
               data-netlify="true"
               data-netlify-honeypot="bot-field"
-              action="/thank-you"
-              onSubmit={isClient ? handleFormSubmission : undefined}
+              action="/contact?success=true"
             >
               <input type="hidden" name="form-name" value="contact" />
               
@@ -199,10 +134,8 @@ export function ContactSection({ meetingInfo, contactInfo }: ContactSectionProps
                     bg: "brand.500",
                     boxShadow: "0 0 0 3px rgba(0,93,170,0.3)"
                   }}
-                  loading={isSubmittingForm}
-                  disabled={isSubmittingForm}
                 >
-                  {isSubmittingForm ? "Sending..." : "Send Message"}
+                  Send Message
                 </Button>
               </VStack>
             </form>

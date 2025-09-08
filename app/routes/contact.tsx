@@ -1,7 +1,8 @@
-import { Box, Container } from "@chakra-ui/react";
+import { Box, Container, Heading, Text, Stack, Button, Link } from "@chakra-ui/react";
 import { ContactSection } from "../components/homepage/ContactSection";
 import { ComingSoon } from "../components/ui/ComingSoon";
-import { useRouteLoaderData } from "react-router";
+import { useRouteLoaderData, useSearchParams } from "react-router";
+import { CheckCircle, Home } from "lucide-react";
 import type { ContactInfo, MeetingInfo } from "~/lib/contentful-types";
 
 export function meta() {
@@ -23,6 +24,9 @@ export function meta() {
 }
 
 export default function Contact() {
+  const [searchParams] = useSearchParams();
+  const isSuccess = searchParams.get("success") === "true";
+  
   const { contactData } = useRouteLoaderData("root") as {
     contactData?: {
       meetingInfo?: MeetingInfo;
@@ -41,6 +45,81 @@ export default function Contact() {
             size="lg"
             maxWidth="600px"
           />
+        </Container>
+      </Box>
+    );
+  }
+
+  // Show success message if form was submitted
+  if (isSuccess) {
+    return (
+      <Box py={{ base: 16, md: 24, lg: 32 }} minH="100vh" display="flex" alignItems="center">
+        <Container maxW="800px" py={{ base: 8, md: 12 }}>
+          <Stack gap={{ base: 8, md: 12 }} textAlign="center" align="center">
+            {/* Success Icon */}
+            <Box
+              bg="green.100"
+              borderRadius="full"
+              p={{ base: 6, md: 8 }}
+              border="3px solid"
+              borderColor="green.400"
+              mt={{ base: 4, md: 8 }}
+            >
+              <CheckCircle size={64} color="#38A169" />
+            </Box>
+
+            {/* Success Message */}
+            <Stack gap={{ base: 4, md: 6 }} align="center">
+              <Heading 
+                as="h1" 
+                fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }} 
+                fontWeight="bold" 
+                color="gray.900"
+                lineHeight="shorter"
+              >
+                Thank You!
+              </Heading>
+              <Heading 
+                as="h2" 
+                fontSize={{ base: "xl", md: "2xl" }} 
+                fontWeight="bold" 
+                color="green.600"
+                lineHeight="shorter"
+              >
+                Your Message Has Been Sent
+              </Heading>
+              <Text 
+                fontSize={{ base: "lg", md: "xl" }} 
+                color="gray.600" 
+                maxW="600px" 
+                lineHeight="relaxed"
+                px={{ base: 4, md: 0 }}
+              >
+                Thank you for reaching out to Rotary Club of Zamboanga City West! We've received your message and will respond within 7 days.
+              </Text>
+            </Stack>
+
+            {/* Action Button */}
+            <Box mt={{ base: 4, md: 6 }}>
+              <Link href="/home">
+                <Button
+                  bg="brand.500"
+                  color="white"
+                  _hover={{ bg: "brand.600" }}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  gap={2}
+                  px={8}
+                  py={4}
+                  fontSize="lg"
+                >
+                  <Home size={20} />
+                  Back to Homepage
+                </Button>
+              </Link>
+            </Box>
+          </Stack>
         </Container>
       </Box>
     );
