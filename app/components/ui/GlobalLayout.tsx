@@ -43,7 +43,7 @@ function TopBar({ transparent, contactData }: { transparent: boolean; contactDat
       align="center"
 
       justify="space-between"
-      display={{ base: "none", md: "flex" }}
+      display={{ base: "none", xl: "flex" }}
     >
       <Flex gap={2} align="center">
         <Link
@@ -54,7 +54,7 @@ function TopBar({ transparent, contactData }: { transparent: boolean; contactDat
           <Facebook size={18} color={transparent ? "white" : "#6C757D"} />
         </Link>
       </Flex>
-      <Flex gap={7} align="center" display={{ base: "none", md: "flex" }}>
+      <Flex gap={7} align="center" display={{ base: "none", xl: "flex" }}>
         <Flex gap={1} align="center">
           <MapPin size={14} color={transparent ? "white" : "#6C757D"} />
           <Text color={transparent ? "white" : "gray.700"} textShadow={transparent ? "0 1px 3px rgba(0,0,0,0.7)" : undefined}>
@@ -116,7 +116,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
         as="header"
         bg={transparentHeader ? "transparent" : "white"}
         position="absolute"
-        top={{ base: "0px", md: "32px" }}
+        top={{ base: "0px", xl: "32px" }}
         left={0}
         right={0}
         zIndex={20}
@@ -145,7 +145,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
           </Flex>
 
           {/* Nav Links (center) */}
-          <Flex align="center" gap={3} flex={1} justify="center" minW={0} display={{ base: "none", lg: "flex" }}>
+          <Flex align="center" gap={3} flex={1} justify="center" minW={0} display={{ base: "none", xl: "flex" }}>
             {/* Home Link */}
             <Link
               href="/"
@@ -322,7 +322,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
           </Flex>
 
           {/* Right CTAs */}
-          <Flex align="center" gap={2} flex="0 0 auto" display={{ base: "none", lg: "flex" }}>
+          <Flex align="center" gap={2} flex="0 0 auto" display={{ base: "none", xl: "flex" }}>
             <Link
               href="https://www.rotary.org/en/get-involved/ways-to-give?utm_source=rotary_zamboanga_west&utm_medium=website&utm_campaign=foundation_giving"
               target="_blank"
@@ -343,11 +343,11 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
             </Link>
           </Flex>
           {/* Spacer to push hamburger to the right on mobile */}
-          <Spacer display={{ base: "block", lg: "none" }} />
+          <Spacer display={{ base: "block", xl: "none" }} />
           {/* Hamburger for mobile */}
           <Button
             aria-label="Open menu"
-            display={{ base: "flex", md: "none" }}
+            display={{ base: "none", sm: "flex", xl: "none" }}
             variant="ghost"
             ml={2}
             onClick={() => setMobileMenuOpen((v) => !v)}
@@ -366,7 +366,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
             backdropFilter="blur(10px)"
             px={6}
             py={4}
-            display={{ md: "none" }}
+            display={{ base: "none", sm: "block", xl: "none" }}
             borderTop="none"
           >
             {/* About Us Section */}
