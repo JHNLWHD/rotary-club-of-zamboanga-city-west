@@ -347,7 +347,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
           {/* Hamburger for mobile */}
           <Button
             aria-label="Open menu"
-            display={{ base: "none", sm: "flex", xl: "none" }}
+            display={{ base: "flex", xl: "none" }}
             variant="ghost"
             ml={2}
             onClick={() => setMobileMenuOpen((v) => !v)}
@@ -371,7 +371,7 @@ export function GlobalLayout({ children, transparentHeader = false, contactData 
             zIndex={30}
             px={6}
             py={6}
-            display={{ base: "none", sm: "block", xl: "none" }}
+            display={{ base: "block", xl: "none" }}
             borderTop="1px solid"
             borderColor="gray.200"
             overflowY="auto"
