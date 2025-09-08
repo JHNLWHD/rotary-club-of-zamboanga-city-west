@@ -12,11 +12,9 @@ import {
   Container,
   Grid,
   GridItem,
-  Card,
-  CardBody,
   Icon,
 } from "@chakra-ui/react";
-import { Globe, Users, Target, Heart, MapPin, Phone, Mail, Clock, Facebook, ArrowRight, Construction, Calendar, Camera, Handshake } from "lucide-react";
+import { Globe, Users, Target, Heart, MapPin, Phone, Mail, Clock, Facebook, Construction, Calendar, Camera, Handshake } from "lucide-react";
 
 export function meta() {
   return [
