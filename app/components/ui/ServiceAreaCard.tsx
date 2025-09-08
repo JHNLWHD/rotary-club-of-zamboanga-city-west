@@ -48,18 +48,28 @@ function ServiceAreaCardComponent({ serviceArea }: ServiceAreaCardProps) {
             opacity="0.7"
           />
           
-          <OptimizedImage 
-            src={serviceArea.icon?.url ?? ""} 
-            alt={serviceArea.title}
-            boxSize="60px"
-            objectFit="contain"
-            filter="brightness(1.1) contrast(1.1)"
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
             position="relative"
             zIndex="1"
-            width={60}
-            height={60}
-            fallbackSrc=""
-          />
+            w="full"
+            h="full"
+          >
+            <OptimizedImage 
+              src={serviceArea.icon?.url ?? ""} 
+              alt={serviceArea.title}
+              maxW="60px"
+              maxH="60px"
+              objectFit="contain"
+              filter="brightness(1.1) contrast(1.1)"
+              width={60}
+              height={60}
+              fallbackSrc=""
+              disableOptimization={true}
+            />
+          </Box>
         </Box>
         
         <Heading 
