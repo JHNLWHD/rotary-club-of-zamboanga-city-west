@@ -22,7 +22,7 @@ export function ImageDebug({ src, alt, width = 300, height = 200 }: ImageDebugPr
       const params = [];
       if (width) params.push(`w=${width}`);
       if (height) params.push(`h=${height}`);
-      if (width > 200) params.push('f=webp');
+      if (width || height) params.push('fit=fill');
       
       return params.length > 0 ? `${fullUrl}${separator}${params.join('&')}` : fullUrl;
     } catch (error) {

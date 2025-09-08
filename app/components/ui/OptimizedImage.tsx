@@ -92,13 +92,19 @@ function OptimizedImageComponent({
       let optimizedUrl = fullUrl;
       
       const params = [];
+      
+      // Only add width and height for resizing, no format conversion
       if (width) params.push(`w=${width}`);
       if (height) params.push(`h=${height}`);
-      if (quality && quality !== 75) params.push(`q=${quality}`); // Only add if different from default
       
-      // Only add format optimization for larger images
-      if (width && width > 200) {
-        params.push('f=webp');
+      // Add fit parameter to ensure proper scaling
+      if (width || height) {
+        params.push('fit=fill');
+      }
+      
+      // Only add quality if it's significantly different from default and we're resizing
+      if (quality && quality !== 75 && (width || height)) {
+        params.push(`q=${quality}`);
       }
       
       if (params.length > 0) {
