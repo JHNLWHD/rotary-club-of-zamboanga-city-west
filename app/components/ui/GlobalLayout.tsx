@@ -1,7 +1,7 @@
 import { Box, Flex, Button, Link, Spacer, Image, Text } from "@chakra-ui/react";
 import type { ReactNode } from "react";
 import { useState } from "react";
-import { MapPin, Phone, Mail, Clock, Facebook, ChevronDown, Heart } from "lucide-react";
+import { MapPin, Mail, Clock, Facebook, ChevronDown } from "lucide-react";
 import { Menu } from "./Menu";
 import { useLocation } from "react-router";
 import type { ContactInfo, MeetingInfo } from "~/lib/contentful-types";
