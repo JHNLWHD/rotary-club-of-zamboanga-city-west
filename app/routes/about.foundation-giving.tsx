@@ -4,40 +4,45 @@ import {
   Text,
   Container,
   Stack,
-  SimpleGrid,
-  Icon,
-  Badge,
+  Flex,
 } from "@chakra-ui/react";
-import { Target, Shield, BookOpen, Users, TrendingUp, Globe, Award, DollarSign } from "lucide-react";
 import { PageHero } from "~/components/ui/PageHero";
 import { Chart, useChart } from "@chakra-ui/charts";
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
-  LabelList
+  Legend,
 } from "recharts";
 import { useLoaderData } from "react-router";
+import { useMemo } from "react";
+import { Target, Globe, Award, DollarSign } from "lucide-react";
 import { fetchFoundationGiving } from "~/lib/contentful-api";
 import type { FoundationGiving } from "~/lib/contentful-types";
+import { MarkdownProse } from "~/components/ui/MarkdownProse";
+import {
+  foundationGivingDefinitionOfTermsAnnualFundMarkdown,
+  foundationGivingDefinitionOfTermsEndowmentMarkdown,
+  foundationGivingDefinitionOfTermsIntroMarkdown,
+  foundationGivingDefinitionOfTermsOtherMarkdown,
+  foundationGivingDefinitionOfTermsPolioPlusMarkdown,
+} from "~/data/foundation-giving-definition-of-terms";
 
 export function meta() {
   return [
     { title: "The Rotary Foundation Giving | Rotary Club of Zamboanga City West" },
     { name: "description", content: "Learn about The Rotary Foundation funds including Annual Fund, Polio Plus Fund, Other Fund, and Endowment Fund. Understand how your contributions support global humanitarian efforts." },
     { name: "keywords", content: "Rotary Foundation, Annual Fund, Polio Plus Fund, SHARE, World Fund, Areas of Focus, Global Grants, Endowment Fund" },
-    
-    // Open Graph tags
+
     { property: "og:title", content: "The Rotary Foundation Giving | Rotary Club of Zamboanga City West" },
     { property: "og:description", content: "Learn about The Rotary Foundation funds and how your contributions support global humanitarian efforts." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/about/foundation-giving" },
-    
-    // Canonical URL
+
     { rel: "canonical", href: "https://rotaryzcwest.org/about/foundation-giving" },
   ];
 }
@@ -47,66 +52,82 @@ export async function loader() {
     const foundationGiving = await fetchFoundationGiving();
     return { foundationGiving };
   } catch (error) {
-    console.error('Error loading foundation giving data:', error);
+    console.error("Error loading foundation giving data:", error);
     return { foundationGiving: [] };
   }
 }
 
+function formatUsd(amount: number): string {
+  return amount.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
+}
+
+/** Equivalent to Tailwind `bg-slate-50/80` (slate-50 #f8fafc at 80% opacity). */
+const GIVING_TABLE_STRIPE_SLATE = "rgba(248, 250, 252, 0.8)";
+
+function getGivingTableStripeBackground(zeroBasedRowIndex: number): string {
+  return zeroBasedRowIndex % 2 === 0 ? "white" : GIVING_TABLE_STRIPE_SLATE;
+}
+
+type ChartRow = FoundationGiving & { rotaryYearLabel: string };
+
 export default function FoundationGiving() {
   const { foundationGiving } = useLoaderData<typeof loader>();
+
+  const sortedRows = useMemo(() => {
+    return [...foundationGiving].sort((a, b) => a.startYear - b.startYear);
+  }, [foundationGiving]);
+
+  const chartRows: ChartRow[] = useMemo(() => {
+    return sortedRows.map((row) => ({
+      ...row,
+      rotaryYearLabel: `${row.startYear}-${row.endYear}`,
+    }));
+  }, [sortedRows]);
+
+  const foundationChart = useChart({
+    data: chartRows,
+    series: [
+      { name: "annualFund", color: "gray.700" },
+      { name: "polioPlus", color: "gray.600" },
+      { name: "otherFund", color: "gray.500" },
+      { name: "endowment", color: "gray.400" },
+    ],
+  });
+
+  const totalAnnualFund = sortedRows.reduce((sum, item) => sum + (item.annualFund || 0), 0);
+  const totalPolioPlus = sortedRows.reduce((sum, item) => sum + (item.polioPlus || 0), 0);
+  const totalOtherFund = sortedRows.reduce((sum, item) => sum + (item.otherFund || 0), 0);
+  const totalEndowment = sortedRows.reduce((sum, item) => sum + (item.endowment || 0), 0);
+
+  const hasData = sortedRows.length > 0;
 
   const foundationStats = [
     {
       icon: <Target size={24} color="white" />,
       value: "4",
-      label: "Fund Types"
+      label: "Fund Types",
     },
     {
       icon: <Globe size={24} color="white" />,
       value: "200+",
-      label: "Countries Served"
+      label: "Countries Served",
     },
     {
       icon: <Award size={24} color="white" />,
       value: "100%",
-      label: "Fund Efficiency"
+      label: "Fund Efficiency",
     },
     {
       icon: <DollarSign size={24} color="white" />,
       value: "SHARE",
-      label: "District Impact"
-    }
+      label: "District Impact",
+    },
   ];
-
-  // Use Contentful data or fallback to empty array
-  const chartData = foundationGiving.length > 0 ? foundationGiving : [];
-
-  // Chart configurations for each fund type
-  const annualFundChart = useChart({
-    data: chartData,
-    series: [{ name: "annualFund", color: "blue.500" }]
-  });
-
-  const polioPlusChart = useChart({
-    data: chartData,
-    series: [{ name: "polioPlus", color: "red.500" }]
-  });
-
-  const otherFundChart = useChart({
-    data: chartData,
-    series: [{ name: "otherFund", color: "green.500" }]
-  });
-
-  const endowmentChart = useChart({
-    data: chartData,
-    series: [{ name: "endowment", color: "purple.500" }]
-  });
-
-  // Calculate totals for summary statistics
-  const totalAnnualFund = chartData.reduce((sum, item) => sum + (item.annualFund || 0), 0);
-  const totalPolioPlus = chartData.reduce((sum, item) => sum + (item.polioPlus || 0), 0);
-  const totalOtherFund = chartData.reduce((sum, item) => sum + (item.otherFund || 0), 0);
-  const totalEndowment = chartData.reduce((sum, item) => sum + (item.endowment || 0), 0);
 
   return (
     <>
@@ -117,562 +138,297 @@ export default function FoundationGiving() {
         backgroundGradient="linear-gradient(135deg, #005DAA 0%, #003d73 50%, #002147 100%)"
       />
 
-      <Container maxW="1200px" py={{ base: 16, md: 20 }}>
-        <Stack gap={12}>
-          {/* Fund Types Overview */}
-          <Box textAlign="center">
-            <Heading 
-              as="h2" 
-              fontSize={{ base: "3xl", md: "4xl" }} 
-              fontWeight="bold" 
-              color="gray.900"
-              mb={6}
-            >
-              Foundation Fund Types
+      <Container maxW="1200px" py={{ base: 12, md: 16 }}>
+        <Stack gap={{ base: 12, md: 16 }}>
+          <Box as="section" aria-labelledby="giving-table-heading">
+            <Heading id="giving-table-heading" as="h2" fontSize={{ base: "xl", md: "2xl" }} fontWeight="semibold" color="gray.900" mb={6}>
+              Giving by Rotary Year
             </Heading>
-            <Text 
-              fontSize={{ base: "lg", md: "xl" }} 
-              color="gray.600" 
-              maxW="800px" 
-              mx="auto"
-              lineHeight="relaxed"
-            >
-              The Rotary Foundation operates through four distinct fund types, each designed to maximize the impact 
-              of your contributions and support specific humanitarian initiatives worldwide.
-            </Text>
-          </Box>
 
-          {/* Fund Types Grid */}
-          <SimpleGrid columns={{ base: 1, lg: 2 }} gap={8}>
-            {/* Annual Fund */}
-            <Box 
-              bg="blue.50"
-              p={8}
-              borderRadius="xl"
-              border="2px solid"
-              borderColor="blue.200"
-              transition="all 0.3s ease"
-              _hover={{
-                transform: "translateY(-4px)",
-                boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
-              }}
-            >
-              <Box display="flex" alignItems="center" gap={3} mb={4}>
-                <Icon as={Target} w={8} h={8} color="blue.500" />
-                <Heading as="h3" fontSize="2xl" color="gray.900">
-                  Annual Fund
-                </Heading>
-                <Badge colorScheme="blue" variant="solid" fontSize="sm">
-                  Primary Fund
-                </Badge>
-              </Box>
-              
-              <Stack gap={4} textAlign="left">
-                <Text color="gray.700" fontWeight="medium">
-                  Designations include:
-                </Text>
-                <Box pl={4}>
-                  <Text color="gray.600" mb={2}>• SHARE, World Fund, Areas of Focus, and Disaster Response</Text>
-                  <Text color="gray.600" mb={2}>• SHARE contributions:</Text>
-                  <Box pl={4}>
-                    <Text color="gray.600">- 47.5% to District Designated Fund</Text>
-                    <Text color="gray.600">- 47.5% to World Fund</Text>
+            {hasData ? (
+              <>
+                <Box
+                  display={{ base: "block", md: "none" }}
+                  aria-label="Giving by Rotary Year"
+                  borderWidth="1px"
+                  borderColor="gray.200"
+                  borderRadius="lg"
+                  overflow="hidden"
+                  bg="white"
+                >
+                  {sortedRows.map((row, yearIndex) => {
+                    const mobileFundLines = [
+                      { label: "Annual Fund", value: row.annualFund },
+                      { label: "PolioPlus Fund", value: row.polioPlus },
+                      { label: "Other Fund", value: row.otherFund },
+                      { label: "Endowment Fund", value: row.endowment },
+                    ] as const;
+                    const isLastYear = yearIndex === sortedRows.length - 1;
+                    return (
+                      <Box
+                        key={`mobile-${row.startYear}-${row.endYear}`}
+                        bg={getGivingTableStripeBackground(yearIndex)}
+                        px={4}
+                        pt={4}
+                        pb={4}
+                        borderBottomWidth={isLastYear ? undefined : "1px"}
+                        borderColor="gray.200"
+                      >
+                        <Text fontWeight="bold" color="gray.900" fontSize="md" mb={3}>
+                          RY {row.startYear}-{row.endYear}
+                        </Text>
+                        <Stack gap={2}>
+                          {mobileFundLines.map((line) => (
+                            <Flex
+                              key={line.label}
+                              justify="space-between"
+                              align="baseline"
+                              gap={4}
+                              fontSize="sm"
+                            >
+                              <Text color="gray.600" fontWeight="normal">
+                                {line.label}
+                              </Text>
+                              <Text fontVariantNumeric="tabular-nums" color="gray.900" textAlign="right">
+                                {formatUsd(line.value)}
+                              </Text>
+                            </Flex>
+                          ))}
+                        </Stack>
+                        <Flex
+                          justify="space-between"
+                          align="baseline"
+                          gap={4}
+                          fontSize="sm"
+                          pt={3}
+                          mt={3}
+                          borderTopWidth="1px"
+                          borderColor="gray.200"
+                        >
+                          <Text color="gray.900" fontWeight="bold">
+                            Total
+                          </Text>
+                          <Text fontVariantNumeric="tabular-nums" fontWeight="bold" color="gray.900" textAlign="right">
+                            {formatUsd(row.total)}
+                          </Text>
+                        </Flex>
+                      </Box>
+                    );
+                  })}
+                </Box>
+
+                <Box
+                  display={{ base: "none", md: "block" }}
+                  overflowX="auto"
+                  borderWidth="1px"
+                  borderColor="gray.200"
+                  borderRadius="lg"
+                  bg="white"
+                >
+                  <Box as="table" width="100%" minW="720px" fontSize="sm">
+                    <Box as="thead" bg="gray.50">
+                      <Box as="tr">
+                        <Box as="th" textAlign="left" px={4} py={3} fontWeight="semibold" color="gray.700" borderBottomWidth="1px" borderColor="gray.200">
+                          Rotary Year
+                        </Box>
+                        <Box as="th" textAlign="right" px={4} py={3} fontWeight="semibold" color="gray.700" borderBottomWidth="1px" borderColor="gray.200">
+                          Annual Fund
+                        </Box>
+                        <Box as="th" textAlign="right" px={4} py={3} fontWeight="semibold" color="gray.700" borderBottomWidth="1px" borderColor="gray.200">
+                          Polio Plus
+                        </Box>
+                        <Box as="th" textAlign="right" px={4} py={3} fontWeight="semibold" color="gray.700" borderBottomWidth="1px" borderColor="gray.200">
+                          Other Fund
+                        </Box>
+                        <Box as="th" textAlign="right" px={4} py={3} fontWeight="semibold" color="gray.700" borderBottomWidth="1px" borderColor="gray.200">
+                          Endowment
+                        </Box>
+                        <Box as="th" textAlign="right" px={4} py={3} fontWeight="semibold" color="gray.700" borderBottomWidth="1px" borderColor="gray.200">
+                          Total
+                        </Box>
+                      </Box>
+                    </Box>
+                    <Box as="tbody">
+                      {sortedRows.map((row, rowIndex) => (
+                        <Box
+                          as="tr"
+                          key={`${row.startYear}-${row.endYear}`}
+                          bg={getGivingTableStripeBackground(rowIndex)}
+                        >
+                          <Box as="td" px={4} py={3} borderBottomWidth="1px" borderColor="gray.100" color="gray.800">
+                            {row.startYear}-{row.endYear}
+                          </Box>
+                          <Box as="td" px={4} py={3} borderBottomWidth="1px" borderColor="gray.100" textAlign="right" fontVariantNumeric="tabular-nums">
+                            {formatUsd(row.annualFund)}
+                          </Box>
+                          <Box as="td" px={4} py={3} borderBottomWidth="1px" borderColor="gray.100" textAlign="right" fontVariantNumeric="tabular-nums">
+                            {formatUsd(row.polioPlus)}
+                          </Box>
+                          <Box as="td" px={4} py={3} borderBottomWidth="1px" borderColor="gray.100" textAlign="right" fontVariantNumeric="tabular-nums">
+                            {formatUsd(row.otherFund)}
+                          </Box>
+                          <Box as="td" px={4} py={3} borderBottomWidth="1px" borderColor="gray.100" textAlign="right" fontVariantNumeric="tabular-nums">
+                            {formatUsd(row.endowment)}
+                          </Box>
+                          <Box
+                            as="td"
+                            px={4}
+                            py={3}
+                            borderBottomWidth="1px"
+                            borderColor="gray.100"
+                            textAlign="right"
+                            fontVariantNumeric="tabular-nums"
+                            fontWeight="semibold"
+                          >
+                            {formatUsd(row.total)}
+                          </Box>
+                        </Box>
+                      ))}
+                    </Box>
                   </Box>
                 </Box>
-                
-                <Box borderTop="1px solid" borderColor="gray.200" my={4} />
-                
-                <Box>
-                  <Text color="green.600" fontWeight="semibold" mb={2}>✓ Counts toward Club and District Annual Fund Goal</Text>
-                  <Text color="green.600" fontWeight="semibold" mb={2}>✓ Counts toward Annual Fund Per Capita</Text>
-                  <Text color="green.600" fontWeight="semibold">✓ PHF recognition available</Text>
-                </Box>
-                
-                <Text color="gray.500" fontSize="sm" fontStyle="italic">
-                  Note: Will not match the SHARE Reports
-                </Text>
-              </Stack>
-            </Box>
-
-            {/* Polio Plus Fund */}
-            <Box 
-              bg="red.50"
-              p={8}
-              borderRadius="xl"
-              border="2px solid"
-              borderColor="red.200"
-              transition="all 0.3s ease"
-              _hover={{
-                transform: "translateY(-4px)",
-                boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
-              }}
-            >
-              <Box display="flex" alignItems="center" gap={3} mb={4}>
-                <Icon as={Shield} w={8} h={8} color="red.500" />
-                <Heading as="h3" fontSize="2xl" color="gray.900">
-                  Polio Plus Fund
-                </Heading>
-                <Badge colorScheme="red" variant="solid" fontSize="sm">
-                  Eradication
-                </Badge>
+              </>
+            ) : (
+              <Box borderWidth="1px" borderColor="gray.200" borderRadius="lg" bg="gray.50" px={6} py={10} textAlign="center">
+                <Text color="gray.600">Foundation giving data will be available soon.</Text>
               </Box>
-              
-              <Stack gap={4} textAlign="left">
-                <Text color="gray.700" fontWeight="medium">
-                  Supports polio eradication through:
-                </Text>
-                <Box pl={4}>
-                  <Text color="gray.600" mb={2}>• PolioPlus</Text>
-                  <Text color="gray.600" mb={2}>• PolioPlus Partners</Text>
-                  <Text color="gray.600">• Ride to End Polio</Text>
-                </Box>
-                
-                <Box borderTop="1px solid" borderColor="gray.200" my={4} />
-                
-                <Box>
-                  <Text color="red.600" fontWeight="semibold" mb={2}>✗ Does not count towards Club or District Annual Fund Goal</Text>
-                  <Text color="red.600" fontWeight="semibold">✗ Does not count towards Annual Fund Per Capita</Text>
-                </Box>
-              </Stack>
-            </Box>
-
-            {/* Other Fund */}
-            <Box 
-              bg="green.50"
-              p={8}
-              borderRadius="xl"
-              border="2px solid"
-              borderColor="green.200"
-              transition="all 0.3s ease"
-              _hover={{
-                transform: "translateY(-4px)",
-                boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
-              }}
-            >
-              <Box display="flex" alignItems="center" gap={3} mb={4}>
-                <Icon as={BookOpen} w={8} h={8} color="green.500" />
-                <Heading as="h3" fontSize="2xl" color="gray.900">
-                  Other Fund
-                </Heading>
-                <Badge colorScheme="green" variant="solid" fontSize="sm">
-                  Programs
-                </Badge>
-              </Box>
-              
-              <Stack gap={4} textAlign="left">
-                <Text color="gray.700" fontWeight="medium">
-                  Supports programs selected by donor:
-                </Text>
-                <Box pl={4}>
-                  <Text color="gray.600" mb={2}>• Matching Grants</Text>
-                  <Text color="gray.600" mb={2}>• Global Grants</Text>
-                  <Text color="gray.600">• Other Approved Programs</Text>
-                </Box>
-                
-                <Box borderTop="1px solid" borderColor="gray.200" my={4} />
-                
-                <Box>
-                  <Text color="red.600" fontWeight="semibold" mb={2}>✗ Does not count towards Club or District Annual Fund Goal</Text>
-                  <Text color="red.600" fontWeight="semibold">✗ Does not count towards Annual Fund Per Capita</Text>
-                </Box>
-              </Stack>
-            </Box>
-
-            {/* Endowment Fund */}
-            <Box 
-              bg="purple.50"
-              p={8}
-              borderRadius="xl"
-              border="2px solid"
-              borderColor="purple.200"
-              transition="all 0.3s ease"
-              _hover={{
-                transform: "translateY(-4px)",
-                boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
-              }}
-            >
-              <Box display="flex" alignItems="center" gap={3} mb={4}>
-                <Icon as={Users} w={8} h={8} color="purple.500" />
-                <Heading as="h3" fontSize="2xl" color="gray.900">
-                  Endowment Fund
-                </Heading>
-                <Badge colorScheme="purple" variant="solid" fontSize="sm">
-                  Perpetual
-                </Badge>
-              </Box>
-              
-              <Stack gap={4} textAlign="left">
-                <Text color="gray.700" fontWeight="medium">
-                  Contributions are invested in perpetuity:
-                </Text>
-                <Box pl={4}>
-                  <Text color="gray.600" mb={2}>• Spendable Earnings used on programs</Text>
-                  <Text color="gray.600" mb={2}>• Donor can designate spendable earnings for:</Text>
-                  <Box pl={4}>
-                    <Text color="gray.600">- Areas of Focus</Text>
-                    <Text color="gray.600">- Rotary Peace Centers</Text>
-                    <Text color="gray.600">- SHARE</Text>
-                    <Text color="gray.600">- World Fund</Text>
-                  </Box>
-                </Box>
-                
-                <Box borderTop="1px solid" borderColor="gray.200" my={4} />
-                
-                <Box>
-                  <Text color="green.600" fontWeight="semibold" mb={2}>✓ Benefactor recognition available</Text>
-                  <Text color="red.600" fontWeight="semibold" mb={2}>✗ PHF recognition is not available</Text>
-                  <Text color="red.600" fontWeight="semibold">✗ Does not count towards Club or District Annual Fund Goal</Text>
-                </Box>
-              </Stack>
-            </Box>
-          </SimpleGrid>
-
-          {/* Foundation Giving Charts - One per Fund Type */}
-          {chartData.length > 0 ? (
-            <Box>
-              <Box textAlign="center" mb={8}>
-                <Heading 
-                  as="h3" 
-                  fontSize={{ base: "2xl", md: "3xl" }} 
-                  fontWeight="bold" 
-                  color="gray.900"
-                  mb={4}
-                >
-                  Foundation Giving by Fund Type
-                </Heading>
-                <Text 
-                  fontSize={{ base: "md", md: "lg" }} 
-                  color="gray.600" 
-                  maxW="700px" 
-                  mx="auto"
-                >
-                  Track our club's contributions to each fund type across different Rotary Years.
-                </Text>
-              </Box>
-
-              <SimpleGrid columns={{ base: 1, lg: 2 }} gap={8}>
-                {/* Annual Fund Chart */}
-                <Box 
-                  bg="white" 
-                  p={6} 
-                  borderRadius="xl" 
-                  border="1px solid" 
-                  borderColor="blue.200"
-                  shadow="sm"
-                >
-                  <Heading as="h4" fontSize="lg" color="blue.600" mb={4} textAlign="center">
-                    Annual Fund Contributions
-                  </Heading>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <Chart.Root chart={annualFundChart}>
-                      <BarChart data={annualFundChart.data}>
-                        <CartesianGrid strokeDasharray="3 3" stroke={annualFundChart.color("border.muted")} />
-                        <XAxis 
-                          dataKey={(entry) => `${entry.startYear}-${entry.endYear}`}
-                          stroke={annualFundChart.color("fg.muted")}
-                          fontSize={12}
-                        />
-                        <YAxis 
-                          tickFormatter={annualFundChart.formatNumber({ maximumFractionDigits: 0 })}
-                          stroke={annualFundChart.color("fg.muted")}
-                          fontSize={12}
-                        />
-                        <Tooltip 
-                          formatter={(value: number) => [`$${value.toLocaleString()}`, '']}
-                          labelStyle={{ color: annualFundChart.color("fg.default") }}
-                        />
-                        <Bar
-                          dataKey="annualFund"
-                          fill={annualFundChart.color("blue.500")}
-                          radius={[4, 4, 0, 0]}
-                        >
-                          <LabelList 
-                            dataKey="annualFund" 
-                            position="top" 
-                            formatter={(value: any) => `$${Number(value).toLocaleString()}`}
-                            fontSize={11}
-                            fill="#1A365D"
-                            fontWeight="medium"
-                          />
-                        </Bar>
-                      </BarChart>
-                    </Chart.Root>
-                  </ResponsiveContainer>
-                </Box>
-
-                {/* Polio Plus Fund Chart */}
-                <Box 
-                  bg="white" 
-                  p={6} 
-                  borderRadius="xl" 
-                  border="1px solid" 
-                  borderColor="red.200"
-                  shadow="sm"
-                >
-                  <Heading as="h4" fontSize="lg" color="red.600" mb={4} textAlign="center">
-                    Polio Plus Fund Contributions
-                  </Heading>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <Chart.Root chart={polioPlusChart}>
-                      <BarChart data={polioPlusChart.data}>
-                        <CartesianGrid strokeDasharray="3 3" stroke={polioPlusChart.color("border.muted")} />
-                        <XAxis 
-                          dataKey={(entry) => `${entry.startYear}-${entry.endYear}`}
-                          stroke={polioPlusChart.color("fg.muted")}
-                          fontSize={12}
-                        />
-                        <YAxis 
-                          tickFormatter={polioPlusChart.formatNumber({ maximumFractionDigits: 0 })}
-                          stroke={polioPlusChart.color("fg.muted")}
-                          fontSize={12}
-                        />
-                        <Tooltip 
-                          formatter={(value: number) => [`$${value.toLocaleString()}`, '']}
-                          labelStyle={{ color: polioPlusChart.color("fg.default") }}
-                        />
-                        <Bar
-                          dataKey="polioPlus"
-                          fill={polioPlusChart.color("red.500")}
-                          radius={[4, 4, 0, 0]}
-                        >
-                          <LabelList 
-                            dataKey="polioPlus" 
-                            position="top" 
-                            formatter={(value: any) => `$${Number(value).toLocaleString()}`}
-                            fontSize={11}
-                            fill="#C53030"
-                            fontWeight="medium"
-                        />
-                        </Bar>
-                      </BarChart>
-                    </Chart.Root>
-                  </ResponsiveContainer>
-                </Box>
-
-                {/* Other Fund Chart */}
-                <Box 
-                  bg="white" 
-                  p={6} 
-                  borderRadius="xl" 
-                  border="1px solid" 
-                  borderColor="green.200"
-                  shadow="sm"
-                >
-                  <Heading as="h4" fontSize="lg" color="green.600" mb={4} textAlign="center">
-                    Other Fund Contributions
-                  </Heading>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <Chart.Root chart={otherFundChart}>
-                      <BarChart data={otherFundChart.data}>
-                        <CartesianGrid strokeDasharray="3 3" stroke={otherFundChart.color("border.muted")} />
-                        <XAxis 
-                          dataKey={(entry) => `${entry.startYear}-${entry.endYear}`}
-                          stroke={otherFundChart.color("fg.muted")}
-                          fontSize={12}
-                        />
-                        <YAxis 
-                          tickFormatter={otherFundChart.formatNumber({ maximumFractionDigits: 0 })}
-                          stroke={otherFundChart.color("fg.muted")}
-                          fontSize={12}
-                        />
-                        <Tooltip 
-                          formatter={(value: number) => [`$${value.toLocaleString()}`, '']}
-                          labelStyle={{ color: otherFundChart.color("fg.muted") }}
-                        />
-                        <Bar
-                          dataKey="otherFund"
-                          fill={otherFundChart.color("green.500")}
-                          radius={[4, 4, 0, 0]}
-                        >
-                          <LabelList 
-                            dataKey="otherFund" 
-                            position="top" 
-                            formatter={(value: any) => `$${Number(value).toLocaleString()}`}
-                            fontSize={11}
-                            fill="#22543D"
-                            fontWeight="medium"
-                          />
-                        </Bar>
-                      </BarChart>
-                    </Chart.Root>
-                  </ResponsiveContainer>
-                </Box>
-
-                {/* Endowment Fund Chart */}
-                <Box 
-                  bg="white" 
-                  p={6} 
-                  borderRadius="xl" 
-                  border="1px solid" 
-                  borderColor="purple.200"
-                  shadow="sm"
-                >
-                  <Heading as="h4" fontSize="lg" color="purple.600" mb={4} textAlign="center">
-                    Endowment Fund Contributions
-                  </Heading>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <Chart.Root chart={endowmentChart}>
-                      <BarChart data={endowmentChart.data}>
-                        <CartesianGrid strokeDasharray="3 3" stroke={endowmentChart.color("border.muted")} />
-                        <XAxis 
-                          dataKey={(entry) => `${entry.startYear}-${entry.endYear}`}
-                          stroke={endowmentChart.color("fg.muted")}
-                          fontSize={12}
-                        />
-                        <YAxis 
-                          tickFormatter={endowmentChart.formatNumber({ maximumFractionDigits: 0 })}
-                          stroke={endowmentChart.color("fg.muted")}
-                          fontSize={12}
-                        />
-                        <Tooltip 
-                          formatter={(value: number) => [`$${value.toLocaleString()}`, '']}
-                          labelStyle={{ color: endowmentChart.color("fg.default") }}
-                        />
-                        <Bar
-                          dataKey="endowment"
-                          fill={endowmentChart.color("purple.500")}
-                          radius={[4, 4, 0, 0]}
-                        >
-                          <LabelList 
-                            dataKey="endowment" 
-                            position="top" 
-                            formatter={(value: any) => `$${Number(value).toLocaleString()}`}
-                            fontSize={11}
-                            fill="#553C9A"
-                            fontWeight="medium"
-                          />
-                        </Bar>
-                      </BarChart>
-                    </Chart.Root>
-                  </ResponsiveContainer>
-                </Box>
-              </SimpleGrid>
-            </Box>
-          ) : (
-            <Box textAlign="center" py={12}>
-              <Text fontSize="lg" color="gray.600">
-                Foundation giving data will be available soon.
-              </Text>
-            </Box>
-          )}
-
-          {/* Summary Statistics */}
-          <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={6}>
-            <Box 
-              bg="blue.50" 
-              p={6} 
-              borderRadius="lg" 
-              border="1px solid" 
-              borderColor="blue.200"
-              textAlign="center"
-            >
-              <Icon as={TrendingUp} w={8} h={8} color="blue.500" mb={3} />
-              <Text fontSize="2xl" fontWeight="bold" color="blue.600">
-                ${totalAnnualFund.toLocaleString()}
-              </Text>
-              <Text fontSize="sm" color="blue.700" fontWeight="medium">
-                Total Annual Fund
-              </Text>
-            </Box>
-            
-            <Box 
-              bg="red.50" 
-              p={6} 
-              borderRadius="lg" 
-              border="1px solid" 
-              borderColor="red.200"
-              textAlign="center"
-            >
-              <Icon as={Shield} w={8} h={8} color="red.500" mb={3} />
-              <Text fontSize="2xl" fontWeight="bold" color="red.600">
-                ${totalPolioPlus.toLocaleString()}
-              </Text>
-              <Text fontSize="sm" color="red.700" fontWeight="medium">
-                Total Polio Plus
-              </Text>
-            </Box>
-            
-            <Box 
-              bg="green.50" 
-              p={6} 
-              borderRadius="lg" 
-              border="1px solid" 
-              borderColor="green.200"
-              textAlign="center"
-            >
-              <Icon as={BookOpen} w={8} h={8} color="green.500" mb={3} />
-              <Text fontSize="2xl" fontWeight="bold" color="green.600">
-                ${totalOtherFund.toLocaleString()}
-              </Text>
-              <Text fontSize="sm" color="green.700" fontWeight="medium">
-                Total Other Fund
-              </Text>
-            </Box>
-            
-            <Box 
-              bg="purple.50" 
-              p={6} 
-              borderRadius="lg" 
-              border="1px solid" 
-              borderColor="purple.200"
-              textAlign="center"
-            >
-              <Icon as={Users} w={8} h={8} color="purple.500" mb={3} />
-              <Text fontSize="2xl" fontWeight="bold" color="purple.600">
-                ${totalEndowment.toLocaleString()}
-              </Text>
-              <Text fontSize="sm" color="purple.700" fontWeight="medium">
-                Total Endowment
-              </Text>
-            </Box>
-          </SimpleGrid>
-
-          {/* SHARE Program Highlight */}
-          <Box 
-            bg="gold.50"
-            p={8}
-            borderRadius="xl"
-            border="2px solid"
-            borderColor="gold.200"
-            textAlign="center"
-          >
-            <Heading as="h3" fontSize="2xl" color="gray.900" mb={4}>
-              Understanding SHARE
-            </Heading>
-            <Text color="gray.700" fontSize="lg" mb={4}>
-              SHARE (Sharing, Helping, Assisting, Reaching, Empowering) is The Rotary Foundation's 
-              program that returns a portion of your Annual Fund contributions to your district for 
-              local and international projects.
-            </Text>
-            <Text color="gray.600">
-              Your SHARE contributions are split: 47.5% stays in your district for local projects, 
-              while 47.5% goes to the World Fund for global humanitarian efforts.
-            </Text>
+            )}
           </Box>
 
-          {/* Call to Action */}
-          <Box 
-            bg="gray.50"
-            p={8}
-            borderRadius="xl"
-            border="2px solid"
-            borderColor="gray.200"
-            textAlign="center"
-          >
-            <Heading as="h3" fontSize="2xl" color="gray.900" mb={4}>
-              Choose Your Impact
+          <Box as="section" aria-labelledby="giving-chart-heading">
+            <Heading id="giving-chart-heading" as="h2" fontSize={{ base: "xl", md: "2xl" }} fontWeight="semibold" color="gray.900" mb={2}>
+              Contributions by fund type
             </Heading>
-            <Text color="gray.700" fontSize="lg" mb={6}>
-              Each fund type serves a specific purpose in advancing Rotary's mission. Whether you choose 
-              the Annual Fund for maximum local and global impact, support polio eradication, fund specific 
-              programs, or create a lasting legacy through the Endowment Fund, your contribution makes a difference.
+            <Text color="gray.600" fontSize="sm" mb={6} maxW="720px">
+              Grouped bars show each fund type per Rotary Year. Each series uses a distinct neutral shade; see the legend for series names.
             </Text>
-            <Text color="gray.600" fontSize="md">
-              Contact our club leadership to learn more about how to contribute to these funds and maximize your impact.
-            </Text>
+
+            {hasData ? (
+              <Box borderWidth="1px" borderColor="gray.200" borderRadius="lg" bg="white" p={{ base: 4, md: 6 }}>
+                <Box height={{ base: "320px", md: "380px" }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <Chart.Root chart={foundationChart}>
+                      <BarChart data={foundationChart.data} barCategoryGap="12%">
+                        <CartesianGrid strokeDasharray="3 3" stroke={foundationChart.color("border.muted")} vertical={false} />
+                        <XAxis
+                          dataKey="rotaryYearLabel"
+                          stroke={foundationChart.color("fg.muted")}
+                          fontSize={12}
+                          tickLine={false}
+                        />
+                        <YAxis
+                          tickFormatter={foundationChart.formatNumber({ maximumFractionDigits: 0 })}
+                          stroke={foundationChart.color("fg.muted")}
+                          fontSize={12}
+                          tickLine={false}
+                          axisLine={false}
+                        />
+                        <Tooltip
+                          formatter={(value: number) => [formatUsd(value), ""]}
+                          labelStyle={{ color: foundationChart.color("fg.default") }}
+                          contentStyle={{
+                            borderRadius: "8px",
+                            border: `1px solid ${foundationChart.color("border.muted")}`,
+                          }}
+                        />
+                        <Legend
+                          wrapperStyle={{ fontSize: "12px", paddingTop: 16 }}
+                          formatter={(value) => {
+                            const labels: Record<string, string> = {
+                              annualFund: "Annual Fund",
+                              polioPlus: "Polio Plus",
+                              otherFund: "Other Fund",
+                              endowment: "Endowment",
+                            };
+                            return labels[value] ?? value;
+                          }}
+                        />
+                        <Bar dataKey="annualFund" name="annualFund" fill={foundationChart.color("gray.700")} radius={[2, 2, 0, 0]} />
+                        <Bar dataKey="polioPlus" name="polioPlus" fill={foundationChart.color("gray.600")} radius={[2, 2, 0, 0]} />
+                        <Bar dataKey="otherFund" name="otherFund" fill={foundationChart.color("gray.500")} radius={[2, 2, 0, 0]} />
+                        <Bar dataKey="endowment" name="endowment" fill={foundationChart.color("gray.400")} radius={[2, 2, 0, 0]} />
+                      </BarChart>
+                    </Chart.Root>
+                  </ResponsiveContainer>
+                </Box>
+              </Box>
+            ) : (
+              <Box borderWidth="1px" borderColor="gray.200" borderRadius="lg" bg="gray.50" px={6} py={10} textAlign="center">
+                <Text color="gray.600">Chart data will appear when Rotary Year records are published.</Text>
+              </Box>
+            )}
           </Box>
+
+          <Box as="section" aria-labelledby="totals-heading">
+            <Heading id="totals-heading" as="h2" fontSize={{ base: "xl", md: "2xl" }} fontWeight="semibold" color="gray.900" mb={6}>
+              Totals (all years)
+            </Heading>
+            <Flex direction={{ base: "column", sm: "row" }} flexWrap="wrap" gap={4}>
+              <TotalTile label="Annual Fund" value={formatUsd(totalAnnualFund)} />
+              <TotalTile label="Polio Plus" value={formatUsd(totalPolioPlus)} />
+              <TotalTile label="Other Fund" value={formatUsd(totalOtherFund)} />
+              <TotalTile label="Endowment" value={formatUsd(totalEndowment)} />
+            </Flex>
+          </Box>
+
+          <DefinitionOfTermsSection />
         </Stack>
       </Container>
     </>
   );
-} 
+}
+
+function TotalTile({ label, value }: { label: string; value: string }) {
+  return (
+    <Box
+      flex="1"
+      minW={{ base: "100%", sm: "calc(50% - 8px)", lg: "calc(25% - 12px)" }}
+      borderWidth="1px"
+      borderColor="gray.200"
+      borderRadius="lg"
+      bg="gray.50"
+      px={5}
+      py={4}
+    >
+      <Text fontSize="xs" fontWeight="medium" color="gray.500" textTransform="uppercase" letterSpacing="wide" mb={1}>
+        {label}
+      </Text>
+      <Text fontSize="xl" fontWeight="semibold" color="gray.900" fontVariantNumeric="tabular-nums">
+        {value}
+      </Text>
+    </Box>
+  );
+}
+
+function DefinitionOfTermsSection() {
+  return (
+    <Box as="section" aria-labelledby="definition-of-terms-heading" borderTopWidth="1px" borderColor="gray.200" pt={{ base: 10, md: 12 }}>
+      <Heading id="definition-of-terms-heading" as="h2" fontSize={{ base: "xl", md: "2xl" }} fontWeight="semibold" color="gray.900" mb={2}>
+        Definition of terms
+      </Heading>
+      <Box mb={8} maxW="720px" fontSize="sm">
+        <MarkdownProse content={foundationGivingDefinitionOfTermsIntroMarkdown} />
+      </Box>
+
+      <Stack gap={4}>
+        <FundTypeSubsection title="Annual Fund" markdown={foundationGivingDefinitionOfTermsAnnualFundMarkdown} />
+        <FundTypeSubsection title="Polio Plus Fund" markdown={foundationGivingDefinitionOfTermsPolioPlusMarkdown} />
+        <FundTypeSubsection title="Other Fund" markdown={foundationGivingDefinitionOfTermsOtherMarkdown} />
+        <FundTypeSubsection title="Endowment Fund" markdown={foundationGivingDefinitionOfTermsEndowmentMarkdown} />
+      </Stack>
+    </Box>
+  );
+}
+
+function FundTypeSubsection({ title, markdown }: { title: string; markdown: string }) {
+  return (
+    <Box borderWidth="1px" borderColor="gray.200" borderRadius="md" bg="white" p={4}>
+      <Heading as="h3" fontSize="md" fontWeight="semibold" color="gray.900" mb={3}>
+        {title}
+      </Heading>
+      <Box fontSize="sm">
+        <MarkdownProse content={markdown} />
+      </Box>
+    </Box>
+  );
+}
