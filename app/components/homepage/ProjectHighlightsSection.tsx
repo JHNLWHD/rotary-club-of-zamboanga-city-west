@@ -1,6 +1,5 @@
-import { Box, SimpleGrid, Flex, Text } from "@chakra-ui/react";
-import { SectionHeader } from "../ui/SectionHeader";
-import { ButtonLink } from "../ui/ButtonLink";
+import { Box, Flex, Heading, Link, SimpleGrid, Text } from "@chakra-ui/react";
+import { ArrowRight } from "lucide-react";
 import type { Project } from "../../lib/contentful-types";
 import { ProjectCard } from "../ui/ProjectCard";
 
@@ -11,52 +10,37 @@ type ProjectHighlightsSectionProps = {
 
 export function ProjectHighlightsSection({ projects, viewAllLink }: ProjectHighlightsSectionProps) {
   return (
-    <Box as="section" py={20} bgGradient="linear(to-b, gray.50, white)" id="projects">
-      <Box maxW="1200px" mx="auto" px={{ base: 4, md: 8 }}>
-        <SectionHeader 
-          subtitle="Success Stories"
-          title="Project Highlights"
-          description="Witness the transformative impact of our community projects and the lives we've touched together."
-        />
-
-        {!projects?.length ? (
-          <Box textAlign="center" py={12}>
-            <Text fontSize="xl" color="gray.600" fontWeight="medium">
-              No project highlights have been added to the CMS yet.
+    <Box as="section" bg="#f7f5f0" id="projects">
+      <Box maxW="1400px" mx="auto">
+        <Flex direction={{ base: "column", md: "row" }} justify="space-between" align={{ md: "end" }} gap={6} px={{ base: 5, md: 10 }} py={{ base: 11, md: 14 }}>
+          <Box maxW="720px">
+            <Text color="brand.700" fontSize="xs" fontWeight="bold" letterSpacing="0.18em" textTransform="uppercase" mb={6}>
+              Field notes / Published work
+            </Text>
+            <Heading as="h2" color="brand.900" fontWeight="semibold" fontSize={{ base: "4xl", md: "5xl" }} letterSpacing="-0.025em" lineHeight="1.12">
+              Work that leaves a record.
+            </Heading>
+            <Text color="gray.700" fontSize={{ base: "md", md: "lg" }} lineHeight="1.7" mt={6}>
+              Published initiatives with dates, places, partners, and the details behind each handover.
             </Text>
           </Box>
-        ) : (
-          <>
-            <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={8}>
-              {projects?.slice(0, 3).map((project) => (
-                <ProjectCard key={project.title} project={project} />
-              ))}
-            </SimpleGrid>
+          <Link href={viewAllLink} display="inline-flex" alignItems="center" justifyContent="space-between" gap={8} bg="#0067c8" color="white" px={5} py={4} fontWeight="bold" whiteSpace="nowrap" _hover={{ bg: "brand.700", textDecoration: "none" }}>
+            View all projects <ArrowRight size={18} aria-hidden="true" />
+          </Link>
+        </Flex>
 
-            <Flex justify="center" mt={12}>
-              <ButtonLink
-                href={viewAllLink}
-                bgGradient="linear(to-r, brand.500, brand.600)"
-                color="white"
-                _hover={{
-                  bgGradient: "linear(to-r, brand.600, brand.700)",
-                  transform: "translateY(-4px)",
-                  boxShadow: "0 12px 35px rgba(0,93,170,0.3)"
-                }}
-                borderRadius="xl"
-                px={8}
-                py={4}
-                fontSize="lg"
-                fontWeight="bold"
-                transition="all 0.3s ease"
-                boxShadow="0 8px 25px rgba(0,93,170,0.2)"
-              >
-                View All Projects →
-              </ButtonLink>
-            </Flex>
-          </>
+        {projects?.length ? (
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={{ base: 10, md: 8 }} px={{ base: 5, md: 10 }} pb={{ base: 12, md: 16 }}>
+            {projects.slice(0, 3).map((project) => (
+              <ProjectCard key={project.slug || project.title} project={project} />
+            ))}
+          </SimpleGrid>
+        ) : (
+          <Box px={{ base: 5, md: 10 }} py={10}>
+            <Text color="gray.700">Project records are being prepared for publication.</Text>
+          </Box>
         )}
       </Box>
     </Box>
   );
-} 
+}

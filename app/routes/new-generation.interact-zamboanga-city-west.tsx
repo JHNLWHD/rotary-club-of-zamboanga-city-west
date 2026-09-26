@@ -23,6 +23,7 @@ export const meta: MetaFunction = () => {
       content: "Building tomorrow's leaders today at the Interact Club of Zamboanga City West. Inspiring high school students through leadership development, community service, and innovation." 
     },
     { property: "og:type", content: "website" },
+    { property: "og:url", content: "https://rotaryzcwest.org/new-generation/interact-zamboanga-city-west" },
     { property: "og:image", content: "" },
     { name: "twitter:card", content: "summary" },
     { name: "twitter:title", content: "Interact Club of Zamboanga City West" },
@@ -33,6 +34,7 @@ export const meta: MetaFunction = () => {
     { name: "twitter:image", content: "" },
     { name: "robots", content: "index, follow" },
     { name: "author", content: "Rotary Club of Zamboanga City West" },
+    { tagName: "link", rel: "canonical", href: "https://rotaryzcwest.org/new-generation/interact-zamboanga-city-west" },
   ];
 };
 

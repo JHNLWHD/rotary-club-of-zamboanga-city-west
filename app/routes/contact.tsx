@@ -1,8 +1,8 @@
-import { Box, Container, Heading, Text, Stack, Button, Link } from "@chakra-ui/react";
+import { Box, Container } from "@chakra-ui/react";
 import { ContactSection } from "../components/homepage/ContactSection";
 import { ComingSoon } from "../components/ui/ComingSoon";
 import { useRouteLoaderData, useSearchParams } from "react-router";
-import { CheckCircle, Home } from "lucide-react";
+import ThankYou from "./thank-you";
 import type { ContactInfo, MeetingInfo } from "~/lib/contentful-types";
 
 export function meta() {
@@ -19,19 +19,12 @@ export function meta() {
     { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
     
     // Canonical URL
-    { rel: "canonical", href: "https://rotaryzcwest.org/contact" },
+    { tagName: "link", rel: "canonical", href: "https://rotaryzcwest.org/contact" },
   ];
 }
 
-// Remove the action function to let Netlify handle the form submission directly
-// export async function action() {
-//   return redirect("/thank-you");
-// }
-
 export default function Contact() {
   const [searchParams] = useSearchParams();
-  const isSuccess = searchParams.get("success") === "true";
-  
   const { contactData } = useRouteLoaderData("root") as {
     contactData?: {
       meetingInfo?: MeetingInfo;
@@ -41,10 +34,10 @@ export default function Contact() {
 
   if (!contactData?.meetingInfo || !contactData?.contactInfo) {
     return (
-      <Box py={{ base: 64, md: 42, lg: 42 }} display="flex" alignItems="center" justifyContent="center" minH="60vh">
+      <Box py={{ base: 12, md: 20 }} display="flex" alignItems="center" justifyContent="center" minH="60vh">
         <Container maxW="full" p={0}>
           <ComingSoon
-            title="🚧 Contact Information Coming Soon"
+            title="Contact information is being updated"
             message="We're currently setting up our contact system. Please check back soon for ways to get in touch with us."
             colorScheme="brand"
             size="lg"
@@ -55,89 +48,19 @@ export default function Contact() {
     );
   }
 
-  // Show success message if form was submitted
-  if (isSuccess) {
-    return (
-      <Box py={{ base: 16, md: 24, lg: 32 }} minH="100vh" display="flex" alignItems="center">
-        <Container maxW="800px" py={{ base: 8, md: 12 }}>
-          <Stack gap={{ base: 8, md: 12 }} textAlign="center" align="center">
-            {/* Success Icon */}
-            <Box
-              bg="green.100"
-              borderRadius="full"
-              p={{ base: 6, md: 8 }}
-              border="3px solid"
-              borderColor="green.400"
-              mt={{ base: 4, md: 8 }}
-            >
-              <CheckCircle size={64} color="#38A169" />
-            </Box>
-
-            {/* Success Message */}
-            <Stack gap={{ base: 4, md: 6 }} align="center">
-              <Heading 
-                as="h1" 
-                fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }} 
-                fontWeight="bold" 
-                color="gray.900"
-                lineHeight="shorter"
-              >
-                Thank You!
-              </Heading>
-              <Heading 
-                as="h2" 
-                fontSize={{ base: "xl", md: "2xl" }} 
-                fontWeight="bold" 
-                color="green.600"
-                lineHeight="shorter"
-              >
-                Your Message Has Been Sent
-              </Heading>
-              <Text 
-                fontSize={{ base: "lg", md: "xl" }} 
-                color="gray.600" 
-                maxW="600px" 
-                lineHeight="relaxed"
-                px={{ base: 4, md: 0 }}
-              >
-                Thank you for reaching out to Rotary Club of Zamboanga City West! We've received your message and will respond within 7 days.
-              </Text>
-            </Stack>
-
-            {/* Action Button */}
-            <Box mt={{ base: 4, md: 6 }}>
-              <Link href="/home">
-                <Button
-                  bg="brand.500"
-                  color="white"
-                  _hover={{ bg: "brand.600" }}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  gap={2}
-                  px={8}
-                  py={4}
-                  fontSize="lg"
-                >
-                  <Home size={20} />
-                  Back to Homepage
-                </Button>
-              </Link>
-            </Box>
-          </Stack>
-        </Container>
-      </Box>
-    );
+  if (searchParams.get("success") === "true") {
+    return <ThankYou />;
   }
 
   return (
-    <Box py={{ base: 8, md: 12, lg: 16 }}>
+    <Box>
       <Container maxW="full" p={0}>
         <ContactSection 
           meetingInfo={contactData.meetingInfo}
           contactInfo={contactData.contactInfo}
+          headingAs="h1"
         />
       </Container>
     </Box>
   );
-} 
+}

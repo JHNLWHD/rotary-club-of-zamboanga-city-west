@@ -1,166 +1,76 @@
-import { fetchAllProjects } from '../lib/contentful-api';
-import type { Route } from './+types/sitemap[.]xml';
+import { fetchAllProjects } from "../lib/contentful-api";
 
 type SitemapEntry = {
   loc: string;
   lastmod?: string;
-  changefreq?: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
-  priority?: string;
+  changefreq: "weekly" | "monthly" | "yearly";
+  priority: string;
 };
 
-export async function loader({ request }: Route.LoaderArgs) {
-  const siteUrl = 'https://rotaryzcwest.org';
-  
-  // Static routes with their priorities and change frequencies
-  const staticRoutes: SitemapEntry[] = [
-    {
-      loc: `${siteUrl}/`,
-      lastmod: new Date().toISOString(),
-      changefreq: 'weekly',
-      priority: '1.0'
-    },
-    {
-      loc: `${siteUrl}/about/leadership`,
-      lastmod: new Date().toISOString(),
-      changefreq: 'monthly',
-      priority: '0.8'
-    },
-    {
-      loc: `${siteUrl}/about/history`,
-      lastmod: new Date().toISOString(),
-      changefreq: 'yearly',
-      priority: '0.7'
-    },
-    {
-      loc: `${siteUrl}/about/board-resolutions`,
-      lastmod: new Date().toISOString(),
-      changefreq: 'monthly',
-      priority: '0.6'
-    },
-    {
-      loc: `${siteUrl}/about/foundation-giving`,
-      lastmod: new Date().toISOString(),
-      changefreq: 'monthly',
-      priority: '0.6'
-    },
-    {
-      loc: `${siteUrl}/about/calendar`,
-      lastmod: new Date().toISOString(),
-      changefreq: 'weekly',
-      priority: '0.7'
-    },
-    {
-      loc: `${siteUrl}/contact`,
-      lastmod: new Date().toISOString(),
-      changefreq: 'monthly',
-      priority: '0.8'
-    },
-    {
-      loc: `${siteUrl}/the-fortress`,
-      lastmod: new Date().toISOString(),
-      changefreq: 'monthly',
-      priority: '0.7'
-    },
-    {
-      loc: `${siteUrl}/service-projects`,
-      lastmod: new Date().toISOString(),
-      changefreq: 'weekly',
-      priority: '0.9'
-    },
-    {
-      loc: `${siteUrl}/donate`,
-      lastmod: new Date().toISOString(),
-      changefreq: 'monthly',
-      priority: '0.8'
-    },
-    {
-      loc: `${siteUrl}/thank-you`,
-      lastmod: new Date().toISOString(),
-      changefreq: 'yearly',
-      priority: '0.3'
-    },
-    {
-      loc: `${siteUrl}/new-generation/rotaract-southern-city-colleges`,
-      lastmod: new Date().toISOString(),
-      changefreq: 'monthly',
-      priority: '0.6'
-    },
-    {
-      loc: `${siteUrl}/new-generation/interact-zamboanga-city-west`,
-      lastmod: new Date().toISOString(),
-      changefreq: 'monthly',
-      priority: '0.6'
-    }
-  ];
+const siteUrl = "https://rotaryzcwest.org";
 
-  let dynamicRoutes: SitemapEntry[] = [];
+const staticRoutes: SitemapEntry[] = [
+  { loc: `${siteUrl}/`, changefreq: "weekly", priority: "1.0" },
+  { loc: `${siteUrl}/service-projects`, changefreq: "weekly", priority: "0.9" },
+  { loc: `${siteUrl}/about/leadership`, changefreq: "monthly", priority: "0.8" },
+  { loc: `${siteUrl}/about/foundation-giving`, changefreq: "monthly", priority: "0.8" },
+  { loc: `${siteUrl}/about/calendar`, changefreq: "weekly", priority: "0.7" },
+  { loc: `${siteUrl}/about/history`, changefreq: "yearly", priority: "0.7" },
+  { loc: `${siteUrl}/contact`, changefreq: "monthly", priority: "0.8" },
+  { loc: `${siteUrl}/the-fortress`, changefreq: "monthly", priority: "0.7" },
+  { loc: `${siteUrl}/new-generation/rotaract-southern-city-colleges`, changefreq: "monthly", priority: "0.6" },
+  { loc: `${siteUrl}/new-generation/interact-zamboanga-city-west`, changefreq: "monthly", priority: "0.6" },
+];
+
+export async function loader() {
+  let projectRoutes: SitemapEntry[] = [];
 
   try {
-    // Fetch all service projects for dynamic routes
-    const allProjects = await fetchAllProjects();
-    
-    if (allProjects && allProjects.length > 0) {
-      dynamicRoutes = allProjects.map((project) => ({
+    const projects = (await fetchAllProjects()) || [];
+    projectRoutes = projects.map((project) => {
+      const timestamp = Date.parse(project.date);
+      return {
         loc: `${siteUrl}${project.slug}`,
-        lastmod: new Date(project.date).toISOString(),
-        changefreq: 'monthly' as const,
-        priority: '0.7'
-      }));
-    }
+        lastmod: Number.isFinite(timestamp) ? new Date(timestamp).toISOString() : undefined,
+        changefreq: "monthly",
+        priority: "0.7",
+      };
+    });
   } catch (error) {
-    console.error('Error fetching dynamic routes for sitemap:', error);
-    // Continue with static routes even if dynamic routes fail
+    console.error("Error fetching dynamic routes for sitemap:", error);
   }
 
-  // Combine all routes
-  const allRoutes = [...staticRoutes, ...dynamicRoutes];
-
-  // Generate XML sitemap
-  const sitemapXml = generateSitemapXml(allRoutes);
-
-  return new Response(sitemapXml, {
+  return new Response(generateSitemapXml([...staticRoutes, ...projectRoutes]), {
     status: 200,
     headers: {
-      'Content-Type': 'application/xml',
-      'xml-version': '1.0',
-      'encoding': 'UTF-8',
-      'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
+      "Content-Type": "application/xml; charset=utf-8",
+      "Cache-Control": "public, max-age=3600",
     },
   });
 }
 
 function generateSitemapXml(routes: SitemapEntry[]): string {
-  const xmlHeader = '<?xml version="1.0" encoding="UTF-8"?>';
-  const urlsetOpen = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
-  const urlsetClose = '</urlset>';
-
-  const urlEntries = routes
-    .map((route) => {
-      const url = `
+  const entries = routes.map((route) => `
   <url>
     <loc>${escapeXml(route.loc)}</loc>
-    ${route.lastmod ? `<lastmod>${route.lastmod}</lastmod>` : ''}
-    ${route.changefreq ? `<changefreq>${route.changefreq}</changefreq>` : ''}
-    ${route.priority ? `<priority>${route.priority}</priority>` : ''}
-  </url>`;
-      return url;
-    })
-    .join('');
+    ${route.lastmod ? `<lastmod>${route.lastmod}</lastmod>` : ""}
+    <changefreq>${route.changefreq}</changefreq>
+    <priority>${route.priority}</priority>
+  </url>`).join("");
 
-  return `${xmlHeader}
-${urlsetOpen}${urlEntries}
-${urlsetClose}`;
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${entries}
+</urlset>`;
 }
 
-function escapeXml(unsafe: string): string {
-  return unsafe.replace(/[<>&'"]/g, (char) => {
-    switch (char) {
-      case '<': return '&lt;';
-      case '>': return '&gt;';
-      case '&': return '&amp;';
-      case "'": return '&apos;';
-      case '"': return '&quot;';
-      default: return char;
-    }
-  });
+function escapeXml(value: string): string {
+  const entities: Record<string, string> = {
+    "<": "&lt;",
+    ">": "&gt;",
+    "&": "&amp;",
+    "'": "&apos;",
+    '"': "&quot;",
+  };
+
+  return value.replace(/[<>&'"]/g, (character) => entities[character]);
 }
