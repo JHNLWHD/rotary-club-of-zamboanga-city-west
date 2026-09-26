@@ -126,7 +126,13 @@ export default function Homepage() {
 
   return (
     <Box>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          // Keep CMS values from closing the script element during HTML parsing.
+          __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
+        }}
+      />
 
       <HeroSection
         image={heroImage}
