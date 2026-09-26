@@ -11,7 +11,7 @@ The route loader SHALL read `params.slug`, SHALL fetch the project with `fetchPr
 #### Scenario: Unknown slug
 
 - **WHEN** no project matches the slug
-- **THEN** the loader SHALL return `project: null` so the UI can render a not-found style project view
+- **THEN** the loader SHALL return `project: null` with HTTP status 404 so the UI can render a not-found project view; its metadata SHALL include `noindex, nofollow`
 
 ### Requirement: Dynamic metadata reflects the loaded project
 

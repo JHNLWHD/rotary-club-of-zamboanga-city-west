@@ -5,16 +5,16 @@ const config = defineConfig({
     tokens: {
       colors: {
         brand: {
-          50: { value: "#e3f0fa" },
-          100: { value: "#b3d3f1" },
-          200: { value: "#80b5e7" },
-          300: { value: "#4d97dd" },
-          400: { value: "#267fd5" },
-          500: { value: "#005DAA" }, // Rotary Royal Blue
-          600: { value: "#004b8a" },
-          700: { value: "#00396a" },
-          800: { value: "#00274a" },
-          900: { value: "#00152a" },
+          50: { value: "#eef3f9" },
+          100: { value: "#d6e1ef" },
+          200: { value: "#adc4de" },
+          300: { value: "#84a7ce" },
+          400: { value: "#527eb1" },
+          500: { value: "#17458f" }, // Official Rotary Royal Blue
+          600: { value: "#143f80" },
+          700: { value: "#10366d" },
+          800: { value: "#0c2b59" },
+          900: { value: "#082247" },
         },
         gold: {
           50: { value: "#fef7e8" },
@@ -56,20 +56,30 @@ const config = defineConfig({
           50: { value: "#F8F9FA" }, // light gray
           200: { value: "#e9ecef" },
           400: { value: "#dee2e6" },
-          600: { value: "#adb5bd" },
-          700: { value: "#6C757D" }, // medium gray
+          600: { value: "#596575" },
+          700: { value: "#465361" },
           900: { value: "#343A40" }, // dark gray
         },
         white: { value: "#FFFFFF" },
       },
       fonts: {
-        heading: { value: "'Montserrat', 'Inter', Arial, sans-serif" },
-        body: { value: "'Open Sans', 'Inter', Arial, sans-serif" },
+        heading: { value: "'Open Sans', Arial, sans-serif" },
+        body: { value: "'Open Sans', Arial, sans-serif" },
       },
       radii: {
-        sm: { value: "8px" },
-        md: { value: "10px" },
-        lg: { value: "12px" },
+        sm: { value: "0px" },
+        md: { value: "0px" },
+        lg: { value: "0px" },
+        xl: { value: "0px" },
+        "2xl": { value: "0px" },
+        full: { value: "0px" },
+      },
+      shadows: {
+        sm: { value: "none" },
+        md: { value: "none" },
+        lg: { value: "none" },
+        xl: { value: "none" },
+        "2xl": { value: "none" },
       },
       fontSizes: {
         xs: { value: "0.75rem" },
@@ -92,4 +102,4 @@ const config = defineConfig({
 
 const system = createSystem(defaultConfig, config);
 
-export default system; 
+export default system;

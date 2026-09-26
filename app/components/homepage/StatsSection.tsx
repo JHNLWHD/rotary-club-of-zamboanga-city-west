@@ -1,62 +1,27 @@
 import { Box, SimpleGrid, Text } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
-import type { StatItem } from "~/lib/contentful-types";
-import { AnimatedStat } from "../ui/AnimatedStat";
 
-export function StatsSection({ stats }: { stats: StatItem[] }): React.JSX.Element {
-  const [isMounted, setIsMounted] = useState(false);
+type DisplayStat = { value: string; label: string };
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  if (!stats?.length) {
-    return (
-      <Box as="section" py={20} bgGradient="linear(to-b, gray.50, white)" id="stats">
-        <Box maxW="1200px" mx="auto" px={{ base: 4, md: 8 }} textAlign="center">
-          <Text fontSize="xl" color="gray.600" fontWeight="medium">
-            No statistics have been added to the CMS yet.
-          </Text>
-        </Box>
-      </Box>
-    );
-  }
+export function StatsSection({ stats }: { stats: DisplayStat[] }): React.JSX.Element | null {
+  if (!stats?.length) return null;
 
   return (
-    <Box as="section" py={20} bgGradient="linear(to-b, gray.50, white)" id="stats">
-      <Box maxW="1200px" mx="auto" px={{ base: 4, md: 8 }}>
-        <SimpleGrid columns={{ base: 2, md: 4 }} gap={8}>
-          {stats.map((stat, index) => {
-            let formattedValue: string | undefined = undefined;
-
-            if (stat.formatValue === 'true') {
-              if (stat.endValue >= 1000000) {
-                formattedValue = `₱${(stat.endValue / 1000000).toFixed(0)}M${stat.suffix}`;
-              } else {
-                // Use consistent formatting for hydration
-                formattedValue = isMounted 
-                  ? `₱${stat.endValue.toLocaleString()}${stat.suffix}`
-                  : `₱${stat.endValue}${stat.suffix}`;
-              }
-            }
-
-            return (
-              <AnimatedStat
-                key={index}
-                endValue={stat.endValue}
-                suffix={stat.suffix}
-                label={stat.label}
-                iconName={stat.iconName}
-                iconColor={stat.iconColor}
-                bgGradient={stat.bgGradient}
-                borderColor={stat.borderColor}
-                duration={stat.duration}
-                formatValue={formattedValue}
-              />
-            )
-          })}
-        </SimpleGrid>
-      </Box>
+    <Box as="section" id="stats" bg="#f7f5f0" color="brand.900">
+      <SimpleGrid maxW="1400px" mx="auto" columns={{ base: stats.length === 4 ? 2 : 1, md: stats.length }} gap={{ base: 6, md: 10 }} px={{ base: 5, md: 10 }} py={{ base: 8, md: 10 }}>
+        {stats.map((stat) => (
+          <Box
+            key={stat.label}
+            py={{ base: 2, md: 4 }}
+          >
+            <Text color="brand.500" fontFamily="heading" fontSize={{ base: "2xl", md: "3xl" }} fontWeight="bold" lineHeight="1.1">
+              {stat.value}
+            </Text>
+            <Text mt={2} color="brand.700" fontSize="xs" lineHeight="1.5" letterSpacing="0.1em" textTransform="uppercase">
+              {stat.label}
+            </Text>
+          </Box>
+        ))}
+      </SimpleGrid>
     </Box>
   );
-} 
+}

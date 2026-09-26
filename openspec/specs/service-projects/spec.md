@@ -15,7 +15,7 @@ The route loader SHALL call `fetchAllProjects` and SHALL return `{ projects }` w
 
 ### Requirement: Listing presents each project as a card
 
-The page SHALL render `PageHero` and a responsive grid of `ProjectCard` entries for each project returned. Empty state messaging SHALL remain clear when there are no projects.
+The page SHALL render `PageHero` and a responsive grid of `ProjectCard` entries for each project returned. Hero counts SHALL be derived from the returned project records and MUST NOT use unsupported impact estimates. Empty state messaging SHALL remain clear when there are no projects.
 
 #### Scenario: No projects
 

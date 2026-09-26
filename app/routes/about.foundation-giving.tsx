@@ -20,7 +20,7 @@ import {
 } from "recharts";
 import { useLoaderData } from "react-router";
 import { useMemo } from "react";
-import { Target, Globe, Award, DollarSign } from "lucide-react";
+import { CalendarDays, Database, DollarSign, Layers3 } from "lucide-react";
 import { fetchFoundationGiving } from "~/lib/contentful-api";
 import type { FoundationGiving } from "~/lib/contentful-types";
 import { MarkdownProse } from "~/components/ui/MarkdownProse";
@@ -35,15 +35,15 @@ import {
 export function meta() {
   return [
     { title: "The Rotary Foundation Giving | Rotary Club of Zamboanga City West" },
-    { name: "description", content: "Learn about The Rotary Foundation funds including Annual Fund, Polio Plus Fund, Other Fund, and Endowment Fund. Understand how your contributions support global humanitarian efforts." },
+    { name: "description", content: "Review the Rotary Club of Zamboanga City West Foundation giving records by Rotary Year and fund type." },
     { name: "keywords", content: "Rotary Foundation, Annual Fund, Polio Plus Fund, SHARE, World Fund, Areas of Focus, Global Grants, Endowment Fund" },
 
     { property: "og:title", content: "The Rotary Foundation Giving | Rotary Club of Zamboanga City West" },
-    { property: "og:description", content: "Learn about The Rotary Foundation funds and how your contributions support global humanitarian efforts." },
+    { property: "og:description", content: "Published club giving records by Rotary Year and fund type." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/about/foundation-giving" },
 
-    { rel: "canonical", href: "https://rotaryzcwest.org/about/foundation-giving" },
+    { tagName: "link", rel: "canonical", href: "https://rotaryzcwest.org/about/foundation-giving" },
   ];
 }
 
@@ -103,39 +103,40 @@ export default function FoundationGiving() {
   const totalPolioPlus = sortedRows.reduce((sum, item) => sum + (item.polioPlus || 0), 0);
   const totalOtherFund = sortedRows.reduce((sum, item) => sum + (item.otherFund || 0), 0);
   const totalEndowment = sortedRows.reduce((sum, item) => sum + (item.endowment || 0), 0);
+  const totalRecordedGiving = sortedRows.reduce((sum, item) => sum + (item.total || 0), 0);
 
   const hasData = sortedRows.length > 0;
+  const latestPublishedYear = sortedRows[sortedRows.length - 1];
 
   const foundationStats = [
     {
-      icon: <Target size={24} color="white" />,
+      icon: <Layers3 size={24} color="white" />,
       value: "4",
-      label: "Fund Types",
+      label: "Tracked fund types",
     },
     {
-      icon: <Globe size={24} color="white" />,
-      value: "200+",
-      label: "Countries Served",
-    },
-    {
-      icon: <Award size={24} color="white" />,
-      value: "100%",
-      label: "Fund Efficiency",
+      icon: <Database size={24} color="white" />,
+      value: sortedRows.length.toString(),
+      label: "Rotary Years published",
     },
     {
       icon: <DollarSign size={24} color="white" />,
-      value: "SHARE",
-      label: "District Impact",
+      value: formatUsd(totalRecordedGiving),
+      label: "Recorded giving",
+    },
+    {
+      icon: <CalendarDays size={24} color="white" />,
+      value: latestPublishedYear ? `${latestPublishedYear.startYear}-${latestPublishedYear.endYear}` : "Pending",
+      label: "Latest published RY",
     },
   ];
 
   return (
     <>
       <PageHero
-        title="The Rotary Foundation Giving"
-        description="Understanding the four main fund types that power The Rotary Foundation's global humanitarian efforts and how your contributions create lasting impact."
+        title="Foundation Giving Records"
+        description="Review the club’s published contributions by Rotary Year and fund type. The figures below report the records currently available on this website."
         stats={foundationStats}
-        backgroundGradient="linear-gradient(135deg, #005DAA 0%, #003d73 50%, #002147 100%)"
       />
 
       <Container maxW="1200px" py={{ base: 12, md: 16 }}>
@@ -144,6 +145,15 @@ export default function FoundationGiving() {
             <Heading id="giving-table-heading" as="h2" fontSize={{ base: "xl", md: "2xl" }} fontWeight="semibold" color="gray.900" mb={6}>
               Giving by Rotary Year
             </Heading>
+            {latestPublishedYear && (
+              <Text color="gray.600" fontSize="sm" mt={-4} mb={6}>
+                Records are currently published through RY {latestPublishedYear.startYear}-{latestPublishedYear.endYear}.
+              </Text>
+            )}
+
+            <Text color="gray.600" fontSize="sm" mb={6}>
+              Amounts are in USD and rounded to the nearest dollar. Totals are calculated before rounding.
+            </Text>
 
             {hasData ? (
               <>

@@ -15,12 +15,17 @@ The route loader SHALL return a `Response` whose body is valid sitemap XML and w
 
 ### Requirement: Sitemap merges static routes and dynamic project URLs
 
-The implementation SHALL include the static marketing URLs defined in the sitemap module (including home, about subpages, contact, the fortress, service-projects index, donate, thank-you, and new-generation club pages) with per-URL priority and `changefreq`. It SHALL append dynamic `loc` entries from `fetchAllProjects` so each project’s canonical path under the site origin appears when projects exist.
+The implementation SHALL include indexable, substantive static URLs (home, selected about pages, contact, the fortress, service-projects index, and new-generation club pages) with per-URL priority and `changefreq`. It SHALL exclude utility or unfinished routes such as thank-you, donate, under-construction, and unpublished board resolutions. It SHALL append dynamic `loc` entries from `fetchAllProjects` so each project’s canonical path under the site origin appears when projects exist.
 
 #### Scenario: Projects exist in CMS
 
 - **WHEN** Contentful returns one or more projects with slugs
 - **THEN** the sitemap SHALL contain `loc` entries for each corresponding `https://rotaryzcwest.org` project path
+
+#### Scenario: Static route has no source-backed modification date
+
+- **WHEN** a static route is emitted
+- **THEN** the sitemap SHALL omit `lastmod` rather than replacing it with the request time
 
 ### Requirement: Site URL prefix is production
 

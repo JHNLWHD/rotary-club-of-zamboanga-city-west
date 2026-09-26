@@ -4,7 +4,6 @@ import {
   Meta,
   Outlet,
   Scripts,
-  useLocation,
   useLoaderData,
 } from "react-router";
 
@@ -46,7 +45,7 @@ export async function loader({ request }: Route.LoaderArgs): Promise<LoaderData>
 
 export const meta: Route.MetaFunction = () => [
   { title: "Rotary Club of Zamboanga City West | Service Above Self" },
-  { name: "description", content: "Rotary Club of Zamboanga City West serves our community through meaningful projects focused on peacebuilding, education, healthcare, clean water, and community development. Service Above Self since 1979." },
+  { name: "description", content: "Rotary Club of Zamboanga City West publishes its community projects, club leadership, and Foundation giving records. Chartered June 2, 1971." },
   
   // Open Graph fallback tags
   { property: "og:title", content: "Rotary Club of Zamboanga City West | Service Above Self" },
@@ -63,7 +62,7 @@ export const meta: Route.MetaFunction = () => [
   // Twitter Card fallback tags
   { name: "twitter:card", content: "summary_large_image" },
   { name: "twitter:title", content: "Rotary Club of Zamboanga City West | Service Above Self" },
-  { name: "twitter:description", content: "Rotary Club of Zamboanga City West serves our community through meaningful projects. Service Above Self since 1979." },
+  { name: "twitter:description", content: "Local service and documented impact since 1971." },
   { name: "twitter:image", content: "https://rotaryzcwest.org/og-image.jpg" },
   { name: "twitter:image:alt", content: "Rotary Club of Zamboanga City West community service projects" },
 ];
@@ -77,11 +76,7 @@ export const links: Route.LinksFunction = () => [
   },
   {
     rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap",
+    href: "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap",
   },
   { rel: "stylesheet", href: stylesheet },
 ];
@@ -104,14 +99,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const location = useLocation();
   const { contactData } = useLoaderData() as LoaderData;
-  const isIndexPage = location.pathname === "/";
 
   return (
     <Provider>
       <PHProvider>
-        <GlobalLayout transparentHeader={isIndexPage} contactData={contactData}>
+        <GlobalLayout contactData={contactData}>
             <Outlet />
         </GlobalLayout>
         <Toaster position="top-right" richColors />

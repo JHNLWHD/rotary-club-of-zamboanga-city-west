@@ -20,12 +20,19 @@ The route loader SHALL fetch officers and Rotary Ann records in parallel (`fetch
 
 ### Requirement: Page presents leadership content with hierarchy
 
-The page SHALL render leadership content using shared presentation components (for example `PageHero`, `OfficerCard`, and `ComingSoon` where applicable) and SHALL sort or group officers according to the club’s role hierarchy utilities when data exists.
+The page SHALL render leadership content using shared presentation components (for example `PageHero`, `OfficerCard`, and `ComingSoon` where applicable), sort or group officers according to the club’s role hierarchy utilities, and visibly label the roster as the published Rotary Year 2025-2026 archive rather than implying it is current.
 
 #### Scenario: Non-empty roster
 
 - **WHEN** officers or Rotary Anns exist for a group
 - **THEN** the UI SHALL list them in the intended sections with accessible headings and cards
+
+Entries without a usable photo SHALL use a compact text layout without a large placeholder image panel.
+
+#### Scenario: Visitor checks roster currency
+
+- **WHEN** a user views the leadership page after that Rotary Year
+- **THEN** the page SHALL state the roster year and direct the user to contact the club for current-year confirmation
 
 ### Requirement: Metadata identifies the leadership page
 

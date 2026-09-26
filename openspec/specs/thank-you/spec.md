@@ -15,7 +15,7 @@ The route SHALL export an `action` that accepts POST requests and SHALL respond 
 
 ### Requirement: Confirmation UI reassures the visitor
 
-The page SHALL render confirmation messaging (success iconography, next steps, and links back to home or contact) consistent with the implementation, using accessible structure and readable contrast.
+The page SHALL render concise confirmation messaging and a link back to the homepage using accessible structure and readable contrast. It SHALL NOT promise an unverified response time.
 
 #### Scenario: Visitor lands after submitting
 

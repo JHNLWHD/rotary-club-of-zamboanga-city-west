@@ -1,6 +1,6 @@
 ## Purpose
 
-Define the behavior of the site index route (`/`), implemented in `app/routes/home_.tsx`. This is the primary marketing homepage: it aggregates Contentful-driven homepage sections (hero, stats, service areas, projects, events, officers, contact) and sets global SEO and social metadata for the canonical site URL.
+Define the behavior of the site index route (`/`), implemented in `app/routes/home_.tsx`. This is the club's proof-led homepage: it uses Contentful project records, imagery, and contact details while keeping claims derived from published evidence or verified club facts.
 
 ## Requirements
 
@@ -18,14 +18,19 @@ The homepage route SHALL load all homepage sections by calling `fetchAllHomepage
 - **WHEN** the Contentful request throws or fails
 - **THEN** the loader SHALL log the error and SHALL return `{ homepageData: null }`
 
-### Requirement: Homepage renders all major sections with fallbacks
+### Requirement: Homepage prioritizes verifiable club evidence
 
-The homepage UI SHALL render the stacked homepage sections (including hero, statistics, service areas, project highlights, events, officers, and contact). For each section, when CMS data is missing, the UI SHALL use documented default or empty structures (for example default hero copy and imagery) so the page remains usable.
+The homepage SHALL render a concise sequence: proof-led hero, record-derived facts, links to project/leadership/giving records, project highlights, and contact. It SHALL NOT promote unsupported vanity metrics, stale events, an undated officer roster, unfinished donation options, or generic service-area filler as primary homepage content.
 
 #### Scenario: Partial or missing CMS data
 
-- **WHEN** `homepageData` is null or specific nested fields are absent
-- **THEN** the page SHALL still render using fallbacks for those sections without breaking the layout
+- **WHEN** `homepageData` is null or a selected nested field is absent
+- **THEN** the page SHALL still render its core narrative with a local image or concise contact fallback and SHALL use only values derived from available project records plus the verified 1971 charter year
+
+#### Scenario: Project evidence exists
+
+- **WHEN** Contentful supplies featured projects
+- **THEN** the first project image SHALL support the hero and up to three project records SHALL be visible from the homepage
 
 ### Requirement: Homepage metadata supports SEO and social sharing
 
@@ -34,4 +39,4 @@ The route SHALL export a `meta` function that sets document title, description, 
 #### Scenario: Document head for home
 
 - **WHEN** a client or crawler requests metadata for `/`
-- **THEN** the returned meta tags SHALL include a primary title containing the club name and SHALL include `og:url` and canonical href for the production home URL
+- **THEN** the returned meta tags SHALL include a primary title containing the club name, the verified 1971 charter reference where used, `og:url`, and an actual canonical link descriptor for the production home URL

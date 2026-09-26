@@ -21,7 +21,7 @@ export function meta() {
     { title: "Website Under Construction | Rotary Club of Zamboanga City West" },
     { name: "description", content: "Our new website is coming soon! Rotary Club of Zamboanga City West is working on an improved digital experience. Stay tuned for updates on our community service projects." },
     { name: "keywords", content: "Rotary Club, Zamboanga City, website construction, coming soon, community service, Philippines" },
-    { name: "robots", content: "index, follow" },
+    { name: "robots", content: "noindex, nofollow" },
     
     // Open Graph tags
     { property: "og:title", content: "Website Under Construction | Rotary Club of Zamboanga City West" },
@@ -30,8 +30,6 @@ export function meta() {
     { property: "og:url", content: "https://rotaryzcwest.org" },
     { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
     
-    // Canonical URL
-    { rel: "canonical", href: "https://rotaryzcwest.org" },
   ];
 }
 
@@ -277,4 +275,4 @@ export default function Index() {
       </Container>
     </Box>
   );
-} 
+}

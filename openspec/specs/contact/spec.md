@@ -11,7 +11,16 @@ The route SHALL read meeting and contact information from the root route loader 
 #### Scenario: Full contact data available
 
 - **WHEN** root loader provides `meetingInfo` and `contactInfo`
-- **THEN** the contact page SHALL render the full contact section in the standard page padding layout
+- **THEN** the contact page SHALL render the full contact section with an `h1`, visible form labels, meeting details, email, and Facebook contact
+
+### Requirement: Contact form is accessible and avoids unsupported response promises
+
+The form SHALL associate visible labels with the name, email, and message controls. Confirmation copy SHALL state that the club will review the message without promising an unverified response time.
+
+#### Scenario: User completes the form
+
+- **WHEN** a visitor reads or focuses a form control
+- **THEN** its purpose SHALL be available from a persistent associated label rather than placeholder text alone
 
 ### Requirement: Missing contact data shows a coming-soon experience
 
