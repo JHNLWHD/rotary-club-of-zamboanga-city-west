@@ -42,6 +42,11 @@ export function meta() {
     { property: "og:description", content: "Published club giving records by Rotary Year and fund type." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/about/foundation-giving" },
+    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
+    { property: "og:image:width", content: "1200" },
+    { property: "og:image:height", content: "630" },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:image", content: "https://rotaryzcwest.org/og-image.jpg" },
 
     { tagName: "link", rel: "canonical", href: "https://rotaryzcwest.org/about/foundation-giving" },
   ];

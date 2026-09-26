@@ -24,14 +24,14 @@ export const meta: MetaFunction = () => {
     },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/new-generation/rotaract-southern-city-colleges" },
-    { property: "og:image", content: "" },
-    { name: "twitter:card", content: "summary" },
+    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
+    { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: "Rotaract Club of Southern City Colleges" },
     { 
       name: "twitter:description", 
       content: "Empowering young leaders through service at the Rotaract Club of Southern City Colleges. Join us in developing leadership skills, community service, and international understanding." 
     },
-    { name: "twitter:image", content: "" },
+    { name: "twitter:image", content: "https://rotaryzcwest.org/og-image.jpg" },
     { name: "robots", content: "index, follow" },
     { name: "author", content: "Rotary Club of Zamboanga City West" },
     { tagName: "link", rel: "canonical", href: "https://rotaryzcwest.org/new-generation/rotaract-southern-city-colleges" },

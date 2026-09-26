@@ -49,7 +49,13 @@ export function meta() {
     { property: "og:description", content: "Published issues of the club’s official newsletter." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/the-fortress" },
-    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
+    { property: "og:image", content: "https://rotaryzcwest.org/og/the-fortress-redesign.jpg" },
+    { property: "og:image:width", content: "1200" },
+    { property: "og:image:height", content: "630" },
+    { property: "og:image:alt", content: "The Fortress — the official publication of Rotary Club of Zamboanga City West" },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:image", content: "https://rotaryzcwest.org/og/the-fortress-redesign.jpg" },
+    { name: "twitter:image:alt", content: "The Fortress — the official publication of Rotary Club of Zamboanga City West" },
     { tagName: "link", rel: "canonical", href: "https://rotaryzcwest.org/the-fortress" },
   ];
 }

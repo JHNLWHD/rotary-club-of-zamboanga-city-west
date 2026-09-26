@@ -42,7 +42,9 @@ export function meta() {
     { property: "og:description", content: "Review the club’s published project records with dates, locations, partners, and details." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/service-projects" },
-    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
+    { property: "og:image", content: "https://rotaryzcwest.org/og/service-projects-redesign.jpg" },
+    { property: "og:image:width", content: "1200" },
+    { property: "og:image:height", content: "630" },
     { property: "og:image:alt", content: "Rotary Club of Zamboanga City West service projects and community initiatives" },
     { property: "og:site_name", content: "Rotary Club of Zamboanga City West" },
     
@@ -50,7 +52,8 @@ export function meta() {
     { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: "Service Projects | Rotary Club of Zamboanga City West" },
     { name: "twitter:description", content: "Published project records from Rotary Club of Zamboanga City West." },
-    { name: "twitter:image", content: "https://rotaryzcwest.org/og-service-projects.jpg" },
+    { name: "twitter:image", content: "https://rotaryzcwest.org/og/service-projects-redesign.jpg" },
+    { name: "twitter:image:alt", content: "Rotary Club of Zamboanga City West — Service projects. Local work. Published records." },
     
     // Additional SEO tags
     { name: "robots", content: "index, follow" },

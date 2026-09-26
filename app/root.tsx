@@ -55,7 +55,7 @@ export const meta: Route.MetaFunction = () => [
   { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
   { property: "og:image:width", content: "1200" },
   { property: "og:image:height", content: "630" },
-  { property: "og:image:alt", content: "Rotary Club of Zamboanga City West community service projects" },
+  { property: "og:image:alt", content: "Rotary Club of Zamboanga City West — Service, in full view." },
   { property: "og:site_name", content: "Rotary Club of Zamboanga City West" },
   { property: "og:locale", content: "en_US" },
   
@@ -64,7 +64,7 @@ export const meta: Route.MetaFunction = () => [
   { name: "twitter:title", content: "Rotary Club of Zamboanga City West | Service Above Self" },
   { name: "twitter:description", content: "Local service and documented impact since 1971." },
   { name: "twitter:image", content: "https://rotaryzcwest.org/og-image.jpg" },
-  { name: "twitter:image:alt", content: "Rotary Club of Zamboanga City West community service projects" },
+  { name: "twitter:image:alt", content: "Rotary Club of Zamboanga City West — Service, in full view." },
 ];
 
 export const links: Route.LinksFunction = () => [
