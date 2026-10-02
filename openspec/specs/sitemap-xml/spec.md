@@ -6,12 +6,17 @@ Define the behavior of the `GET /sitemap.xml` resource (`app/routes/sitemap[.]xm
 
 ### Requirement: Sitemap responds with XML and correct content type
 
-The route loader SHALL return a `Response` whose body is valid sitemap XML and whose headers include `Content-Type: application/xml` (or equivalent XML) and a public cache policy as implemented so crawlers can consume the document efficiently.
+On a successful project query, the route loader SHALL return a `Response` whose body is valid sitemap XML and whose headers include `Content-Type: application/xml` (or equivalent XML) and a public cache policy as implemented so crawlers can consume the document efficiently. A successful query with no projects SHALL still return the static sitemap.
 
 #### Scenario: Crawler requests sitemap
 
-- **WHEN** a client requests `/sitemap.xml`
+- **WHEN** a client requests `/sitemap.xml` and the project query succeeds
 - **THEN** the server SHALL respond with status 200 and an XML content type suitable for sitemap consumers
+
+#### Scenario: Project query fails
+
+- **WHEN** Contentful cannot return the project records
+- **THEN** the server SHALL return HTTP 503 with `Cache-Control: no-store` instead of a successful but incomplete sitemap
 
 ### Requirement: Sitemap merges static routes and dynamic project URLs
 

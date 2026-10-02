@@ -26,7 +26,7 @@ export async function loader() {
   let projectRoutes: SitemapEntry[] = [];
 
   try {
-    const projects = (await fetchAllProjects()) || [];
+    const projects = await fetchAllProjects();
     projectRoutes = projects.map((project) => {
       const timestamp = Date.parse(project.date);
       return {
@@ -38,6 +38,13 @@ export async function loader() {
     });
   } catch (error) {
     console.error("Error fetching dynamic routes for sitemap:", error);
+    return new Response("Sitemap is temporarily unavailable. Please try again later.", {
+      status: 503,
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-store",
+      },
+    });
   }
 
   return new Response(generateSitemapXml([...staticRoutes, ...projectRoutes]), {

@@ -22,12 +22,18 @@ for (const name of ["ContactSection", "HeroSection", "ProjectHighlightsSection",
   imports[`../components/homepage/${name}`] = { [name]: () => null };
 }
 
-function renderJsonLd(homepageData) {
+function renderJsonLd(contactData, homepageData = null) {
   const exports = {};
   runInNewContext(outputText, {
     exports,
     require(id) {
-      if (id === "react-router") return { useLoaderData: () => ({ homepageData }) };
+      if (id === "react-router") return {
+        useLoaderData: () => ({ homepageData }),
+        useRouteLoaderData: (routeId) => {
+          assert.equal(routeId, "root");
+          return { contactData };
+        },
+      };
       assert.ok(Object.hasOwn(imports, id), `Unexpected route import: ${id}`);
       return imports[id];
     },
@@ -42,7 +48,7 @@ function renderJsonLd(homepageData) {
   return JSON.parse(json);
 }
 
-test("homepage JSON-LD safely round-trips CMS contact values", () => {
+test("homepage JSON-LD safely round-trips root CMS contact values", () => {
   for (const value of [
     "club@example.org",
     "https://example.org/</script><script>alert(1)</script>",
@@ -50,19 +56,28 @@ test("homepage JSON-LD safely round-trips CMS contact values", () => {
     "<!--<script>double-escaped HTML state</script>",
     'Quotes " and \\ backslashes & café \u2028\u2029',
   ]) {
-    const data = renderJsonLd({ contact: { contactInfo: { email: value, facebookUrl: value } } });
+    const data = renderJsonLd({ contactInfo: { email: value, facebookUrl: value } });
     assert.equal(data.contactPoint.email, value);
     assert.deepEqual(data.sameAs, [value]);
     assert.equal(data["@type"], "Organization");
   }
 });
 
-test("homepage JSON-LD remains valid without CMS contact data", () => {
-  for (const homepageData of [null, {}, { contact: {} }]) {
-    const data = renderJsonLd(homepageData);
+test("homepage JSON-LD remains valid without root contact data", () => {
+  for (const contactData of [undefined, null, {}, { meetingInfo: {} }]) {
+    const data = renderJsonLd(contactData);
     assert.equal(data.name, "Rotary Club of Zamboanga City West");
     assert.equal(data.foundingDate, "1971-06-02");
     assert.equal(data.contactPoint, undefined);
     assert.equal(data.sameAs, undefined);
   }
+});
+
+test("homepage JSON-LD uses root contact instead of a route contact payload", () => {
+  const rootContact = { contactInfo: { email: "root@example.org", facebookUrl: "https://example.org/root" } };
+  const data = renderJsonLd(rootContact, {
+    contact: { contactInfo: { email: "route@example.org", facebookUrl: "https://example.org/route" } },
+  });
+  assert.equal(data.contactPoint.email, rootContact.contactInfo.email);
+  assert.deepEqual(data.sameAs, [rootContact.contactInfo.facebookUrl]);
 });

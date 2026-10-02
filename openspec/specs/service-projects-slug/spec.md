@@ -18,6 +18,11 @@ The route loader SHALL read `params.slug`, SHALL fetch the project with `fetchPr
 - **WHEN** the project query fails rather than confirming an absent entry
 - **THEN** the loader SHALL return HTTP status 503, and the page and metadata SHALL say that project information is temporarily unavailable
 
+#### Scenario: Related-project query fails
+
+- **WHEN** the requested project loads but the related-project query fails
+- **THEN** the detail caller SHALL use an empty related-project list and render the loaded project with HTTP 200
+
 ### Requirement: Dynamic metadata reflects the loaded project
 
 The route SHALL export `meta` that uses loader data when a project exists (title, description, keywords, `og:type` article, canonical URL including `project.slug`, OG image from project header image or fallback). When `project` is null, meta SHALL distinguish a confirmed missing project from a temporary CMS failure.
@@ -30,6 +35,11 @@ The route SHALL export `meta` that uses loader data when a project exists (title
 ### Requirement: Detail page renders rich project body and media
 
 The page SHALL render long-form project content (including markdown where used), imagery, badges, external links, and optional lightbox galleries. The UI SHALL provide navigation back to the project list and affordances for sharing consistent with the implementation.
+
+#### Scenario: A project asset is unavailable
+
+- **WHEN** a header or gallery asset is missing, unresolved, or has no usable file URL
+- **THEN** asset conversion SHALL return `null`, and the detail view and lightbox SHALL retain their existing fallback behavior without empty image sources
 
 #### Scenario: Visitor shares or opens gallery
 

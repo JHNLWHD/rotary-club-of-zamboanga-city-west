@@ -1,19 +1,18 @@
 import { Box, Flex, Heading, Link, Text } from "@chakra-ui/react";
 import { ArrowUpRight } from "lucide-react";
-import { useLoaderData } from "react-router";
+import { useLoaderData, useRouteLoaderData } from "react-router";
 import { ContactSection } from "../components/homepage/ContactSection";
 import { HeroSection } from "../components/homepage/HeroSection";
 import { ProjectHighlightsSection } from "../components/homepage/ProjectHighlightsSection";
 import { StatsSection } from "../components/homepage/StatsSection";
 import { fetchAllHomepageSections } from "../lib/contentful-api";
-import type { HomepageContact, HomepageHero, Project } from "../lib/contentful-types";
+import type { ContactInfo, HomepageHero, MeetingInfo, Project } from "../lib/contentful-types";
 import type { Route } from "./+types/home_";
 
 type LoaderData = {
   homepageData: {
-    hero?: HomepageHero;
-    projectHighlights?: Project[];
-    contact?: HomepageContact;
+    hero?: HomepageHero | null;
+    projectHighlights?: Project[] | null;
   } | null;
 };
 
@@ -84,7 +83,12 @@ export default function Homepage() {
     || carouselImage?.url
     || homepageData?.hero?.backgroundImage?.url
     || "/rotary-zc-west.jpg";
-  const contact = homepageData?.contact;
+  const { contactData: contact } = useRouteLoaderData("root") as {
+    contactData?: {
+      meetingInfo?: MeetingInfo;
+      contactInfo?: ContactInfo;
+    };
+  };
   const publishedStats = [
     {
       value: projects.length.toString(),

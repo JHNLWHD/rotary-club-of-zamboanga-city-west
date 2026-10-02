@@ -6,7 +6,7 @@ import {
   Stack,
   SimpleGrid,
 } from "@chakra-ui/react";
-import { useLoaderData } from "react-router";
+import { data, useLoaderData } from "react-router";
 import { fetchAllProjects } from "../lib/contentful-api";
 import { ProjectCard } from "../components/ui/ProjectCard";
 import { PageHero } from "../components/ui/PageHero";
@@ -16,22 +16,32 @@ import { Users, Target } from "lucide-react";
 
 type LoaderData = {
   projects: Project[];
+  unavailable?: boolean;
 };
 
 export async function loader({ request }: Route.LoaderArgs) {
   try {
     const allProjects = await fetchAllProjects();
     return { 
-      projects: allProjects || [],
+      projects: allProjects,
     };
   } catch (error) {
     console.error('Error loading projects data on server:', error);
-    return { 
+    return data({
       projects: [],
-    };
+      unavailable: true,
+    }, { status: 503 });
   }
 }
-export function meta() {
+export function meta({ data }: Route.MetaArgs) {
+  if ((data as LoaderData | undefined)?.unavailable) {
+    return [
+      { title: "Service Projects Temporarily Unavailable | Rotary Club of Zamboanga City West" },
+      { name: "description", content: "Project records are temporarily unavailable. Please try again later." },
+      { name: "robots", content: "noindex, nofollow" },
+    ];
+  }
+
   return [
     { title: "Service Projects | Rotary Club of Zamboanga City West" },
     { name: "description", content: "Review published Rotary Club of Zamboanga City West project records with dates, locations, partners, and project details." },
@@ -73,7 +83,7 @@ export function meta() {
 }
 
 export default function ServiceProjects() {
-  const { projects } = useLoaderData() as LoaderData;
+  const { projects, unavailable } = useLoaderData() as LoaderData;
   const locationCount = new Set(projects.map((project) => project.location?.trim()).filter(Boolean)).size;
 
   return (
@@ -81,7 +91,7 @@ export default function ServiceProjects() {
       <PageHero
         title="Our Service Projects"
         description="Review the project records currently published by the club, including dates, locations, partners, and the details behind each handover."
-        stats={[
+        stats={unavailable ? [] : [
           {
             icon: <Target size={24} color="white" />,
             value: projects.length.toString(),
@@ -120,6 +130,7 @@ export default function ServiceProjects() {
               maxW="600px"
               boxShadow="lg"
               textAlign="center"
+              role={unavailable ? "status" : undefined}
             >
               <Box
                 p={4}
@@ -133,14 +144,18 @@ export default function ServiceProjects() {
                 <Target size={32} color="#17458f" />
               </Box>
               <Heading as="h2" fontSize="2xl" color="gray.900" mb={4}>
-                Service Above Self
+                {unavailable ? "Service Projects Temporarily Unavailable" : "Service Above Self"}
               </Heading>
               <Text color="gray.700" mb={4} lineHeight="relaxed">
-                From clean water initiatives to education programs, healthcare outreach to peacebuilding efforts - our projects address the most pressing needs in our community.
+                {unavailable
+                  ? "Project records are temporarily unavailable. Please try again later."
+                  : "From clean water initiatives to education programs, healthcare outreach to peacebuilding efforts - our projects address the most pressing needs in our community."}
               </Text>
-              <Text color="gray.600" fontSize="sm">
-                No project records are published on this page yet.
-              </Text>
+              {!unavailable && (
+                <Text color="gray.600" fontSize="sm">
+                  No project records are published on this page yet.
+                </Text>
+              )}
             </Box>
           )}
         </Stack>

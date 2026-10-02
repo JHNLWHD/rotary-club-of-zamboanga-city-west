@@ -4,9 +4,14 @@ Define the behavior of the site index route (`/`), implemented in `app/routes/ho
 
 ## Requirements
 
-### Requirement: Homepage loads aggregated Contentful data with safe failure handling
+### Requirement: Homepage loads only displayed Contentful data with safe failure handling
 
-The homepage route SHALL load all homepage sections by calling `fetchAllHomepageSections` in the route loader. If loading fails, the loader SHALL return `homepageData: null` so the UI can apply local fallbacks without throwing.
+The homepage route SHALL call `fetchAllHomepageSections` to load only hero data and featured projects. It SHALL reuse root contact data for the contact section and organization structured data. A normal initial homepage load SHALL make three application-level Contentful fetch invocations: hero, featured projects, and root contact. If homepage loading fails, the loader SHALL return `homepageData: null` so the UI can apply local fallbacks without throwing.
+
+#### Scenario: Initial homepage load
+
+- **WHEN** the root and homepage loaders run
+- **THEN** contact SHALL be fetched once, and the homepage SHALL NOT request statistics, service areas, featured events, or featured officers that it does not display
 
 #### Scenario: Loader succeeds
 
@@ -31,6 +36,16 @@ The homepage SHALL render a concise sequence: proof-led hero, record-derived fac
 
 - **WHEN** Contentful supplies featured projects
 - **THEN** the first project image SHALL support the hero and up to three project records SHALL be visible from the homepage
+
+#### Scenario: Featured project image is unavailable
+
+- **WHEN** no usable featured project image exists
+- **THEN** the hero SHALL use the first usable carousel image, then the hero background image, then the existing local fallback
+
+#### Scenario: Contact values appear in structured data
+
+- **WHEN** root contact data is available or missing
+- **THEN** organization structured data SHALL remain valid, and serialized contact values MUST NOT introduce HTML tokens or close the script element
 
 ### Requirement: Homepage metadata supports SEO and social sharing
 

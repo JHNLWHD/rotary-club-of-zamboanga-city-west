@@ -6,12 +6,12 @@ Define the behavior of `/service-projects` (`app/routes/service-projects.tsx`): 
 
 ### Requirement: Project list loads from Contentful
 
-The route loader SHALL call `fetchAllProjects` and SHALL return `{ projects }` where `projects` is an array (empty when none). On failure, the loader SHALL return `{ projects: [] }` after logging.
+The route loader SHALL call `fetchAllProjects` and SHALL return `{ projects }` where `projects` is an array (empty when a successful query finds none). Query failures SHALL remain observable through the fetch interface. On failure, the route SHALL return HTTP 503 and a temporary-unavailability view after logging.
 
 #### Scenario: Loader failure
 
 - **WHEN** projects cannot be fetched
-- **THEN** the route SHALL still render with an empty project grid rather than erroring
+- **THEN** the route SHALL return HTTP 503, show a temporary-unavailability message, and MUST NOT present zero projects or the normal empty-state message as a confirmed result
 
 ### Requirement: Listing presents each project as a card
 
@@ -21,6 +21,11 @@ The page SHALL render `PageHero` and a responsive grid of `ProjectCard` entries 
 
 - **WHEN** the projects array is empty
 - **THEN** the page SHALL remain coherent and MUST NOT assume at least one project exists
+
+#### Scenario: Project image is unavailable
+
+- **WHEN** a project header asset is missing, unresolved, or has no usable file URL
+- **THEN** asset conversion SHALL return `null`, and the project card SHALL use its existing fallback image without an empty image source
 
 ### Requirement: Listing metadata references service projects index
 

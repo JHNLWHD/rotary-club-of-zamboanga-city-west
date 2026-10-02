@@ -52,7 +52,7 @@ export async function loader({ params }: Route.LoaderArgs) {
   try {
     const [project, allProjects] = await Promise.all([
       fetchProjectBySlug(slug),
-      fetchAllProjects()
+      fetchAllProjects().catch(() => [])
     ]);
 
     if (!project) {
@@ -61,8 +61,8 @@ export async function loader({ params }: Route.LoaderArgs) {
     
     // Get related projects (exclude current project)
     const relatedProjects = allProjects
-      ?.filter(p => p.slug !== `/service-projects/${slug}`)
-      ?.slice(0, 8) || [];
+      .filter(p => p.slug !== `/service-projects/${slug}`)
+      .slice(0, 8);
     
     return { 
       project,
