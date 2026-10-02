@@ -4,12 +4,20 @@ import type { Project } from "~/lib/contentful-types";
 
 export function ProjectCard({ project }: { project: Project }) {
   const year = project.date ? new Date(project.date).getUTCFullYear() : null;
+  const fallbackImage = "/rotary-zc-west.jpg";
+  const showFallback = (image: HTMLImageElement | null) => {
+    if (image?.complete && image.naturalWidth === 0 && image.getAttribute("src") !== fallbackImage) {
+      image.src = fallbackImage;
+    }
+  };
 
   return (
     <Box as="article" bg="#f7f5f0" overflow="hidden" height="100%">
       <Image
-        src={project.headerImage?.url ?? "/rotary-zc-west.jpg"}
+        src={project.headerImage?.url ?? fallbackImage}
         alt={project.title}
+        ref={showFallback}
+        onError={({ currentTarget }) => showFallback(currentTarget)}
         w="full"
         h={{ base: "260px", md: "300px" }}
         objectFit="cover"

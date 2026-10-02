@@ -27,6 +27,11 @@ The page SHALL render `PageHero` and a responsive grid of `ProjectCard` entries 
 - **WHEN** a project header asset is missing, unresolved, or has no usable file URL
 - **THEN** asset conversion SHALL return `null`, and the project card SHALL use its existing fallback image without an empty image source
 
+#### Scenario: Project image fails before or after hydration
+
+- **WHEN** a project card image URL fails to load before or after browser hydration
+- **THEN** the card SHALL use its existing local fallback image, and a failure of that fallback MUST NOT trigger repeated source assignments
+
 ### Requirement: Listing metadata references service projects index
 
 The route SHALL export `meta` with title and description for the service projects listing, Open Graph and Twitter fields, geo tags where present, and canonical URL `https://rotaryzcwest.org/service-projects`.
