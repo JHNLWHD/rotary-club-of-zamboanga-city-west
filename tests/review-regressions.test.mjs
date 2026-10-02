@@ -214,6 +214,32 @@ test("successful related projects exclude the current project and retain the lim
   assert.doesNotMatch(html, /Related project [5-9]/);
 });
 
+test("footer year agrees across server and browser timezones at Manila New Year", () => {
+  const previousTimezone = process.env.TZ;
+  try {
+    for (const [now, expected] of [
+      ["2026-12-31T15:59:59.999Z", "2026"],
+      ["2026-12-31T16:00:00.000Z", "2027"],
+      ["2027-01-01T00:00:00.000Z", "2027"],
+    ]) {
+      for (const timezone of ["UTC", "Asia/Manila", "America/Los_Angeles"]) {
+        process.env.TZ = timezone;
+        class Clock extends Date {
+          constructor(...args) { super(...(args.length ? args : [now])); }
+        }
+        const { GlobalLayout } = load("../app/components/ui/GlobalLayout.tsx", {
+          "react-router": { useLocation: () => ({ pathname: "/" }) },
+        }, { Date: Clock });
+        const html = renderToStaticMarkup(createElement(ChakraProvider, { value: defaultSystem }, createElement(GlobalLayout)));
+        assert.equal(html.match(/©\s*(\d{4})/)?.[1], expected, `${now} in ${timezone}`);
+      }
+    }
+  } finally {
+    if (previousTimezone === undefined) delete process.env.TZ;
+    else process.env.TZ = previousTimezone;
+  }
+});
+
 test("calendar archives yesterday at Manila midnight, independent of UTC midnight", async () => {
   const events = [
     { slug: "tomorrow", date: "2026-10-03", isFeatured: false },

@@ -83,7 +83,7 @@ export function GlobalLayout({
 }) {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const currentYear = new Date().getFullYear();
+  const currentYear = new Intl.DateTimeFormat("en-PH", { timeZone: "Asia/Manila", year: "numeric" }).format(new Date());
 
   useEffect(() => setMobileMenuOpen(false), [location.pathname]);
 
