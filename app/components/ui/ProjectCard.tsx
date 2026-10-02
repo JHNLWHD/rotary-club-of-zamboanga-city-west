@@ -1,23 +1,18 @@
 import { Box, Flex, Heading, Image, Link, Text } from "@chakra-ui/react";
 import { ArrowUpRight, MapPin } from "lucide-react";
 import type { Project } from "~/lib/contentful-types";
+import { showProjectImageFallback } from "~/lib/project-image-fallback";
 
 export function ProjectCard({ project }: { project: Project }) {
   const year = project.date ? new Date(project.date).getUTCFullYear() : null;
-  const fallbackImage = "/rotary-zc-west.jpg";
-  const showFallback = (image: HTMLImageElement | null) => {
-    if (image?.complete && image.naturalWidth === 0 && image.getAttribute("src") !== fallbackImage) {
-      image.src = fallbackImage;
-    }
-  };
 
   return (
     <Box as="article" bg="#f7f5f0" overflow="hidden" height="100%">
       <Image
-        src={project.headerImage?.url ?? fallbackImage}
+        src={project.headerImage?.url ?? "/rotary-zc-west.jpg"}
         alt={project.title}
-        ref={showFallback}
-        onError={({ currentTarget }) => showFallback(currentTarget)}
+        ref={showProjectImageFallback}
+        onError={({ currentTarget }) => showProjectImageFallback(currentTarget)}
         w="full"
         h={{ base: "260px", md: "300px" }}
         objectFit="cover"

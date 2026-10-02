@@ -29,6 +29,7 @@ const sections = {};
 for (const name of ["ContactSection", "HeroSection", "ProjectHighlightsSection", "StatsSection"]) {
   sections[`../components/homepage/${name}`] = load(`../app/components/homepage/${name}.tsx`, {
     "../ui/ProjectCard": { ProjectCard: () => null },
+    "~/lib/project-image-fallback": load("../app/lib/project-image-fallback.ts"),
   });
 }
 

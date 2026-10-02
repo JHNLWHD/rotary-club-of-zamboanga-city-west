@@ -115,46 +115,58 @@ for (const [method, args, expectedQuery] of projectFetches) {
   });
 }
 
-const card = load("../app/components/ui/ProjectCard.tsx");
+const imageFallback = load("../app/lib/project-image-fallback.ts");
+const imageImports = { "~/lib/project-image-fallback": imageFallback };
+const card = load("../app/components/ui/ProjectCard.tsx", imageImports);
+const hero = load("../app/components/homepage/HeroSection.tsx", imageImports);
 const highlights = load("../app/components/homepage/ProjectHighlightsSection.tsx", { "../ui/ProjectCard": card });
 
-test("project cards recover image errors before and after hydration without retrying a failed fallback", () => {
-  let imageProps;
-  const observedCard = load("../app/components/ui/ProjectCard.tsx", {
-    "@chakra-ui/react": {
-      ...require("@chakra-ui/react"),
-      Image: (props) => { imageProps = props; return createElement("img", { src: props.src, alt: props.alt }); },
-    },
-  });
-  for (const phase of ["ref", "onError"]) {
-    for (const source of [imageUrl, "/rotary-zc-west.jpg"]) {
-      render(observedCard.ProjectCard, { project: { ...entry().fields, headerImage: { url: source } } });
-      assert.equal(typeof imageProps.onError, "function", "The rendered image must handle load failures");
-      assert.equal(typeof imageProps.ref, "function", "Hydration must check for an earlier image failure");
-      let currentSource = imageProps.src;
-      let assignments = 0;
-      const currentTarget = {
-        complete: false,
-        naturalWidth: 0,
-        getAttribute: (name) => name === "src" ? currentSource : null,
-        set src(value) { currentSource = value; assignments++; },
-      };
-      imageProps.ref(null);
-      imageProps.ref(currentTarget);
-      assert.equal(assignments, 0, "An image still loading must keep its source");
-      currentTarget.complete = true;
-      currentTarget.naturalWidth = 800;
-      imageProps.ref(currentTarget);
-      assert.equal(assignments, 0, "A loaded image must keep its source");
-      currentTarget.naturalWidth = 0;
-      if (phase === "ref") imageProps.ref(currentTarget);
-      else imageProps.onError({ currentTarget });
-      assert.equal(currentSource, "/rotary-zc-west.jpg");
-      imageProps.onError({ currentTarget });
-      assert.equal(assignments, source === "/rotary-zc-west.jpg" ? 0 : 1);
+for (const [name, path] of [
+  ["ProjectCard", "../app/components/ui/ProjectCard.tsx"],
+  ["HeroSection", "../app/components/homepage/HeroSection.tsx"],
+]) {
+  test(`${name} recovers image errors before and after hydration without retrying a failed fallback`, () => {
+    let imageProps;
+    const observed = load(path, {
+      ...imageImports,
+      "@chakra-ui/react": {
+        ...require("@chakra-ui/react"),
+        Image: (props) => { imageProps = props; return createElement("img", { src: props.src, alt: props.alt }); },
+      },
+    });
+    for (const phase of ["ref", "onError"]) {
+      for (const source of [imageUrl, "/rotary-zc-west.jpg"]) {
+        const props = name === "ProjectCard"
+          ? { project: { ...entry().fields, headerImage: { url: source } } }
+          : { image: source, imageAlt: "Featured project" };
+        render(observed[name], props);
+        assert.equal(typeof imageProps.onError, "function", "The rendered image must handle load failures");
+        assert.equal(typeof imageProps.ref, "function", "Hydration must check for an earlier image failure");
+        let currentSource = imageProps.src;
+        let assignments = 0;
+        const currentTarget = {
+          complete: false,
+          naturalWidth: 0,
+          getAttribute: (name) => name === "src" ? currentSource : null,
+          set src(value) { currentSource = value; assignments++; },
+        };
+        imageProps.ref(null);
+        imageProps.ref(currentTarget);
+        assert.equal(assignments, 0, "An image still loading must keep its source");
+        currentTarget.complete = true;
+        currentTarget.naturalWidth = 800;
+        imageProps.ref(currentTarget);
+        assert.equal(assignments, 0, "A loaded image must keep its source");
+        currentTarget.naturalWidth = 0;
+        if (phase === "ref") imageProps.ref(currentTarget);
+        else imageProps.onError({ currentTarget });
+        assert.equal(currentSource, "/rotary-zc-west.jpg");
+        imageProps.onError({ currentTarget });
+        assert.equal(assignments, source === "/rotary-zc-west.jpg" ? 0 : 1);
+      }
     }
-  }
-});
+  });
+}
 
 test("featured project cards render the existing fallback for unusable header assets", async () => {
   for (const headerImage of unusableAssets) {
@@ -182,7 +194,7 @@ test("the project listing renders the existing fallback through its fetch and ro
 test("the homepage hero retains its project, carousel, background, and local image choices", async () => {
   const home = routeView("../app/routes/home_.tsx", {
     "../lib/contentful-api": {},
-    "../components/homepage/HeroSection": load("../app/components/homepage/HeroSection.tsx"),
+    "../components/homepage/HeroSection": hero,
     "../components/homepage/ProjectHighlightsSection": highlights,
     "../components/homepage/StatsSection": { StatsSection: () => null },
     "../components/homepage/ContactSection": { ContactSection: () => null },

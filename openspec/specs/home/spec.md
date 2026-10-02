@@ -42,6 +42,11 @@ The homepage SHALL render a concise sequence: proof-led hero, record-derived fac
 - **WHEN** no usable featured project image exists
 - **THEN** the hero SHALL use the first usable carousel image, then the hero background image, then the existing local fallback
 
+#### Scenario: Selected hero image fails in the browser
+
+- **WHEN** the selected hero image URL fails before or after hydration
+- **THEN** the hero SHALL use the existing local fallback, without repeated source assignments if that fallback also fails
+
 #### Scenario: Contact values appear in structured data
 
 - **WHEN** root contact data is available or missing

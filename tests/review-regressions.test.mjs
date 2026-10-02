@@ -36,7 +36,9 @@ function projectRoute(getEntries, path = "../app/routes/service-projects.$slug.t
     "../lib/contentful-api": api,
     "react-router": { ...require("react-router"), useLoaderData: () => loaderData },
     "../components/ui/PageHero": load("../app/components/ui/PageHero.tsx"),
-    "../components/ui/ProjectCard": load("../app/components/ui/ProjectCard.tsx"),
+    "../components/ui/ProjectCard": load("../app/components/ui/ProjectCard.tsx", {
+      "~/lib/project-image-fallback": load("../app/lib/project-image-fallback.ts"),
+    }),
     "../components/ui/ShareModal": { default: () => null },
     "yet-another-react-lightbox": { default: () => null },
     "yet-another-react-lightbox/plugins": {},

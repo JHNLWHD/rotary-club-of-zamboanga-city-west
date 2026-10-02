@@ -1,5 +1,6 @@
 import { Box, Flex, Heading, Image, Link, Text } from "@chakra-ui/react";
 import { ArrowRight } from "lucide-react";
+import { showProjectImageFallback } from "~/lib/project-image-fallback";
 
 type HeroSectionProps = {
   image: string;
@@ -83,7 +84,16 @@ export function HeroSection({ image, imageAlt, imageCaption }: HeroSectionProps)
         </Flex>
 
         <Box flex="1 1 42%" position="relative" minH={{ base: "440px", md: "560px", lg: "680px" }} bg="brand.900">
-          <Image src={image} alt={imageAlt} w="full" h="full" objectFit="cover" loading="eager" />
+          <Image
+            src={image}
+            alt={imageAlt}
+            ref={showProjectImageFallback}
+            onError={({ currentTarget }) => showProjectImageFallback(currentTarget)}
+            w="full"
+            h="full"
+            objectFit="cover"
+            loading="eager"
+          />
           <Text position="absolute" top={0} left={0} bg="#f7a81b" color="brand.900" px={4} py={3} fontSize="xs" fontWeight="bold" letterSpacing="0.14em" textTransform="uppercase">
             Featured field record
           </Text>
