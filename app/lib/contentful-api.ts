@@ -481,7 +481,7 @@ export async function fetchProjectBySlug(slug: string): Promise<Project | null> 
     return processedProject;
   } catch (error) {
     console.error('Error fetching project by slug:', error);
-    return null;
+    throw error;
   }
 }
 
@@ -643,4 +643,4 @@ export async function fetchTheFortress(): Promise<FortressIssue[]> {
     console.error('Error fetching The Fortress:', error);
     return [];
   }
-} 
+}

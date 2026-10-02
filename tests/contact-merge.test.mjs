@@ -65,6 +65,18 @@ test("merged contact form retains Netlify fields and accessible labels", () => {
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
 });
 
+test("native form submits to a static page before Netlify's SSR fallback", () => {
+  const form = render(contactRoute().default).match(/<form\b[^>]*>/)?.[0];
+  const action = form.match(/action="([^"]+)"/)[1];
+  const confirmation = readFileSync(new URL(`../public${action}/index.html`, import.meta.url), "utf8");
+  assert.match(confirmation, /Thank you for reaching out/);
+  assert.match(confirmation, /name="robots" content="noindex, nofollow"/);
+  assert.match(confirmation, /href="\/"/);
+  const routing = readFileSync(new URL("../netlify.toml", import.meta.url), "utf8");
+  assert.doesNotMatch(routing, /conditions\s*=\s*\{[^}]*Method\s*=/, "Netlify redirects cannot match HTTP methods");
+  assert.match(routing, /force\s*=\s*false/, "Static files must take precedence over the SSR fallback");
+});
+
 test("legacy success URL uses the reviewed confirmation without an app POST handler", () => {
   const contact = contactRoute(contactData, "success=true");
   assert.equal(contact.action, undefined);

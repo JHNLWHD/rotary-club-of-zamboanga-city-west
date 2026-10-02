@@ -10,13 +10,12 @@ command = "npm run dev"
 directory = "build/server"
 node_bundler = "esbuild"
 
-# Serve static assets first, then fallback to SSR (exclude POST for forms)
+# Static pages (including /thank-you for Netlify Forms) take precedence over SSR.
 [[redirects]]
 from = "/*"
 to = "/.netlify/functions/server"
 status = 200
 force = false
-conditions = {Method = ["GET", "HEAD"]}
 
 # Environment settings
 [build.environment]

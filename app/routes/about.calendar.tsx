@@ -13,9 +13,13 @@ type LoaderData = {
 export async function loader(): Promise<LoaderData> {
   try {
     const events = (await fetchAllEvents()) || [];
-    const startOfToday = new Date();
-    startOfToday.setUTCHours(0, 0, 0, 0);
-    const cutoff = startOfToday.getTime();
+    const today = Object.fromEntries(
+      new Intl.DateTimeFormat("en-US", {
+        timeZone: "Asia/Manila", year: "numeric", month: "numeric", day: "numeric",
+      }).formatToParts(new Date()).map(({ type, value }) => [type, value]),
+    );
+    // CMS dates display as calendar dates in UTC; compare them with Manila's current day.
+    const cutoff = Date.UTC(Number(today.year), Number(today.month) - 1, Number(today.day));
     const datedEvents = events.filter((event) => Number.isFinite(Date.parse(event.date)));
 
     return {

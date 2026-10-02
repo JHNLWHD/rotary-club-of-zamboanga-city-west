@@ -43,6 +43,7 @@ import remarkGfm from 'remark-gfm';
 type LoaderData = {
   project: Project | null;
   relatedProjects: Project[];
+  unavailable?: boolean;
 };
 
 export async function loader({ params }: Route.LoaderArgs) {
@@ -69,10 +70,11 @@ export async function loader({ params }: Route.LoaderArgs) {
     };
   } catch (error) {
     console.error('Error loading project data on server:', error);
-    return { 
+    return data({
       project: null,
       relatedProjects: [],
-    };
+      unavailable: true,
+    }, { status: 503 });
   }
 }
 
@@ -82,8 +84,8 @@ export function meta({ data }: Route.MetaArgs) {
   
   if (!project) {
     return [
-      { title: "Project Not Found | Rotary Club of Zamboanga City West" },
-      { name: "description", content: "The requested project could not be found." },
+      { title: `${loaderData?.unavailable ? "Project Temporarily Unavailable" : "Project Not Found"} | Rotary Club of Zamboanga City West` },
+      { name: "description", content: loaderData?.unavailable ? "Project information is temporarily unavailable. Please try again later." : "The requested project could not be found." },
       { name: "robots", content: "noindex, nofollow" },
     ];
   }
@@ -106,7 +108,7 @@ export function meta({ data }: Route.MetaArgs) {
 }
 
 export default function ProjectDetail() {
-  const { project, relatedProjects } = useLoaderData() as LoaderData;
+  const { project, relatedProjects, unavailable } = useLoaderData() as LoaderData;
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
@@ -116,10 +118,12 @@ export default function ProjectDetail() {
       <Container maxW="1200px" py={{ base: 32, md: 36 }} textAlign="center">
         <Stack gap={6} align="center">
           <Heading as="h1" fontSize="3xl" color="gray.900">
-            Project Not Found
+            {unavailable ? "Project Temporarily Unavailable" : "Project Not Found"}
           </Heading>
           <Text fontSize="lg" color="gray.600">
-            The project you're looking for doesn't exist or has been removed.
+            {unavailable
+              ? "Project information is temporarily unavailable. Please try again later."
+              : "The project you're looking for doesn't exist or has been removed."}
           </Text>
           <Link 
             href="/service-projects"

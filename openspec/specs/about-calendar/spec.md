@@ -15,7 +15,12 @@ The route loader SHALL call `fetchAllEvents`, discard invalid date values, and S
 
 ### Requirement: Past events are never presented as upcoming
 
-The UI SHALL classify valid dated events against the current UTC day, list upcoming dates first, and show completed activities only inside a clearly labeled archive. A past `isFeatured` flag SHALL NOT make an event appear upcoming.
+The UI SHALL classify valid dated events against the current day in `Asia/Manila`, list upcoming dates first, and show completed activities only inside a clearly labeled archive. CMS event dates SHALL retain their published calendar date, consistent with the UTC date display. A past `isFeatured` flag SHALL NOT make an event appear upcoming.
+
+#### Scenario: Midnight in Zamboanga
+
+- **WHEN** a new day starts in `Asia/Manila`, even while UTC is on the previous day
+- **THEN** events dated yesterday SHALL move into the archive, and events dated today SHALL remain upcoming
 
 #### Scenario: Invalid event date
 
