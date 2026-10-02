@@ -14,64 +14,18 @@ import { ExternalLink, FileText, Calendar, Hash } from "lucide-react";
 import { PageHero } from "~/components/ui/PageHero";
 import { ComingSoon } from "~/components/ui/ComingSoon";
 import { useLoaderData } from "react-router";
-import type { LoaderFunctionArgs } from "react-router";
 import { fetchBoardResolutions } from "~/lib/contentful-api";
-import type { BoardResolution } from "~/lib/contentful-types";
 
-// Fallback board resolutions data when CMS is unavailable
-const fallbackBoardResolutions: BoardResolution[] = [
-  {
-    resolutionNumber: "2024-001",
-    title: "Approval of Annual Budget for Fiscal Year 2024-2025",
-    dateSigned: new Date("2024-07-15"),
-    googleDriveLink: "https://drive.google.com/file/d/example1/view"
-  },
-  {
-    resolutionNumber: "2024-002",
-    title: "Establishment of Community Service Projects Committee",
-    dateSigned: new Date("2024-08-03"),
-    googleDriveLink: "https://drive.google.com/file/d/example2/view"
-  },
-  {
-    resolutionNumber: "2024-003",
-    title: "Amendment to Club Bylaws Section 3.2",
-    dateSigned: new Date("2024-09-12"),
-    googleDriveLink: "https://drive.google.com/file/d/example3/view"
-  },
-  {
-    resolutionNumber: "2024-004",
-    title: "Approval of Partnership with Local Schools for Literacy Program",
-    dateSigned: new Date("2024-10-08"),
-    googleDriveLink: "https://drive.google.com/file/d/example4/view"
-  },
-  {
-    resolutionNumber: "2024-005",
-    title: "Establishment of Youth Leadership Development Fund",
-    dateSigned: new Date("2024-11-20"),
-    googleDriveLink: "https://drive.google.com/file/d/example5/view"
-  },
-  {
-    resolutionNumber: "2024-006",
-    title: "Approval of International Service Project in Partnership with District 3860",
-    dateSigned: new Date("2024-12-05"),
-    googleDriveLink: "https://drive.google.com/file/d/example6/view"
-  }
-];
-
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader() {
   try {
     const boardResolutionsFromCms = await fetchBoardResolutions();
-    
-    // Use CMS data if available, otherwise return empty array to show ComingSoon
-    // Fallback data is only used in case of actual errors
     return {
-      boardResolutions: boardResolutionsFromCms,
+      boardResolutions: boardResolutionsFromCms || [],
     };
   } catch (error) {
     console.error('Error loading board resolutions:', error);
-    // Return fallback data only when there's an actual error
     return {
-      boardResolutions: fallbackBoardResolutions,
+      boardResolutions: [],
     };
   }
 }
@@ -90,7 +44,7 @@ export function meta() {
     { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
     
     // Canonical URL
-    { rel: "canonical", href: "https://rotaryzcwest.org/about/board-resolutions" },
+    { tagName: "link", rel: "canonical", href: "https://rotaryzcwest.org/about/board-resolutions" },
   ];
 }
 
@@ -200,8 +154,8 @@ export default function BoardResolutions() {
             </SimpleGrid>
           ) : (
             <ComingSoon
-              title="📋 Board Resolutions Coming Soon"
-              message="Official board resolutions and governance documents will be available here soon. Check back for updates on our club's official decisions and policies."
+              title="No resolutions are currently published"
+              message="The site will show only governance records supplied through the club's content system. Contact the club secretary to request a document."
               colorScheme="brand"
               size="lg"
               maxWidth="600px"

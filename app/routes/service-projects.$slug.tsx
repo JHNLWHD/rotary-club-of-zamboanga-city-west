@@ -16,7 +16,7 @@ import {
   Grid,
   GridItem,
 } from "@chakra-ui/react";
-import { useLoaderData } from "react-router";
+import { data, useLoaderData } from "react-router";
 import { useState } from "react";
 import { fetchProjectBySlug, fetchAllProjects } from "../lib/contentful-api";
 import ShareModal from "../components/ui/ShareModal";
@@ -43,6 +43,7 @@ import remarkGfm from 'remark-gfm';
 type LoaderData = {
   project: Project | null;
   relatedProjects: Project[];
+  unavailable?: boolean;
 };
 
 export async function loader({ params }: Route.LoaderArgs) {
@@ -51,13 +52,17 @@ export async function loader({ params }: Route.LoaderArgs) {
   try {
     const [project, allProjects] = await Promise.all([
       fetchProjectBySlug(slug),
-      fetchAllProjects()
+      fetchAllProjects().catch(() => [])
     ]);
+
+    if (!project) {
+      return data({ project: null, relatedProjects: [] }, { status: 404 });
+    }
     
     // Get related projects (exclude current project)
     const relatedProjects = allProjects
-      ?.filter(p => p.slug !== `/service-projects/${slug}`)
-      ?.slice(0, 8) || [];
+      .filter(p => p.slug !== `/service-projects/${slug}`)
+      .slice(0, 8);
     
     return { 
       project,
@@ -65,10 +70,11 @@ export async function loader({ params }: Route.LoaderArgs) {
     };
   } catch (error) {
     console.error('Error loading project data on server:', error);
-    return { 
+    return data({
       project: null,
       relatedProjects: [],
-    };
+      unavailable: true,
+    }, { status: 503 });
   }
 }
 
@@ -78,8 +84,9 @@ export function meta({ data }: Route.MetaArgs) {
   
   if (!project) {
     return [
-      { title: "Project Not Found | Rotary Club of Zamboanga City West" },
-      { name: "description", content: "The requested project could not be found." },
+      { title: `${loaderData?.unavailable ? "Project Temporarily Unavailable" : "Project Not Found"} | Rotary Club of Zamboanga City West` },
+      { name: "description", content: loaderData?.unavailable ? "Project information is temporarily unavailable. Please try again later." : "The requested project could not be found." },
+      { name: "robots", content: "noindex, nofollow" },
     ];
   }
 
@@ -96,12 +103,12 @@ export function meta({ data }: Route.MetaArgs) {
     { property: "og:image", content: project.headerImage?.url || "https://rotaryzcwest.org/og-image.jpg" },
     
     // Canonical URL
-    { rel: "canonical", href: `https://rotaryzcwest.org${project.slug}` },
+    { tagName: "link", rel: "canonical", href: `https://rotaryzcwest.org${project.slug}` },
   ];
 }
 
 export default function ProjectDetail() {
-  const { project, relatedProjects } = useLoaderData() as LoaderData;
+  const { project, relatedProjects, unavailable } = useLoaderData() as LoaderData;
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
@@ -111,10 +118,12 @@ export default function ProjectDetail() {
       <Container maxW="1200px" py={{ base: 32, md: 36 }} textAlign="center">
         <Stack gap={6} align="center">
           <Heading as="h1" fontSize="3xl" color="gray.900">
-            Project Not Found
+            {unavailable ? "Project Temporarily Unavailable" : "Project Not Found"}
           </Heading>
           <Text fontSize="lg" color="gray.600">
-            The project you're looking for doesn't exist or has been removed.
+            {unavailable
+              ? "Project information is temporarily unavailable. Please try again later."
+              : "The project you're looking for doesn't exist or has been removed."}
           </Text>
           <Link 
             href="/service-projects"
@@ -160,7 +169,7 @@ export default function ProjectDetail() {
   }));
 
   return (
-    <Box bg="gray.50" minH="100vh" pt={{ base: 24, md: 28 }}>
+    <Box bg="#f7f5f0" minH="100vh" pt={{ base: 6, md: 10 }}>
       {/* Main Content */}
       <Container maxW="1200px" pt={{ base: 4, md: 6 }} pb={8}>
         {/* Breadcrumb Navigation */}
@@ -174,17 +183,11 @@ export default function ProjectDetail() {
           <GridItem>
             {/* White Card Container */}
             <Box 
-              bg="white" 
-              borderRadius="2xl" 
-              boxShadow="xl" 
               overflow="hidden"
-              border="1px solid"
-              borderColor="gray.200"
-              p={{ base: 6, md: 8 }}
             >
               <Stack gap={8}>
                 {/* Project Header Image */}
-                <Box borderRadius="xl" overflow="hidden" boxShadow="lg" position="relative">
+                <Box overflow="hidden" position="relative">
                   <Image 
                     src={project.headerImage?.url ?? "/logo.png"} 
                     alt={`${project.title} - ${projectYear}`}
@@ -216,7 +219,7 @@ export default function ProjectDetail() {
                 <Box>
                   <HStack justify="space-between" align="start" mb={6} flexWrap="wrap" gap={4}>
                     <VStack align="flex-start" gap={4} flex={1}>
-                      <Heading as="h1" fontSize="4xl" fontWeight="bold" color="gray.900" lineHeight="shorter">
+                      <Heading as="h1" fontSize={{ base: "3xl", md: "4xl" }} fontWeight="bold" color="brand.900" lineHeight="shorter">
                         {project.title}
                       </Heading>
                       <Badge 

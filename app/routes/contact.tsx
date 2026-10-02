@@ -1,7 +1,8 @@
 import { Box, Container } from "@chakra-ui/react";
 import { ContactSection } from "../components/homepage/ContactSection";
 import { ComingSoon } from "../components/ui/ComingSoon";
-import { useRouteLoaderData } from "react-router";
+import { useRouteLoaderData, useSearchParams } from "react-router";
+import ThankYou from "./thank-you";
 import type { ContactInfo, MeetingInfo } from "~/lib/contentful-types";
 
 export function meta() {
@@ -18,11 +19,12 @@ export function meta() {
     { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
     
     // Canonical URL
-    { rel: "canonical", href: "https://rotaryzcwest.org/contact" },
+    { tagName: "link", rel: "canonical", href: "https://rotaryzcwest.org/contact" },
   ];
 }
 
 export default function Contact() {
+  const [searchParams] = useSearchParams();
   const { contactData } = useRouteLoaderData("root") as {
     contactData?: {
       meetingInfo?: MeetingInfo;
@@ -32,10 +34,10 @@ export default function Contact() {
 
   if (!contactData?.meetingInfo || !contactData?.contactInfo) {
     return (
-      <Box py={{ base: 64, md: 42, lg: 42 }} display="flex" alignItems="center" justifyContent="center" minH="60vh">
+      <Box py={{ base: 12, md: 20 }} display="flex" alignItems="center" justifyContent="center" minH="60vh">
         <Container maxW="full" p={0}>
           <ComingSoon
-            title="🚧 Contact Information Coming Soon"
+            title="Contact information is being updated"
             message="We're currently setting up our contact system. Please check back soon for ways to get in touch with us."
             colorScheme="brand"
             size="lg"
@@ -46,14 +48,19 @@ export default function Contact() {
     );
   }
 
+  if (searchParams.get("success") === "true") {
+    return <ThankYou />;
+  }
+
   return (
-    <Box py={{ base: 8, md: 12, lg: 16 }}>
+    <Box>
       <Container maxW="full" p={0}>
         <ContactSection 
           meetingInfo={contactData.meetingInfo}
           contactInfo={contactData.contactInfo}
+          headingAs="h1"
         />
       </Container>
     </Box>
   );
-} 
+}

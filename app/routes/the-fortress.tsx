@@ -1,852 +1,170 @@
-import {
-  Box,
-  Heading,
-  Text,
-  Container,
-  Stack,
-  Flex,
-  Image,
-  SimpleGrid,
-  Badge,
-  Button,
-  Link,
-} from "@chakra-ui/react";
-import { useState, useEffect } from "react";
+import { Box, Button, Container, Dialog, Flex, Heading, Link, Portal, SimpleGrid, Text } from "@chakra-ui/react";
+import { lazy, Suspense, useRef, useState } from "react";
 import { useLoaderData } from "react-router";
-import { Download, Calendar, Users, Award, FileText, Eye, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, X } from "lucide-react";
+import { PageHero } from "../components/ui/PageHero";
 import { fetchTheFortress } from "../lib/contentful-api";
 import type { FortressIssue } from "../lib/contentful-types";
-import type { Route } from "./+types/the-fortress";
 import "../styles/react-pdf.css";
 
-// Client-side PDF components
-let Document: any = null;
-let Page: any = null;
-let pdfjs: any = null;
-
-type LoaderData = {
-  fortressIssues: FortressIssue[];
+type ReaderProps = {
+  url: string;
+  pageNumber: number;
+  onLoad: (result: { numPages: number }) => void;
+  onError: (error: Error) => void;
 };
 
-export async function loader({ request }: Route.LoaderArgs) {
+// Load the PDF library only when a visitor opens an issue.
+const PdfReader = lazy(() => import("react-pdf").then(({ Document, Page, pdfjs }) => {
+  pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+  return {
+    default: function Reader({ url, pageNumber, onLoad, onError }: ReaderProps) {
+      return (
+        <Document file={url} onLoadSuccess={onLoad} onLoadError={onError} loading={<Text p={6}>Loading publication…</Text>}>
+          <Page pageNumber={pageNumber} width={800} renderAnnotationLayer={false} renderTextLayer={false} />
+        </Document>
+      );
+    },
+  };
+}).catch(() => ({
+  default: function UnavailableReader(_props: ReaderProps) {
+    return <Text role="alert" p={6}>The page reader is unavailable. Use the browser viewer or open the PDF below.</Text>;
+  },
+})));
+
+export async function loader() {
   try {
-    const fortressIssues = await fetchTheFortress();
-    return {
-      fortressIssues: fortressIssues || [],
-    };
+    return { fortressIssues: await fetchTheFortress() || [] };
   } catch (error) {
-    console.error('Error loading fortress data on server:', error);
-    return {
-      fortressIssues: [],
-    };
+    console.error("Error loading fortress data on server:", error);
+    return { fortressIssues: [] };
   }
 }
 
 export function meta() {
   return [
     { title: "The Fortress | Official Publication of Rotary Club of Zamboanga City West" },
-    { name: "description", content: "Feel the spirit of Rotary through stories of fellowship, service, and impact that continue to shape lives in Zamboanga City and across wider communities." },
-    { name: "keywords", content: "The Fortress, Rotary publication, club newsletter, Zamboanga City West, member news, project updates, UNITE FOR GOOD" },
-
-    // Open Graph tags
-    { property: "og:title", content: "The Fortress | Official Publication of Rotary Club of Zamboanga City West" },
-    { property: "og:description", content: "Stories of fellowship, service, and impact shaping lives in Zamboanga City and beyond." },
+    { name: "description", content: "Read The Fortress, the club’s publication of project updates, member stories, and fellowship in Zamboanga City." },
+    { property: "og:title", content: "The Fortress | Rotary Club of Zamboanga City West" },
+    { property: "og:description", content: "Published issues of the club’s official newsletter." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/the-fortress" },
-    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
-
-    // Canonical URL
-    { rel: "canonical", href: "https://rotaryzcwest.org/the-fortress" },
+    { property: "og:image", content: "https://rotaryzcwest.org/og/the-fortress-redesign.jpg" },
+    { property: "og:image:width", content: "1200" },
+    { property: "og:image:height", content: "630" },
+    { property: "og:image:alt", content: "The Fortress — the official publication of Rotary Club of Zamboanga City West" },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:image", content: "https://rotaryzcwest.org/og/the-fortress-redesign.jpg" },
+    { name: "twitter:image:alt", content: "The Fortress — the official publication of Rotary Club of Zamboanga City West" },
+    { tagName: "link", rel: "canonical", href: "https://rotaryzcwest.org/the-fortress" },
   ];
 }
 
-// Helper function to convert Google Drive share link to embed URL
-function getGoogleDriveEmbedUrl(shareUrl: string): string {
-  if (!shareUrl || typeof shareUrl !== 'string') return '';
+export default function TheFortress() {
+  const { fortressIssues } = useLoaderData<typeof loader>();
+  const publicationIssues = [...fortressIssues].sort((a, b) =>
+    b.rotaryYear.localeCompare(a.rotaryYear, undefined, { numeric: true }) ||
+    b.issueNumber.localeCompare(a.issueNumber, undefined, { numeric: true })
+  );
+  const [selectedIssue, setSelectedIssue] = useState<FortressIssue | null>(null);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [numPages, setNumPages] = useState(0);
+  const [browserViewer, setBrowserViewer] = useState(false);
+  const [readerError, setReaderError] = useState(false);
+  const closeButton = useRef<HTMLButtonElement>(null);
+  const readerTrigger = useRef<HTMLButtonElement | null>(null);
+  const readerBody = useRef<HTMLDivElement>(null);
 
-  // Extract file ID from Google Drive URL
-  const fileIdMatch = shareUrl.match(/\/file\/d\/([a-zA-Z0-9-_]+)/);
-  if (fileIdMatch) {
-    const fileId = fileIdMatch[1];
-    return `https://drive.google.com/file/d/${fileId}/preview`;
+  function openIssue(issue: FortressIssue, trigger: HTMLButtonElement) {
+    readerTrigger.current = trigger;
+    setPageNumber(1);
+    setNumPages(0);
+    setBrowserViewer(false);
+    setReaderError(false);
+    setSelectedIssue(issue);
   }
 
-  // If it's already a direct URL, return as is
-  return shareUrl;
-}
-
-// Helper function to get PDF URL from Contentful asset
-function getPdfUrlFromAsset(asset: any): string {
-  if (!asset || !asset.url) return '';
-
-  // Contentful assets already provide direct URLs
-  return asset.url;
-}
-
-// Helper function to get a proxy URL for CORS issues
-function getProxiedPdfUrl(originalUrl: string): string {
-  // For development, we might need a CORS proxy
-  // In production, you might want to serve PDFs through your own backend
-  return originalUrl;
-}
-
-// Default data for when Contentful is not available
-const defaultFortressIssues: FortressIssue[] = [
-  {
-    id: "1",
-    issueNumber: "ISSUE NO. 1",
-    month: "July 2025 Issue",
-    rotaryYear: "RY 2025-2026",
-    file: {
-      url: "",
-      title: "The Fortress Issue No. 1",
-      description: "July 2025 Issue",
-    },
-    isFeatured: false,
-  },
-];
-
-export default function TheFortress() {
-  const { fortressIssues } = useLoaderData() as LoaderData;
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedPdfUrl, setSelectedPdfUrl] = useState<string>("");
-  const [selectedIssueTitle, setSelectedIssueTitle] = useState<string>("");
-  const [numPages, setNumPages] = useState<number | null>(null);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isClient, setIsClient] = useState(false);
-  const [pdfComponentsLoaded, setPdfComponentsLoaded] = useState(false);
-  const [useIframeFallback, setUseIframeFallback] = useState(false);
-
-  // Use Contentful data or fallback to default
-  const publicationIssues = fortressIssues?.length > 0 ? fortressIssues : defaultFortressIssues;
-
-  // Load PDF components only on client side
-  useEffect(() => {
-    setIsClient(true);
-
-    const loadPdfComponents = async () => {
-      try {
-        const reactPdf = await import('react-pdf');
-        Document = reactPdf.Document;
-        Page = reactPdf.Page;
-        pdfjs = reactPdf.pdfjs;
-
-        // Set up PDF.js worker using local file
-        pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
-
-        // Note: CSS files are handled by the bundler or can be imported at the top level
-        // Removing dynamic CSS imports that cause Vite issues
-
-        setPdfComponentsLoaded(true);
-      } catch (error) {
-        console.error('Failed to load PDF components:', error);
-        setError('PDF viewer not available');
-      }
-    };
-
-    loadPdfComponents();
-  }, []);
-
-  const handleOpenPdfModal = (issue: FortressIssue) => {
-    console.log('Opening PDF modal for:', issue.issueNumber);
-    console.log('File asset:', issue.file);
-
-    // Get PDF URL from Contentful asset
-    const pdfUrl = getPdfUrlFromAsset(issue.file);
-    console.log('PDF URL:', pdfUrl);
-
-    // Check if PDF components are loaded
-    if (!pdfComponentsLoaded) {
-      console.log('PDF components not loaded yet');
-      setError('PDF viewer is still loading. Please try again in a moment.');
-      return;
-    }
-
-    if (!pdfUrl) {
-      setError('No PDF file available for this issue.');
-      return;
-    }
-
-    setSelectedPdfUrl(pdfUrl);
-    setSelectedIssueTitle(issue.issueNumber);
-    setPageNumber(1);
-    setError(null);
-    setLoading(true);
-    setUseIframeFallback(false);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedPdfUrl("");
-    setSelectedIssueTitle("");
-    setNumPages(null);
-    setPageNumber(1);
-    setError(null);
-    setUseIframeFallback(false);
-  };
-
-  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-    console.log('PDF loaded successfully, pages:', numPages);
-    setNumPages(numPages);
-    setLoading(false);
-    setError(null);
-  };
-
-  const onDocumentLoadError = (error: Error) => {
-    console.error('PDF load error:', error);
-    console.error('Error details:', error.message);
-
-    // If it's a CORS error, worker setup failure, or version mismatch, try iframe fallback
-    if (error.message.includes('CORS') ||
-      error.message.includes('cross-origin') ||
-      error.message.includes('fetch') ||
-      error.message.includes('worker') ||
-      error.message.includes('Setting up fake worker failed') ||
-      error.message.includes('version') ||
-      error.message.includes('does not match')) {
-      console.log('PDF.js error detected (CORS/Worker/Version), switching to iframe fallback');
-      setUseIframeFallback(true);
-      setError(null);
-      setLoading(false);
-    } else {
-      setError(`Failed to load PDF: ${error.message}. Switching to browser viewer.`);
-      setUseIframeFallback(true);
-      setLoading(false);
-    }
-  };
-
-  const goToPrevPage = () => {
-    setPageNumber(prev => Math.max(prev - 1, 1));
-  };
-
-  const goToNextPage = () => {
-    setPageNumber(prev => Math.min(prev + 1, numPages || 1));
-  };
+  function changePage(page: number) {
+    setPageNumber(page);
+    readerBody.current?.scrollTo({ top: 0 });
+  }
 
   return (
-    <Box bg="gray.50" minH="100vh">
-      {/* Hero Section */}
-      <Box
-        position="relative"
-        bg="white"
-        overflow="hidden"
-        pt={{ base: 24, md: 28 }}
-        pb={{ base: 16, md: 20 }}
-      >
-        {/* Background Pattern */}
-        <Box
-          position="absolute"
-          top={0}
-          left={0}
-          right={0}
-          bottom={0}
-          backgroundImage="linear-gradient(135deg, rgba(0, 93, 170, 0.03) 0%, rgba(255, 255, 255, 1) 100%)"
-          zIndex={1}
-        />
+    <Box>
+      <PageHero title="The Fortress" description="The official publication of Rotary Club of Zamboanga City West. Read project updates, member stories, and news from the club." />
 
-        <Container maxW="1200px" position="relative" zIndex={2}>
-          <Flex direction={{ base: "column", lg: "row" }} align="center" gap={12}>
-            {/* Left Content */}
-            <Box flex={1} textAlign={{ base: "center", lg: "left" }}>
-              {/* Rotary Logo */}
-              <Flex align="center" justify={{ base: "center", lg: "flex-start" }} mb={4}>
-                <Image
-                  src="/logo.png"
-                  alt="Rotary Club Logo"
-                  width="60px"
-                  height="auto"
-                  objectFit="contain"
-                />
-                <Box ml={3} textAlign="left">
-                  <Text fontSize="sm" fontWeight="bold" color="brand.500" lineHeight={1.2}>
-                    Rotary Club of
-                  </Text>
-                  <Text fontSize="sm" fontWeight="bold" color="brand.500" lineHeight={1.2}>
-                    Zamboanga City West
-                  </Text>
-                </Box>
-              </Flex>
-
-              {/* Main Title */}
-              <Heading
-                as="h1"
-                fontSize={{ base: "4xl", md: "5xl", lg: "6xl" }}
-                fontWeight="bold"
-                color="brand.500"
-                mb={2}
-                letterSpacing="tight"
-              >
-                THE <Text as="span" color="gray.900">FORTRESS</Text>
-              </Heading>
-
-              <Text
-                fontSize="md"
-                color="gray.600"
-                mb={6}
-                fontWeight="medium"
-                letterSpacing="wide"
-                textTransform="uppercase"
-              >
-                The Official Publication of the Rotary Club of Zamboanga City West, District 3850, Philippines
-              </Text>
-
-              {/* Theme */}
-              <Box
-                bg="brand.500"
-                color="white"
-                py={6}
-                px={8}
-                borderRadius="lg"
-                mb={8}
-                transform="rotate(-1deg)"
-                boxShadow="lg"
-              >
-                <Heading
-                  as="h2"
-                  fontSize={{ base: "2xl", md: "3xl" }}
-                  fontWeight="bold"
-                  textAlign="center"
-                  letterSpacing="wider"
-                >
-                  UNITE FOR GOOD
-                </Heading>
-              </Box>
-
-              <Text
-                fontSize={{ base: "lg", md: "xl" }}
-                color="gray.700"
-                lineHeight="relaxed"
-                mb={8}
-              >
-                Feel the spirit of Rotary through stories of fellowship, service, and impact that continue to shape lives in Zamboanga City and across wider communities.
-              </Text>
-            </Box>
-
-            {/* Right Content - Magazine Cover */}
-            <Box flex={1} display="flex" justifyContent="center">
-              <Box
-                position="relative"
-                bg="white"
-                borderRadius="xl"
-                boxShadow="2xl"
-                p={4}
-                maxW="400px"
-                w="full"
-                transform="rotate(2deg)"
-                _hover={{ transform: "rotate(0deg)" }}
-                transition="all 0.3s"
-              >
-                <Box
-                  bg="gray.100"
-                  borderRadius="lg"
-                  aspectRatio="3/4"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  overflow="hidden"
-                  position="relative"
-                >
-                  {/* Magazine Cover */}
-                  <Box
-                    position="absolute"
-                    top={0}
-                    left={0}
-                    right={0}
-                    bottom={0}
-                    bgGradient="linear(to-b, white 0%, gray.100 100%)"
-                  />
-                  <Box position="relative" zIndex={2} textAlign="center" p={6}>
-                    <Image
-                      src="/the-fortress.jpg"
-                      alt="The Fortress - Official Publication of Rotary Club of Zamboanga City West"
-                      width="100%"
-                      height="100%"
-                      objectFit="cover"
-                      borderRadius="md"
-                    />
-                  </Box>
-                </Box>
-              </Box>
-            </Box>
-          </Flex>
-        </Container>
-      </Box>
-
-      {/* Publication Issues Section */}
-      <Box py={16} bg="gray.50">
-        <Container maxW="1200px">
-          <Box textAlign="center" mb={12}>
-            <Heading as="h2" fontSize={{ base: "2xl", md: "3xl", lg: "4xl" }} color="gray.900" mb={4}>
-              Issues
-            </Heading>
-            <Text fontSize={{ base: "md", md: "lg" }} color="gray.600" maxW="600px" mx="auto">
-              Explore our latest publications featuring member stories, project updates, and community impact highlights.
-            </Text>
-          </Box>
-
-          <SimpleGrid columns={{ base: 1, md: 2, lg: 2 }} gap={8}>
+      <Container maxW="1200px" px={{ base: 4, md: 8 }} py={{ base: 10, md: 16 }}>
+        <Heading as="h2" fontSize="2xl" color="brand.900" mb={3}>Published issues</Heading>
+        <Text color="gray.600" mb={8}>Each issue is labeled with its publication month and Rotary Year.</Text>
+        {publicationIssues.length ? (
+          <SimpleGrid columns={{ base: 1, md: 2 }} gap={{ base: 6, md: 8 }}>
             {publicationIssues.map((issue) => (
-              <Box
-                key={issue.id}
-                bg="white"
-                borderRadius="2xl"
-                overflow="hidden"
-                boxShadow="lg"
-                border="1px solid"
-                borderColor="gray.200"
-                _hover={{ transform: "translateY(-4px)", boxShadow: "xl" }}
-                transition="all 0.3s"
-              >
-                <Box p={0}>
-                  <Flex direction={{ base: "column", md: "row" }} h="full">
-                    {/* Cover Image */}
-                    <Box
-                      flex="0 0 200px"
-                      position="relative"
-                      minH={{ base: "200px", md: "auto" }}
-                    >
-                      {issue.isFeatured && (
-                        <Badge
-                          position="absolute"
-                          top={3}
-                          left={3}
-                          zIndex={2}
-                          colorScheme="red"
-                          fontSize="xs"
-                          px={2}
-                          py={1}
-                        >
-                          LATEST
-                        </Badge>
-                      )}
-                      <Image
-                        src="/fort-pilar.png"
-                        alt={`The Fortress ${issue.issueNumber} Cover`}
-                        w="full"
-                        h="full"
-                        objectFit="cover"
-                      />
-                      <Box
-                        position="absolute"
-                        top={0}
-                        left={0}
-                        right={0}
-                        bottom={0}
-                        bg="blackAlpha.300"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                      >
-                        <Box textAlign="center" color="white">
-                          <Text fontSize="lg" fontWeight="bold" mb={1}>
-                            THE FORTRESS
-                          </Text>
-                          <Text fontSize="md" fontWeight="semibold">
-                            {issue.issueNumber}
-                          </Text>
-                        </Box>
-                      </Box>
-                    </Box>
-
-                    {/* Content */}
-                    <Box p={6} flex={1} display="flex" flexDirection="column">
-                      <Flex align="center" gap={2} mb={3}>
-                        <Badge colorScheme="blue" fontSize="xs">
-                          {issue.month}
-                        </Badge>
-                        <Text fontSize="sm" color="gray.500">
-                          {issue.rotaryYear}
-                        </Text>
-                      </Flex>
-
-                      <Heading as="h3" fontSize="xl" color="gray.900" mb={4} lineHeight="shorter">
-                        {issue.issueNumber}
-                      </Heading>
-
-                      <Flex gap={3} align="center">
-                        {issue.file && issue.file.url ? (
-                          <Button
-                            size="sm"
-                            bg="brand.500"
-                            color="white"
-                            _hover={{ bg: "brand.600" }}
-                            onClick={() => handleOpenPdfModal(issue)}
-                            px={4}
-                            py={2}
-                            borderRadius="md"
-                          >
-                            <Flex align="center" gap={2}>
-                              <Eye size={16} />
-                              Read Online
-                            </Flex>
-                          </Button>
-                        ) : (
-                          <Button
-                            size="sm"
-                            bg="brand.500"
-                            color="white"
-                            _hover={{ bg: "brand.600" }}
-                            disabled
-                            px={4}
-                            py={2}
-                            borderRadius="md"
-                          >
-                            <Flex align="center" gap={2}>
-                              <Eye size={16} />
-                              Coming Soon
-                            </Flex>
-                          </Button>
-                        )}
-                        {issue.file && issue.file.url ? (
-                          <Link href={issue.file.url} target="_blank" rel="noopener noreferrer">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              colorScheme="gray"
-                              px={4}
-                              py={2}
-                              borderRadius="md"
-                            >
-                              <Flex align="center" gap={2}>
-                                <Download size={16} />
-                                Download
-                              </Flex>
-                            </Button>
-                          </Link>
-                        ) : (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            colorScheme="gray"
-                            disabled
-                            px={4}
-                            py={2}
-                            borderRadius="md"
-                          >
-                            <Flex align="center" gap={2}>
-                              <Download size={16} />
-                              Download
-                            </Flex>
-                          </Button>
-                        )}
-                      </Flex>
-                    </Box>
+              <Box as="article" key={issue.id} bg="#f7f5f0" p={{ base: 5, md: 7 }}>
+                <Text color="brand.700" fontSize="xs" fontWeight="bold" letterSpacing="0.1em" textTransform="uppercase" mb={3}>{issue.rotaryYear}</Text>
+                <Heading as="h3" fontSize="xl" color="brand.900" lineHeight="1.3">{issue.issueNumber}</Heading>
+                <Text color="gray.600" mt={2}>{issue.month}</Text>
+                {issue.file?.url ? (
+                  <Flex gap={5} align="center" mt={6} wrap="wrap">
+                    <Button bg="brand.500" color="white" px={5} h="44px" onClick={(event) => openIssue(issue, event.currentTarget)} _hover={{ bg: "brand.700" }}>Read online</Button>
+                    <Link href={issue.file.url} target="_blank" rel="noopener noreferrer" color="brand.700" fontWeight="bold" gap={2}>
+                      <Download size={17} aria-hidden="true" /> Open PDF
+                    </Link>
                   </Flex>
-                </Box>
+                ) : (
+                  <Text color="gray.600" mt={6}>The PDF for this issue is not available yet.</Text>
+                )}
               </Box>
             ))}
           </SimpleGrid>
+        ) : (
+          <Text color="gray.700">No issues are currently published. Please check back for the club’s next update.</Text>
+        )}
+      </Container>
 
-          {/* View All Issues */}
-          <Box textAlign="center" mt={12}>
-            <Text fontSize="sm" color="gray.600" mb={4}>
-              Looking for older issues? Our complete archive will be available soon.
-            </Text>
-            <Button
-              size="lg"
-              variant="outline"
-              colorScheme="brand"
-              disabled
-            >
-              View Complete Archive (Coming Soon)
-            </Button>
-          </Box>
-        </Container>
-      </Box>
+      <Dialog.Root open={Boolean(selectedIssue)} onOpenChange={({ open }) => { if (!open) setSelectedIssue(null); }} placement="center" lazyMount unmountOnExit initialFocusEl={() => closeButton.current} finalFocusEl={() => readerTrigger.current}>
+        <Portal>
+          <Dialog.Backdrop />
+          <Dialog.Positioner p={{ base: 2, md: 6 }}>
+            <Dialog.Content maxW="960px" w="full" h="90dvh" maxH="90dvh" m={0} overflow="hidden" bg="#f7f5f0">
+              <Dialog.Header p={4} pr={14} flexDirection="column" gap={1}>
+                <Dialog.Title color="brand.900" fontSize={{ base: "md", md: "xl" }}>The Fortress — {selectedIssue?.issueNumber}</Dialog.Title>
+                <Dialog.Description color="gray.600" fontSize="sm">{selectedIssue?.month}</Dialog.Description>
+              </Dialog.Header>
+              <Dialog.CloseTrigger asChild>
+                <Button ref={closeButton} aria-label="Close publication" position="absolute" top={3} right={3} variant="ghost" minW="44px" h="44px" p={2}><X size={20} aria-hidden="true" /></Button>
+              </Dialog.CloseTrigger>
 
-
-
-      {/* PDF Modal */}
-      {isModalOpen && (
-        <Box
-          position="fixed"
-          top={0}
-          left={0}
-          right={0}
-          bottom={0}
-          bg="blackAlpha.800"
-          zIndex={9999}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          p={4}
-        >
-          <Box
-            bg="white"
-            borderRadius="lg"
-            maxW="95vw"
-            maxH="95vh"
-            w="full"
-            h="full"
-            display="flex"
-            flexDirection="column"
-            boxShadow="2xl"
-          >
-            {/* Header */}
-            <Flex
-              bg="brand.500"
-              color="white"
-              p={4}
-              borderTopRadius="lg"
-              align="center"
-              justify="space-between"
-            >
-              <Flex align="center" gap={3}>
-                <FileText size={24} />
-                <Box>
-                  <Text fontSize="lg" fontWeight="bold">
-                    The Fortress - {selectedIssueTitle}
-                  </Text>
-                  <Text fontSize="sm" opacity={0.9}>
-                    Official Publication of Rotary Club of Zamboanga City West
-                  </Text>
-                </Box>
-              </Flex>
-              <Button
-                aria-label="Close modal"
-                onClick={handleCloseModal}
-                variant="ghost"
-                color="white"
-                _hover={{ bg: "whiteAlpha.200" }}
-                size="sm"
-                minW="auto"
-                p={2}
-              >
-                <X size={20} />
-              </Button>
-            </Flex>
-
-            {/* PDF Controls */}
-            <Flex
-              bg="gray.100"
-              p={2}
-              align="center"
-              justify="space-between"
-              borderBottom="1px solid"
-              borderColor="gray.200"
-            >
-              {/* Page Navigation - only show if using react-pdf with multiple pages */}
-              {!useIframeFallback && numPages && numPages > 1 ? (
-                <Flex align="center" gap={4} flex={1} justify="center">
-                  <Button
-                    aria-label="Previous page"
-                    onClick={goToPrevPage}
-                    disabled={pageNumber <= 1}
-                    size="sm"
-                    minW="auto"
-                    p={2}
-                  >
-                    <ChevronLeft size={20} />
-                  </Button>
-                  <Text fontSize="sm" color="gray.600" minW="100px" textAlign="center">
-                    Page {pageNumber} of {numPages}
-                  </Text>
-                  <Button
-                    aria-label="Next page"
-                    onClick={goToNextPage}
-                    disabled={pageNumber >= numPages}
-                    size="sm"
-                    minW="auto"
-                    p={2}
-                  >
-                    <ChevronRight size={20} />
-                  </Button>
-                </Flex>
-              ) : (
-                <Box flex={1} />
-              )}
-
-              {/* Viewer Toggle */}
-              {selectedPdfUrl && (
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => setUseIframeFallback(!useIframeFallback)}
-                  fontSize="xs"
-                >
-                  {useIframeFallback ? "Try Advanced Viewer" : "Use Browser Viewer"}
+              <Flex px={3} pb={3} gap={3} align="center" justify="space-between" wrap="wrap">
+                {!browserViewer && numPages > 0 && (
+                  <Flex gap={2} align="center">
+                    <Button aria-label="Previous page" onClick={() => changePage(pageNumber - 1)} disabled={pageNumber <= 1} variant="ghost" minW="44px" p={2}><ChevronLeft size={20} /></Button>
+                    <Text aria-live="polite" fontSize="sm">Page {pageNumber} of {numPages}</Text>
+                    <Button aria-label="Next page" onClick={() => changePage(pageNumber + 1)} disabled={pageNumber >= numPages} variant="ghost" minW="44px" p={2}><ChevronRight size={20} /></Button>
+                  </Flex>
+                )}
+                <Button variant="ghost" fontSize="sm" onClick={() => { setReaderError(false); setBrowserViewer(!browserViewer); }}>
+                  {browserViewer ? "Use page reader" : "Use browser viewer"}
                 </Button>
-              )}
-            </Flex>
-
-            {/* PDF Content */}
-            <Box
-              flex={1}
-              overflow="auto"
-              bg="gray.50"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              position="relative"
-            >
-              {error ? (
-                <Box textAlign="center" p={8}>
-                  <FileText size={48} color="#CBD5E0" />
-                  <Text color="gray.500" fontSize="lg" mt={4}>
-                    {error}
-                  </Text>
-                  <Link
-                    href={publicationIssues.find(issue => issue.issueNumber === selectedIssueTitle)?.file?.url || ""}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button
-                      mt={4}
-                      bg="brand.500"
-                      color="white"
-                      _hover={{ bg: "brand.600" }}
-                    >
-                      <Flex align="center" gap={2}>
-                        <Download size={16} />
-                        Download PDF Instead
-                      </Flex>
-                    </Button>
-                  </Link>
-                </Box>
-              ) : useIframeFallback && selectedPdfUrl ? (
-                <Box w="full" h="80vh" position="relative">
-                  <iframe
-                    src={selectedPdfUrl}
-                    width="100%"
-                    height="100%"
-                    style={{
-                      border: "none",
-                      borderRadius: "0 0 6px 6px",
-                    }}
-                    title={`The Fortress - ${selectedIssueTitle}`}
-                    onError={() => {
-                      console.log('Iframe also failed to load');
-                      setError('Unable to display PDF. Please use the download button.');
-                    }}
-                  />
-                  {/* Info overlay */}
-                  <Box
-                    position="absolute"
-                    top={4}
-                    left={4}
-                    bg="blackAlpha.700"
-                    color="white"
-                    px={3}
-                    py={2}
-                    borderRadius="md"
-                    fontSize="sm"
-                  >
-                    Browser PDF Viewer
+              </Flex>
+              {readerError && <Text role="status" px={4} pb={3} fontSize="sm">The page reader could not load this file. Use the browser viewer or open the PDF below.</Text>}
+              <Dialog.Body ref={readerBody} overflow="auto" p={0} minH={0} bg="white">
+                {selectedIssue?.file?.url && (browserViewer ? (
+                  <iframe src={selectedIssue.file.url} title={`The Fortress — ${selectedIssue.issueNumber}`} width="100%" height="100%" style={{ border: 0, minHeight: "55vh" }} />
+                ) : (
+                  <Box maxW="800px" w="full" mx="auto">
+                    <Suspense fallback={<Text p={6} role="status">Loading publication…</Text>}>
+                      <PdfReader url={selectedIssue.file.url} pageNumber={pageNumber} onLoad={({ numPages }) => setNumPages(numPages)} onError={() => { setReaderError(true); setBrowserViewer(true); }} />
+                    </Suspense>
                   </Box>
-                </Box>
-              ) : selectedPdfUrl && isClient && pdfComponentsLoaded && Document && Page ? (
-                <Box>
-                  <Document
-                    file={selectedPdfUrl}
-                    onLoadSuccess={onDocumentLoadSuccess}
-                    onLoadError={onDocumentLoadError}
-                    loading={
-                      <Box textAlign="center" p={8}>
-                        <Text color="gray.500">Loading PDF...</Text>
-                      </Box>
-                    }
-                    error={
-                      <Box textAlign="center" p={8}>
-                        <FileText size={48} color="#CBD5E0" />
-                        <Text color="gray.500" fontSize="lg" mt={4}>
-                          Unable to load PDF viewer
-                        </Text>
-                        <Text color="gray.400" fontSize="sm" mt={2}>
-                          This might be due to browser security restrictions
-                        </Text>
-                        <Link
-                          href={publicationIssues.find(issue => issue.issueNumber === selectedIssueTitle)?.file?.url || ""}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Button
-                            mt={4}
-                            bg="brand.500"
-                            color="white"
-                            _hover={{ bg: "brand.600" }}
-                          >
-                            <Flex align="center" gap={2}>
-                              <Download size={16} />
-                              Download PDF Instead
-                            </Flex>
-                          </Button>
-                        </Link>
-                      </Box>
-                    }
-                  >
-                    <Page
-                      pageNumber={pageNumber}
-                      width={800}
-                      renderAnnotationLayer={false}
-                      renderTextLayer={false}
-                      loading={
-                        <Box textAlign="center" p={4}>
-                          <Text color="gray.500">Loading page...</Text>
-                        </Box>
-                      }
-                      error={
-                        <Box textAlign="center" p={4}>
-                          <Text color="gray.500" fontSize="sm">
-                            Page failed to load
-                          </Text>
-                        </Box>
-                      }
-                    />
-                  </Document>
-                </Box>
-              ) : selectedPdfUrl && (!pdfComponentsLoaded || !isClient) ? (
-                <Box textAlign="center" p={8}>
-                  <FileText size={48} color="#CBD5E0" />
-                  <Text color="gray.500" fontSize="lg" mt={4}>
-                    Loading PDF viewer...
-                  </Text>
-                </Box>
-              ) : (
-                <Box textAlign="center" p={8}>
-                  <FileText size={48} color="#CBD5E0" />
-                  <Text color="gray.500" fontSize="lg" mt={4}>
-                    No PDF to display
-                  </Text>
-                </Box>
-              )}
-
-              {/* Download Button */}
-              {selectedPdfUrl && !error && (
-                <Box
-                  position="absolute"
-                  bottom={4}
-                  right={4}
-                  zIndex={10}
-                >
-                  <Link
-                    href={publicationIssues.find(issue => issue.issueNumber === selectedIssueTitle)?.file?.url || ""}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button
-                      size="sm"
-                      variant="solid"
-                      bg="white"
-                      color="brand.500"
-                      boxShadow="lg"
-                      _hover={{ bg: "gray.100" }}
-                    >
-                      <Flex align="center" gap={2}>
-                        <Download size={16} />
-                        Download
-                      </Flex>
-                    </Button>
-                  </Link>
-                </Box>
-              )}
-            </Box>
-          </Box>
-        </Box>
-      )}
+                ))}
+              </Dialog.Body>
+              <Dialog.Footer p={4}>
+                <Link href={selectedIssue?.file?.url} target="_blank" rel="noopener noreferrer" color="brand.700" fontWeight="bold" gap={2}><Download size={17} aria-hidden="true" /> Open PDF in a new tab</Link>
+              </Dialog.Footer>
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Portal>
+      </Dialog.Root>
     </Box>
   );
-} 
+}

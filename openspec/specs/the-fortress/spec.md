@@ -13,6 +13,10 @@ The route loader SHALL call `fetchTheFortress` and SHALL return `fortressIssues`
 - **WHEN** the fortress query throws
 - **THEN** the loader SHALL NOT fail the HTTP response and SHALL return an empty issue list
 
+The page SHALL show a clear empty state for this result and SHALL NOT substitute sample issues or unavailable archive buttons.
+
+Published issues SHALL be ordered by Rotary Year and issue number, both descending, so the reading order does not depend on alphabetical month names.
+
 ### Requirement: Publication UI supports reading and navigation
 
 The page SHALL present fortress issues with controls appropriate to the implementation (for example download, inline reading, carousel or modal navigation). PDF-related behavior SHALL load client-only dependencies so server rendering remains stable.
@@ -21,6 +25,8 @@ The page SHALL present fortress issues with controls appropriate to the implemen
 
 - **WHEN** a visitor selects an issue or opens the reader
 - **THEN** the UI SHALL provide a usable reading or download path without crashing when data is empty
+
+The reader SHALL fit PDF pages within the viewport. The reader dialog SHALL move focus inside, contain keyboard focus, close with Escape, and return focus to the issue button. Page navigation, a browser viewer option, and a direct PDF link SHALL remain available.
 
 ### Requirement: Fortress metadata describes the publication
 

@@ -68,6 +68,15 @@ The page SHALL display aggregate totals across all loaded Rotary Years for each 
 - **WHEN** foundation giving records exist
 - **THEN** the displayed total for each fund type SHALL equal the sum of that fund’s values across all table rows
 
+### Requirement: Hero summary is derived from published club records
+
+The hero stats SHALL report the tracked fund count, number of published Rotary Years, summed recorded giving, and latest published Rotary Year from the loaded club data. It SHALL NOT substitute unsupported global reach or efficiency claims.
+
+#### Scenario: Published rows exist
+
+- **WHEN** the loader returns foundation giving records
+- **THEN** the hero summary SHALL be calculated from those records and the page SHALL state the latest year currently published
+
 ### Requirement: Definition of terms
 
 The page SHALL include a **Definition of terms** section (`h2` title **Definition of terms**) with four subsections (`h3`): **Annual Fund**, **Polio Plus Fund**, **Other Fund**, and **Endowment Fund**. The section SHALL present the club-approved Rotary Foundation points listed in the change **proposal** under **Definition of terms (canonical copy)** (Annual, Polio Plus, Other, Endowment bullets—including SHARE splits, goal/per-capita rules, SHARE Reports note, PolioPlus program lines, Other Fund approved programs, Endowment spendable-earnings designations, and recognition rules). Copy SHALL be stored as **Markdown** (e.g. `app/data/foundation-giving-definition-of-terms.ts`) and rendered with **`react-markdown`**, **`remark-gfm`**, and a shared prose wrapper so nested lists and emphasis parse correctly. Body text SHALL use **readable primary foreground** (e.g. slate-800 for paragraphs and list items, slate-900 for strong)—not muted gray (e.g. Chakra `gray.600`) as the default color for definition copy. **All explanatory text SHALL be visible by default**—**no** accordion, **no** `<details>`/`<summary>`, and **no** collapse-by-default disclosure for this content.
@@ -118,7 +127,7 @@ The page SHALL use a restrained visual design: neutral backgrounds, subtle borde
 
 ### Requirement: Page explains Rotary Foundation funds and impact
 
-The page SHALL present foundation-related messaging with the standard brand `PageHero` (gradient, pattern, title, description, and stat highlights consistent with other About pages) and SHALL explain Rotary Foundation fund types and contribution impact through the table, chart, totals, and **Definition of terms** section.
+The page SHALL present foundation-related messaging with the restrained shared `PageHero` and SHALL explain the club's published Foundation giving through the table, chart, totals, and **Definition of terms** section.
 
 #### Scenario: Visitor reads the page
 

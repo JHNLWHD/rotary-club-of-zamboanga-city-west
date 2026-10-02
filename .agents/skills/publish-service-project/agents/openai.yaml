@@ -1,0 +1,4 @@
+interface:
+  display_name: "Publish Service Project"
+  short_description: "Draft and publish Rotary projects through Contentful"
+  default_prompt: "Use $publish-service-project to prepare a Service Project from these notes and photos for review before publishing."

@@ -51,18 +51,18 @@ export async function loader({ request }: Route.LoaderArgs) {
 export function meta() {
   return [
     { title: "Club Leadership | Rotary Club of Zamboanga City West" },
-    { name: "description", content: "Meet the leaders whose vision and commitment drive the Rotary Club of Zamboanga City West in its mission of Service Above Self." },
+    { name: "description", content: "Review the Rotary Club of Zamboanga City West leadership roster published for Rotary Year 2025-2026." },
     { name: "keywords", content: "Rotary leadership, club officers, board members, Zamboanga City, Rotary West" },
     
     // Open Graph tags
     { property: "og:title", content: "Club Leadership | Rotary Club of Zamboanga City West" },
-    { property: "og:description", content: "Meet the visionary leaders guiding our club's mission of Service Above Self." },
+    { property: "og:description", content: "Published club leadership roster for Rotary Year 2025-2026." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/about/leadership" },
     { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
     
     // Canonical URL
-    { rel: "canonical", href: "https://rotaryzcwest.org/about/leadership" },
+    { tagName: "link", rel: "canonical", href: "https://rotaryzcwest.org/about/leadership" },
   ];
 }
 
@@ -93,36 +93,38 @@ export default function ClubLeadership() {
     }
   ];
 
-  const hasOfficersData = officers.executives.length > 0 || officers.directors.length > 0 || officers.advisers.length > 0;
   const hasRotaryAnnsData = rotaryAnns.executives.length > 0 || rotaryAnns.directors.length > 0;
 
   return (
     <>
       <PageHero
         title="Club Leadership"
-        description="Meet the leaders whose vision and commitment drive the Rotary Club of Zamboanga City West in its mission of Service Above Self."
+        description="Browse the leadership roster currently published by the club. The Rotary Year is stated clearly so an older roster is never presented as current."
         stats={leadershipStats}
       />
       
       <Container maxW="1200px" py={{ base: 12, md: 20 }}>
         <Stack gap={12} align="center">
-          {/* Rotary Year Banner */}
           <Box textAlign="center">
             <Box 
-              bg="brand.500" 
-              color="white" 
-              px={6} 
-              py={3} 
-              borderRadius="full" 
+              bg="gold.100"
+              color="#082b49"
+              px={4}
+              py={2}
+              border="1px solid"
+              borderColor="gold.500"
               display="inline-block"
-              mb={2}
+              mb={3}
             >
-              <Text fontWeight="bold" fontSize="lg">
-                ROTARY CLUB OF ZAMBOANGA CITY WEST
+              <Text fontWeight="bold" fontSize="xs" letterSpacing="0.12em" textTransform="uppercase">
+                Published archive
               </Text>
             </Box>
-            <Text fontSize="md" color="gray.600" fontWeight="medium">
-              RY 2025-2026
+            <Text fontSize="xl" color="#082b49" fontWeight="bold">
+              Rotary Year 2025–2026
+            </Text>
+            <Text fontSize="sm" color="gray.700" mt={2}>
+              Contact the club to confirm leadership for the current Rotary Year.
             </Text>
           </Box>
 
@@ -142,7 +144,7 @@ export default function ClubLeadership() {
             </SimpleGrid>
           ) : (
             <ComingSoon
-              title="🚧 Coming Soon"
+              title="Roster being prepared"
               message="Our club officers information is being prepared. Check back soon for updates on our leadership team."
               colorScheme="gray"
               size="md"
@@ -166,7 +168,7 @@ export default function ClubLeadership() {
             </SimpleGrid>
           ) : (
             <ComingSoon
-              title="🚧 Coming Soon"
+              title="Roster being prepared"
               message="Our directors information is being prepared. Check back soon for updates on our board members."
               colorScheme="gray"
               size="md"
@@ -175,7 +177,7 @@ export default function ClubLeadership() {
         </Box>
 
         {/* Club Advisers */}
-        <Box w="full" maxW="600px">
+        <Box w="full">
           <Heading as="h2" fontSize="2xl" color="gray.900" fontWeight="bold" mb={8} textAlign="center">
             Club Advisers
           </Heading>
@@ -190,7 +192,7 @@ export default function ClubLeadership() {
             </SimpleGrid>
           ) : (
             <ComingSoon
-              title="🚧 Coming Soon"
+              title="Roster being prepared"
               message="Our club advisers information is being prepared. Check back soon for updates on our advisory team."
               colorScheme="gray"
               size="md"
@@ -206,7 +208,8 @@ export default function ClubLeadership() {
               color="white" 
               px={8} 
               py={4} 
-              borderRadius="full" 
+              border="1px solid"
+              borderColor="brand.900"
               display="inline-block"
               mb={4}
             >
@@ -215,7 +218,7 @@ export default function ClubLeadership() {
               </Text>
             </Box>
             <Text fontSize="md" color="gray.600" fontWeight="medium">
-              RY 2025-2026
+              Rotary Year 2025–2026 archive
             </Text>
           </Box>
         )}
@@ -240,7 +243,7 @@ export default function ClubLeadership() {
                 </SimpleGrid>
               ) : (
                 <ComingSoon
-                  title="🚧 Coming Soon"
+                  title="Roster being prepared"
                   message="Our Rotary Anns officers information is being prepared. Check back soon for updates on our women's leadership team."
                   colorScheme="cranberry"
                   size="md"
@@ -265,7 +268,7 @@ export default function ClubLeadership() {
                 </SimpleGrid>
               ) : (
                 <ComingSoon
-                  title="🚧 Coming Soon"
+                  title="Roster being prepared"
                   message="Our Rotary Anns directors information is being prepared. Check back soon for updates on our women's board members."
                   colorScheme="cranberry"
                   size="md"
@@ -279,4 +282,4 @@ export default function ClubLeadership() {
       </Container>
     </>
   );
-} 
+}

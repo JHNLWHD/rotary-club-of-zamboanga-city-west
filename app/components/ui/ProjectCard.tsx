@@ -1,117 +1,42 @@
-import { Box, Text, Image, Flex, Heading } from "@chakra-ui/react";
-import { ButtonLink } from "./ButtonLink";
+import { Box, Flex, Heading, Image, Link, Text } from "@chakra-ui/react";
+import { ArrowUpRight, MapPin } from "lucide-react";
 import type { Project } from "~/lib/contentful-types";
-import { MapPinIcon } from "lucide-react";
+import { showProjectImageFallback } from "~/lib/project-image-fallback";
 
 export function ProjectCard({ project }: { project: Project }) {
-    return (
-        <Box 
-        as="article"
-        key={project.title}
-        bg="white" 
-        borderRadius="2xl" 
-        boxShadow="0 8px 25px rgba(0,0,0,0.08)"
-        overflow="hidden"
-        _hover={{ 
-          boxShadow: "0 12px 35px rgba(0,0,0,0.12)", 
-          transform: "translateY(-8px)" 
-        }}
-        transition="all 0.3s ease"
-        border="1px solid"
-        borderColor="gray.100"
-        height="100%"
-        display="flex"
-        flexDirection="column"
-      >
-        <Box position="relative" flexShrink={0}>
-          <Image 
-            src={project.headerImage?.url ?? "/logo.png"} 
-            alt={project?.title ?? "Project Image"}
-            width="100%" 
-            height="220px"
-            objectFit="cover"
-            onError={(e) => { 
-              (e.target as HTMLImageElement).src = "/logo.png"; 
-            }}
-          />
-          
-          {project.date && (
-            <Box
-              position="absolute"
-              top={4}
-              right={4}
-              bg="rgba(0, 93, 170, 0.95)"
-              color="white"
-              px={3}
-              py={2}
-              borderRadius="lg"
-              fontSize="sm"
-              fontWeight="bold"
-              boxShadow="0 4px 15px rgba(0,0,0,0.3)"
-              backdropFilter="blur(10px)"
-            >
-              {new Date(project?.date ?? "").getFullYear()}
-            </Box>
-          )}
-        </Box>
-        
-        <Box p={6} flex="1" display="flex" flexDirection="column">
-          <Heading as="h3" fontSize="xl" color="gray.900" mb={3} fontWeight="bold" lineHeight="shorter">
-            {project.title}
-          </Heading>
-          
-          <Text color="gray.600" mb={6} lineHeight="relaxed" flex="1">
-            {project.shortDescription}
-          </Text>
-          
+  const year = project.date ? new Date(project.date).getUTCFullYear() : null;
+
+  return (
+    <Box as="article" bg="#f7f5f0" overflow="hidden" height="100%">
+      <Image
+        src={project.headerImage?.url ?? "/rotary-zc-west.jpg"}
+        alt={project.title}
+        ref={showProjectImageFallback}
+        onError={({ currentTarget }) => showProjectImageFallback(currentTarget)}
+        w="full"
+        h={{ base: "260px", md: "300px" }}
+        objectFit="cover"
+      />
+      <Flex direction="column" px={{ base: 0, md: 1 }} py={{ base: 5, md: 6 }} minH={{ base: "auto", md: "300px" }}>
+        <Flex direction={{ base: "column", md: "row" }} gap={3} align={{ base: "start", md: "center" }} color="gray.700" fontSize="xs" textTransform="uppercase" letterSpacing="0.12em" mb={5}>
+          {Number.isFinite(year) && <Text>{year}</Text>}
           {project.location && (
-            <Box
-              display="flex"
-              alignItems="center"
-              gap={2}
-              color="gray.500"
-              fontSize="sm"
-              mb={4}
-            >
-              <Box
-                bg="gray.100"
-                borderRadius="md"
-                p={1}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <MapPinIcon />
-              </Box>
-              <Text fontWeight="medium">{project.location}</Text>
-            </Box>
+            <Flex align="center" gap={1}>
+              <MapPin size={13} aria-hidden="true" />
+              <Text>{project.location}</Text>
+            </Flex>
           )}
-          
-          <Box mt="auto">
-            <ButtonLink
-              href={project.slug}
-              size="sm"
-              bg="white"
-              color="brand.500"
-              border="1px solid"
-              borderColor="brand.500"
-              _hover={{
-                bg: "brand.500",
-                color: "white",
-              }}
-              borderRadius="lg"
-              px={4}
-              py={2}
-              fontSize="xs"
-              fontWeight="bold"
-              transition="all 0.3s ease"
-              width="100%"
-              textAlign="center"
-            >
-              Learn More
-            </ButtonLink>
-          </Box>
-        </Box>
-      </Box>
-    )
+        </Flex>
+        <Heading as="h3" fontSize={{ base: "xl", md: "2xl" }} color="brand.900" lineHeight="1.2" letterSpacing="-0.025em" mb={4}>
+          {project.title}
+        </Heading>
+        <Text color="gray.700" lineHeight="1.7" flex="1">
+          {project.shortDescription}
+        </Text>
+        <Link href={project.slug} display="inline-flex" alignItems="center" gap={1.5} mt={7} color="brand.900" fontWeight="bold" fontSize="sm" textDecoration="underline" textUnderlineOffset="4px">
+          View project <ArrowUpRight size={16} aria-hidden="true" />
+        </Link>
+      </Flex>
+    </Box>
+  );
 }
