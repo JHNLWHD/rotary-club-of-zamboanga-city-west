@@ -18,6 +18,7 @@ function load(path, imports = {}, globals = {}) {
   runInNewContext(outputText, {
     exports,
     URL,
+    Headers,
     require: (id) => imports[id] ?? (id.startsWith("~/lib/") ? load(`../app/lib/${id.slice(6)}.ts`) : require(id)),
     console: { error() {}, log() {} },
     ...globals,
@@ -38,8 +39,11 @@ function projectRoute(getEntries, path = "../app/routes/service-projects.$slug.t
   let loaderData;
   const route = load(path, {
     "../lib/contentful-api": api,
+    "~/lib/contentful-api": api,
     "react-router": { ...require("react-router"), useLoaderData: () => loaderData },
     "../components/ui/PageHero": load("../app/components/ui/PageHero.tsx"),
+    "~/components/ui/PageHero": load("../app/components/ui/PageHero.tsx"),
+    "~/components/ui/ComingSoon": load("../app/components/ui/ComingSoon.tsx"),
     "../components/ui/ProjectCard": load("../app/components/ui/ProjectCard.tsx", {
       "~/lib/project-image-fallback": load("../app/lib/project-image-fallback.ts"),
     }),
@@ -60,6 +64,44 @@ function projectRoute(getEntries, path = "../app/routes/service-projects.$slug.t
     },
   };
 }
+
+test("a failed board archive query returns an uncached 503 without claiming an empty archive or requesting deindexing", async () => {
+  const route = projectRoute(async () => { throw new Error("Private CMS failure details"); }, "../app/routes/about.board-resolutions.tsx");
+  const response = await route.loader();
+  assert.equal(response.init?.status ?? 200, 503);
+  assert.equal(new Headers(response.init.headers).get("Cache-Control"), "no-store");
+  for (const parentHeaders of [new Headers(), new Headers({ "X-Robots-Tag": "noindex, nofollow", "Cache-Control": "no-store" })]) {
+    const documentHeaders = route.headers({ loaderHeaders: new Headers(response.init.headers), parentHeaders });
+    assert.equal(documentHeaders.get("Cache-Control"), "no-store");
+    assert.equal(documentHeaders.get("X-Robots-Tag"), parentHeaders.get("X-Robots-Tag"));
+  }
+  const metadata = route.meta({ data: response.data });
+  assert.equal(metadata.find((item) => item.name === "robots").content, "index, follow");
+  assert.match(metadata.find((item) => item.name === "description").content, /temporarily unavailable/i);
+  assert.equal(metadata.find((item) => item.rel === "canonical").href, "https://rotaryzcwest.org/about/board-resolutions");
+  const html = route.render(response.data);
+  assert.match(html, /role="status"/);
+  assert.match(html, /temporarily unavailable/i);
+  assert.doesNotMatch(html + JSON.stringify(metadata), /no (board )?resolutions are (currently )?published|archive is being prepared|Private CMS failure details/i);
+});
+
+test("successful board archive queries preserve records, empty states, and their indexing policy", async () => {
+  const record = { sys: { id: "resolution-1" }, fields: {
+    resolutionNumber: "2026-001", title: "An actual governance record", dateSigned: "2026-10-01", googleDriveLink: "https://example.com/resolution.pdf",
+  } };
+  for (const items of [[], [record]]) {
+    const route = projectRoute(async () => ({ items }), "../app/routes/about.board-resolutions.tsx");
+    const response = await route.loader();
+    assert.equal(response.init?.status ?? 200, 200);
+    assert.equal(response.boardResolutions.length, items.length);
+    const metadata = route.meta({ data: response });
+    assert.equal(metadata.find((item) => item.name === "robots").content, items.length ? "index, follow" : "noindex, follow");
+    const html = route.render(response);
+    assert.match(html, items.length ? /An actual governance record/ : /No resolutions are currently published/);
+    assert.doesNotMatch(html, /temporarily unavailable/i);
+    if (items.length) assert.equal(response.boardResolutions[0].googleDriveLink, record.fields.googleDriveLink);
+  }
+});
 
 test("rendered project structured data cannot close its script element from CMS text", async () => {
   const title = 'Clean Water </script><script>alert("test")</script>';

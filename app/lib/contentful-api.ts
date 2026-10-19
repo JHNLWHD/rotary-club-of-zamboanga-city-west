@@ -589,7 +589,7 @@ export async function fetchBoardResolutions(): Promise<BoardResolution[]> {
     return boardResolutions;
   } catch (error) {
     console.error('Error fetching board resolutions:', error);
-    return [];
+    throw error;
   }
 }
 

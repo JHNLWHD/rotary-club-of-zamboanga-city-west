@@ -13,7 +13,7 @@ import {
 import { ExternalLink, FileText, Calendar, Hash } from "lucide-react";
 import { PageHero } from "~/components/ui/PageHero";
 import { ComingSoon } from "~/components/ui/ComingSoon";
-import { useLoaderData } from "react-router";
+import { data, useLoaderData } from "react-router";
 import { fetchBoardResolutions } from "~/lib/contentful-api";
 import type { Route } from "./+types/about.board-resolutions";
 
@@ -22,24 +22,36 @@ export async function loader() {
     const boardResolutionsFromCms = await fetchBoardResolutions();
     return {
       boardResolutions: boardResolutionsFromCms || [],
+      unavailable: false,
     };
   } catch (error) {
     console.error('Error loading board resolutions:', error);
-    return {
+    return data({
       boardResolutions: [],
-    };
+      unavailable: true,
+    }, { status: 503, headers: { "Cache-Control": "no-store" } });
   }
 }
 
+export const headers: Route.HeadersFunction = ({ loaderHeaders, parentHeaders }) => {
+  const responseHeaders = new Headers(parentHeaders);
+  const cacheControl = loaderHeaders.get("Cache-Control");
+  if (cacheControl) responseHeaders.set("Cache-Control", cacheControl);
+  return responseHeaders;
+};
+
 export function meta({ data }: Route.MetaArgs) {
   const hasResolutions = Boolean(data?.boardResolutions?.length);
-  const description = hasResolutions
+  const unavailable = data?.unavailable;
+  const description = unavailable
+    ? "Board resolutions are temporarily unavailable. Please try again later."
+    : hasResolutions
     ? "Read the published board resolutions and governance documents of Rotary Club of Zamboanga City West."
     : "No board resolutions are currently published. Contact the Rotary Club of Zamboanga City West secretary to request a governance record.";
   return [
     { title: "Board Resolutions | Rotary Club of Zamboanga City West" },
     { name: "description", content: description },
-    { name: "robots", content: hasResolutions ? "index, follow" : "noindex, follow" },
+    { name: "robots", content: unavailable || hasResolutions ? "index, follow" : "noindex, follow" },
     { name: "keywords", content: "board resolutions, Rotary governance, club policies, official documents, Zamboanga City West" },
     
     // Open Graph tags
@@ -55,7 +67,7 @@ export function meta({ data }: Route.MetaArgs) {
 }
 
 export default function BoardResolutions() {
-  const { boardResolutions } = useLoaderData<typeof loader>();
+  const { boardResolutions, unavailable } = useLoaderData<typeof loader>();
   
   const handleResolutionClick = (link: string) => {
     window.open(link, '_blank', 'noopener,noreferrer');
@@ -74,7 +86,9 @@ export default function BoardResolutions() {
     <>
       <PageHero
         title="Board Resolutions"
-        description={boardResolutions.length
+        description={unavailable
+          ? "Board resolutions are temporarily unavailable. Please try again later."
+          : boardResolutions.length
           ? "Read the club’s published board resolutions and governance documents."
           : "Contact the club secretary to request a governance record while the public archive is being prepared."}
       />
@@ -93,7 +107,17 @@ export default function BoardResolutions() {
           </Box>
 
           {/* Board Resolutions Grid or Coming Soon */}
-          {boardResolutions.length > 0 ? (
+          {unavailable ? (
+            <Box role="status">
+              <ComingSoon
+                title="Board resolutions are temporarily unavailable"
+                message="Please try again later or contact the club secretary to request a document."
+                colorScheme="brand"
+                size="lg"
+                maxWidth="600px"
+              />
+            </Box>
+          ) : boardResolutions.length > 0 ? (
             <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
               {boardResolutions.map((resolution, index) => (
                 <Box 
