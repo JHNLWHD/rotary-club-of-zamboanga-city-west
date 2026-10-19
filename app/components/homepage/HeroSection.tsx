@@ -6,9 +6,10 @@ type HeroSectionProps = {
   image: string;
   imageAlt: string;
   imageCaption?: string;
+  draftPreview?: boolean;
 };
 
-export function HeroSection({ image, imageAlt, imageCaption }: HeroSectionProps) {
+export function HeroSection({ image, imageAlt, imageCaption, draftPreview = false }: HeroSectionProps) {
   return (
     <Box as="section" bg="brand.500" color="#f7f2e7">
       <Flex
@@ -39,7 +40,9 @@ export function HeroSection({ image, imageAlt, imageCaption }: HeroSectionProps)
               Service,<br />in full view.
             </Heading>
             <Text color="rgba(247,242,231,.84)" fontSize={{ base: "md", md: "xl" }} lineHeight="1.65" maxW="610px" mt={{ base: 7, md: 9 }}>
-              See who is serving, where the work happened, and what the club has published—without digging through slogans.
+              {draftPreview
+                ? "Review the club’s latest project drafts, locations, and activities before publication."
+                : "See who is serving, where the work happened, and what the club has published—without digging through slogans."}
             </Text>
           </Box>
 
@@ -83,23 +86,26 @@ export function HeroSection({ image, imageAlt, imageCaption }: HeroSectionProps)
           </Box>
         </Flex>
 
-        <Box flex="1 1 42%" position="relative" minH={{ base: "440px", md: "560px", lg: "680px" }} bg="brand.900">
+        <Box flex="1 1 42%" minW={0} alignSelf="center" w="full" bg="brand.900">
+          <Text bg="#f7a81b" color="brand.900" px={4} py={3} fontSize="xs" fontWeight="bold" letterSpacing="0.14em" textTransform="uppercase">
+            Latest project
+          </Text>
           <Image
             src={image}
             alt={imageAlt}
             ref={showProjectImageFallback}
             onError={({ currentTarget }) => showProjectImageFallback(currentTarget)}
             w="full"
-            h="full"
-            objectFit="cover"
+            h="auto"
+            aspectRatio={4 / 3}
+            objectFit="contain"
             loading="eager"
           />
-          <Text position="absolute" top={0} left={0} bg="#f7a81b" color="brand.900" px={4} py={3} fontSize="xs" fontWeight="bold" letterSpacing="0.14em" textTransform="uppercase">
-            Featured field record
-          </Text>
           {imageCaption && (
-            <Box position="absolute" left={0} right={0} bottom={0} bg="#f7f2e7" color="brand.900" px={{ base: 4, md: 6 }} py={5}>
-              <Text fontSize="xs" letterSpacing="0.14em" textTransform="uppercase" color="gray.700" mb={1}>Project / Published</Text>
+            <Box bg="#f7f2e7" color="brand.900" px={{ base: 4, md: 6 }} py={5}>
+              <Text fontSize="xs" letterSpacing="0.14em" textTransform="uppercase" color="gray.700" mb={1}>
+                {draftPreview ? "Project / Draft preview" : "Project / Published"}
+              </Text>
               <Text fontWeight="bold">{imageCaption}</Text>
             </Box>
           )}

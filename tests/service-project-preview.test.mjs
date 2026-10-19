@@ -91,7 +91,7 @@ test('only service-project reads use the preview client', async () => {
     },
   });
   await Promise.all([
-    api.fetchAllProjects(), api.fetchProjectBySlug('test-project'), api.fetchFeaturedProjectHighlights(),
+    api.fetchAllProjects(), api.fetchProjectBySlug('test-project'), api.fetchLatestProjectHighlights(),
     api.fetchHomepageHeroSection(), api.fetchHomepageContactSection(), api.fetchAllEvents(),
   ]);
   assert.deepEqual(previewQueries.map((query) => query.content_type), ['serviceProject', 'serviceProject', 'serviceProject']);

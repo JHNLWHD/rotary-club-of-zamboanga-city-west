@@ -166,12 +166,11 @@ export async function fetchHomepageServiceAreasSection(): Promise<ServiceArea[] 
   }
 }
 
-export async function fetchFeaturedProjectHighlights(): Promise<Project[] | null> {
+export async function fetchLatestProjectHighlights(): Promise<Project[] | null> {
   try {
     const contentfulResponse = await getServiceProjectClient().getEntries({
       content_type: CONTENT_TYPES.SERVICE_PROJECT,
       'fields.isActive': true,
-      'fields.isFeatured': true,
       limit: 3,
       order: ['-fields.date'],
     });
@@ -182,7 +181,7 @@ export async function fetchFeaturedProjectHighlights(): Promise<Project[] | null
 
     return contentfulResponse.items.map(normalizeProject);
   } catch (error) {
-    console.error('Error fetching featured project highlights:', error);
+    console.error('Error fetching latest project highlights:', error);
     return [];
   }
 }
@@ -484,7 +483,7 @@ export async function fetchAllHomepageSections() {
       projectHighlightsSection,
     ] = await Promise.all([
       fetchHomepageHeroSection(),
-      fetchFeaturedProjectHighlights(),
+      fetchLatestProjectHighlights(),
     ]);
 
     const result = {

@@ -44,7 +44,7 @@ The table records the current website contract, not a replacement for the live C
 | `hashtags`, `facebookLink` | Include only relevant, supported values. A source Facebook link does not authorize a Facebook post. |
 | `category` | Use a value accepted by the live model. If required but unclear, ask instead of inventing one. |
 | `isActive` | Must be `true` for a published record to appear in the site's project queries. A saved draft remains unpublished regardless of this flag. |
-| `isFeatured` | Preserve on updates. Default new records to `false` unless homepage placement is requested. The homepage shows at most three active featured records, newest project date first. |
+| `isFeatured` | Preserve on updates. Default new records to `false`. The homepage shows the three latest active records by project date, regardless of this flag. |
 
 Use the available facts to cover the activity, date/place, club role, partners, and documented result. Use Markdown sections only when the report needs them; the page already supplies the title. Keep editorial source notes separate from public copy unless a public source link is useful.
 
@@ -73,6 +73,6 @@ For publication:
 
 1. Reread CMS publication state and confirm the approved fields and assets are available through the configured Delivery API when accessible.
 2. Check the actual website's `/service-projects` listing and `/service-projects/{slug}`. Verify the detail response is successful, the body is present, and the date, place, partners, image URLs, and gallery match. Inspect desktop and narrow-screen rendering when browser tools are available.
-3. Check the canonical URL, `og:title`, `og:description`, and `og:image`. If featured, check homepage eligibility against the three-record limit. Check `/sitemap.xml`; its current response has a one-hour public cache.
+3. Check the canonical URL, `og:title`, `og:description`, and `og:image`. If the record is among the three latest active projects, check its homepage card and the latest project's hero image. Check `/sitemap.xml`; its current response has a one-hour public cache.
 
 If the CMS is published but the website has not updated, report those states separately. Check the target environment and cache behavior; do not republish repeatedly or trigger a deployment as a workaround. End with the editor link, live URL or pending check, publication state, and verification gaps. Keep any required handoff local and free of credentials.

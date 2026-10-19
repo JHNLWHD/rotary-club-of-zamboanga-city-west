@@ -6,7 +6,7 @@ Define the behavior of the site index route (`/`), implemented in `app/routes/ho
 
 ### Requirement: Homepage loads only displayed Contentful data with safe failure handling
 
-The homepage route SHALL call `fetchAllHomepageSections` to load only hero data and featured projects. It SHALL reuse root contact data for the contact section and organization structured data. A normal initial homepage load SHALL make three application-level Contentful fetch invocations: hero, featured projects, and root contact. If homepage loading fails, the loader SHALL return `homepageData: null` so the UI can apply local fallbacks without throwing.
+The homepage route SHALL call `fetchAllHomepageSections` to load only hero data and the three latest active projects, ordered by project date descending without an `isFeatured` filter. It SHALL reuse root contact data for the contact section and organization structured data. A normal initial homepage load SHALL make three application-level Contentful fetch invocations: hero, latest projects, and root contact. If homepage loading fails, the loader SHALL return `homepageData: null` so the UI can apply local fallbacks without throwing.
 
 #### Scenario: Initial homepage load
 
@@ -34,13 +34,23 @@ The homepage SHALL render a concise sequence: proof-led hero, record-derived fac
 
 #### Scenario: Project evidence exists
 
-- **WHEN** Contentful supplies featured projects
-- **THEN** the first project image SHALL support the hero and up to three project records SHALL be visible from the homepage
+- **WHEN** Contentful supplies active projects
+- **THEN** the latest project image SHALL support the hero and up to three latest project records SHALL be visible from the homepage, regardless of their featured flag
 
-#### Scenario: Featured project image is unavailable
+#### Scenario: Latest project image is unavailable
 
-- **WHEN** no usable featured project image exists
+- **WHEN** no usable latest project image exists
 - **THEN** the hero SHALL use the first usable carousel image, then the hero background image, then the existing local fallback
+
+#### Scenario: Branded header appears in the hero
+
+- **WHEN** the hero displays a project header at desktop or mobile width
+- **THEN** the whole image SHALL remain visible, including its title and logo, and the hero labels and caption SHALL remain outside the image
+
+#### Scenario: Develop draft preview is enabled
+
+- **WHEN** the develop branch build enables service-project draft preview
+- **THEN** the homepage SHALL use the same project preview source as the listing, label draft content for review, and return `noindex, nofollow` metadata
 
 #### Scenario: Selected hero image fails in the browser
 

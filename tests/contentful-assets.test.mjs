@@ -73,7 +73,7 @@ function entry(fields = {}) {
 const imageSources = (html) => Array.from(html.matchAll(/<img\b[^>]*\bsrc="([^"]*)"/g), (match) => match[1]);
 
 const projectFetches = [
-  ["fetchFeaturedProjectHighlights", [], { content_type: "serviceProject", "fields.isActive": true, "fields.isFeatured": true, limit: 3, order: ["-fields.date"] }],
+  ["fetchLatestProjectHighlights", [], { content_type: "serviceProject", "fields.isActive": true, limit: 3, order: ["-fields.date"] }],
   ["fetchAllProjects", [], { content_type: "serviceProject", "fields.isActive": true, order: ["-fields.date"] }],
   ["fetchProjectBySlug", ["clean-water"], { content_type: "serviceProject", "fields.isActive": true, "fields.slug": "clean-water", limit: 1 }],
 ];
@@ -171,10 +171,10 @@ for (const [name, path] of [
   });
 }
 
-test("featured project cards render the existing fallback for unusable header assets", async () => {
+test("latest project cards render the existing fallback for unusable header assets", async () => {
   for (const headerImage of unusableAssets) {
     const api = apiFor(async () => ({ items: [entry({ headerImage })] }));
-    const projects = await api.fetchFeaturedProjectHighlights();
+    const projects = await api.fetchLatestProjectHighlights();
     const html = render(highlights.ProjectHighlightsSection, { projects, viewAllLink: "/service-projects" });
     assert.deepEqual(imageSources(html), ["/rotary-zc-west.jpg"]);
     assert.match(html, /href="\/service-projects\/clean-water"/);
@@ -209,7 +209,7 @@ test("the homepage hero retains its project, carousel, background, and local ima
     [unresolvedAsset, [unresolvedAsset, asset("")], unresolvedAsset, "/rotary-zc-west.jpg"],
   ]) {
     const api = apiFor(async (query) => ({ items: [entry(query.content_type === "homepageHero" ? { carouselImages, backgroundImage } : { headerImage })] }));
-    const homepageData = { hero: await api.fetchHomepageHeroSection(), projectHighlights: await api.fetchFeaturedProjectHighlights() };
+    const homepageData = { hero: await api.fetchHomepageHeroSection(), projectHighlights: await api.fetchLatestProjectHighlights() };
     const html = home.render({ homepageData });
     const sources = imageSources(html);
     assert.equal(sources[0], expected);

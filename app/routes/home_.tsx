@@ -16,10 +16,12 @@ type LoaderData = {
   } | null;
 };
 
+const draftPreview = import.meta.env.VITE_SERVICE_PROJECT_DRAFT_PREVIEW === "true";
+
 const trustLinks = [
   {
     eyebrow: "What we do",
-    title: "Published project records",
+    title: "Project records",
     description: "See project descriptions, locations, dates, partners, and updates from the club’s work.",
     href: "/service-projects",
   },
@@ -52,7 +54,7 @@ export function meta() {
     { title: "Rotary Club of Zamboanga City West | Local Service, Documented Impact" },
     { name: "description", content: "Explore the documented community projects, leadership, and Foundation giving of Rotary Club of Zamboanga City West, chartered in 1971." },
     { name: "keywords", content: "Rotary Club, Zamboanga City, community service, volunteer, Philippines, service projects" },
-    { name: "robots", content: "index, follow" },
+    { name: "robots", content: draftPreview ? "noindex, nofollow" : "index, follow" },
     { name: "author", content: "Rotary Club of Zamboanga City West" },
     { property: "og:title", content: "Rotary Club of Zamboanga City West | Local Service, Documented Impact" },
     { property: "og:description", content: "Explore the club’s documented community projects, leadership, and Foundation giving." },
@@ -77,9 +79,9 @@ export function meta() {
 export default function Homepage() {
   const { homepageData } = useLoaderData() as LoaderData;
   const projects = homepageData?.projectHighlights || [];
-  const featuredProject = projects[0];
+  const latestProject = projects[0];
   const carouselImage = homepageData?.hero?.carouselImages?.find((image) => image?.url);
-  const heroImage = featuredProject?.headerImage?.url
+  const heroImage = latestProject?.headerImage?.url
     || carouselImage?.url
     || homepageData?.hero?.backgroundImage?.url
     || "/rotary-zc-west.jpg";
@@ -89,14 +91,14 @@ export default function Homepage() {
       contactInfo?: ContactInfo;
     };
   };
-  const publishedStats = [
+  const projectStats = [
     {
       value: projects.length.toString(),
-      label: "Featured project records",
+      label: "Latest project records",
     },
     {
       value: new Set(projects.map((project) => project.location?.trim()).filter(Boolean)).size.toString(),
-      label: "Featured locations",
+      label: "Locations represented",
     },
     {
       value: "1971",
@@ -140,11 +142,12 @@ export default function Homepage() {
 
       <HeroSection
         image={heroImage}
-        imageAlt={featuredProject?.title || "Rotary Club of Zamboanga City West community service"}
-        imageCaption={featuredProject?.title}
+        imageAlt={latestProject?.title || "Rotary Club of Zamboanga City West community service"}
+        imageCaption={latestProject?.title}
+        draftPreview={draftPreview}
       />
 
-      <StatsSection stats={publishedStats} />
+      <StatsSection stats={projectStats} />
 
       <Box as="section" bg="#f2f0ea">
         <Flex maxW="1400px" mx="auto" direction={{ base: "column", lg: "row" }}>
@@ -195,7 +198,7 @@ export default function Homepage() {
         </Flex>
       </Box>
 
-      <ProjectHighlightsSection projects={projects} viewAllLink="/service-projects" />
+      <ProjectHighlightsSection projects={projects} viewAllLink="/service-projects" draftPreview={draftPreview} />
 
       {contact?.meetingInfo && contact.contactInfo ? (
         <ContactSection meetingInfo={contact.meetingInfo} contactInfo={contact.contactInfo} />

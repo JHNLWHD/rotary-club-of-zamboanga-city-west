@@ -9,7 +9,8 @@ import ts from "typescript";
 
 // Exercise the real route without a router, CMS requests, or unrelated UI.
 const { outputText } = ts.transpileModule(
-  readFileSync(new URL("../app/routes/home_.tsx", import.meta.url), "utf8"),
+  readFileSync(new URL("../app/routes/home_.tsx", import.meta.url), "utf8")
+    .replaceAll("import.meta.env.VITE_SERVICE_PROJECT_DRAFT_PREVIEW", '"false"'),
   { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX } },
 );
 const imports = {
