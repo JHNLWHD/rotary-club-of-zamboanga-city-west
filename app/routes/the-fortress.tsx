@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, Download, X } from "lucide-react";
 import { PageHero } from "../components/ui/PageHero";
 import { fetchTheFortress } from "../lib/contentful-api";
 import type { FortressIssue } from "../lib/contentful-types";
+import type { Route } from "./+types/the-fortress";
 import "../styles/react-pdf.css";
 
 type ReaderProps = {
@@ -32,16 +33,18 @@ const PdfReader = lazy(() => import("react-pdf").then(({ Document, Page, pdfjs }
   },
 })));
 
-export async function loader() {
+export async function loader({ request }: Route.LoaderArgs) {
+  const socialImage = new URL('/og/the-fortress-redesign.jpg', request.url).href;
   try {
-    return { fortressIssues: await fetchTheFortress() || [] };
+    return { fortressIssues: await fetchTheFortress() || [], socialImage };
   } catch (error) {
     console.error("Error loading fortress data on server:", error);
-    return { fortressIssues: [] };
+    return { fortressIssues: [], socialImage };
   }
 }
 
-export function meta() {
+export function meta({ data }: Route.MetaArgs) {
+  const socialImage = data?.socialImage || 'https://rotaryzcwest.org/og-image.jpg';
   return [
     { title: "The Fortress | Official Publication of Rotary Club of Zamboanga City West" },
     { name: "description", content: "Read The Fortress, the club’s publication of project updates, member stories, and fellowship in Zamboanga City." },
@@ -49,12 +52,12 @@ export function meta() {
     { property: "og:description", content: "Published issues of the club’s official newsletter." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/the-fortress" },
-    { property: "og:image", content: "https://rotaryzcwest.org/og/the-fortress-redesign.jpg" },
+    { property: "og:image", content: socialImage },
     { property: "og:image:width", content: "1200" },
     { property: "og:image:height", content: "630" },
     { property: "og:image:alt", content: "The Fortress — the official publication of Rotary Club of Zamboanga City West" },
     { name: "twitter:card", content: "summary_large_image" },
-    { name: "twitter:image", content: "https://rotaryzcwest.org/og/the-fortress-redesign.jpg" },
+    { name: "twitter:image", content: socialImage },
     { name: "twitter:image:alt", content: "The Fortress — the official publication of Rotary Club of Zamboanga City West" },
     { tagName: "link", rel: "canonical", href: "https://rotaryzcwest.org/the-fortress" },
   ];

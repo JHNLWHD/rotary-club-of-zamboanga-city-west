@@ -19,7 +19,8 @@ function load(path, imports = {}, preview = false) {
   const exports = {};
   runInNewContext(outputText, {
     exports,
-    require: (id) => imports[id] ?? require(id),
+    URL,
+    require: (id) => imports[id] ?? (id === "~/lib/contentful-image" ? load("../app/lib/contentful-image.ts") : require(id)),
     console: { error() {}, log() {} },
   });
   return exports;
@@ -123,7 +124,7 @@ test("homepage includes the latest active projects even when they are not featur
   const data = await homepage(null, null, api).loader({});
   assert.deepEqual(Array.from(data.homepageData.projectHighlights, (project) => project.id), ["latest", "second", "third"]);
   const html = render(homepage(data.homepageData, null).default);
-  assert.equal(html.match(/<img\b[^>]*\bsrc="([^"]+)"/)?.[1], "https://images.ctfassets.net/test/latest.png");
+  assert.equal(new URL(html.match(/<img\b[^>]*\bsrc="([^"]+)"/)?.[1]).pathname, "/test/latest.png");
 });
 
 test("homepage draft preview labels unpublished project content and blocks indexing", () => {

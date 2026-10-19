@@ -27,10 +27,10 @@ The implementation SHALL include indexable, substantive static URLs (home, selec
 - **WHEN** Contentful returns one or more projects with slugs
 - **THEN** the sitemap SHALL contain `loc` entries for each corresponding `https://rotaryzcwest.org` project path
 
-#### Scenario: Static route has no source-backed modification date
+#### Scenario: Route has no source-backed page modification date
 
-- **WHEN** a static route is emitted
-- **THEN** the sitemap SHALL omit `lastmod` rather than replacing it with the request time
+- **WHEN** a static or project route is emitted without a verified page modification date
+- **THEN** the sitemap SHALL omit `lastmod`; neither the request time nor the project activity date establishes that date
 
 ### Requirement: Site URL prefix is production
 

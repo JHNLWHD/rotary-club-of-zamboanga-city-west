@@ -2,7 +2,6 @@ import { fetchAllProjects } from "../lib/contentful-api";
 
 type SitemapEntry = {
   loc: string;
-  lastmod?: string;
   changefreq: "weekly" | "monthly" | "yearly";
   priority: string;
 };
@@ -34,15 +33,12 @@ export async function loader() {
 
   try {
     const projects = await fetchAllProjects();
-    projectRoutes = projects.map((project) => {
-      const timestamp = Date.parse(project.date);
-      return {
-        loc: `${siteUrl}${project.slug}`,
-        lastmod: Number.isFinite(timestamp) ? new Date(timestamp).toISOString() : undefined,
-        changefreq: "monthly",
-        priority: "0.7",
-      };
-    });
+    // Activity dates do not establish when a published page last changed.
+    projectRoutes = projects.map((project) => ({
+      loc: `${siteUrl}${project.slug}`,
+      changefreq: "monthly",
+      priority: "0.7",
+    }));
   } catch (error) {
     console.error("Error fetching dynamic routes for sitemap:", error);
     return new Response("Sitemap is temporarily unavailable. Please try again later.", {
@@ -67,7 +63,6 @@ function generateSitemapXml(routes: SitemapEntry[]): string {
   const entries = routes.map((route) => `
   <url>
     <loc>${escapeXml(route.loc)}</loc>
-    ${route.lastmod ? `<lastmod>${route.lastmod}</lastmod>` : ""}
     <changefreq>${route.changefreq}</changefreq>
     <priority>${route.priority}</priority>
   </url>`).join("");

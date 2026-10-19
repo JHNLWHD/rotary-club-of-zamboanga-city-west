@@ -17,7 +17,8 @@ function load(path, imports = {}) {
   const exports = {};
   runInNewContext(outputText, {
     exports,
-    require: (id) => imports[id] ?? require(id),
+    URL,
+    require: (id) => imports[id] ?? (id.startsWith("~/lib/") ? load(`../app/lib/${id.slice(6)}.ts`) : require(id)),
     console: { error() {}, log() {} },
   });
   return exports;
@@ -70,7 +71,7 @@ function entry(fields = {}) {
     },
   };
 }
-const imageSources = (html) => Array.from(html.matchAll(/<img\b[^>]*\bsrc="([^"]*)"/g), (match) => match[1]);
+const imageSources = (html) => Array.from(html.matchAll(/<img\b[^>]*\bsrc="([^"]*)"/g), (match) => match[1].replaceAll("&amp;", "&"));
 
 const projectFetches = [
   ["fetchLatestProjectHighlights", [], { content_type: "serviceProject", "fields.isActive": true, limit: 3, order: ["-fields.date"] }],
@@ -118,6 +119,7 @@ for (const [method, args, expectedQuery] of projectFetches) {
   });
 }
 
+const { contentfulImageUrl } = load("../app/lib/contentful-image.ts");
 const imageFallback = load("../app/lib/project-image-fallback.ts");
 const imageImports = { "~/lib/project-image-fallback": imageFallback };
 const card = load("../app/components/ui/ProjectCard.tsx", imageImports);
@@ -151,6 +153,7 @@ for (const [name, path] of [
           complete: false,
           naturalWidth: 0,
           getAttribute: (name) => name === "src" ? currentSource : null,
+          removeAttribute() {},
           set src(value) { currentSource = value; assignments++; },
         };
         imageProps.ref(null);
@@ -212,7 +215,7 @@ test("the homepage hero retains its project, carousel, background, and local ima
     const homepageData = { hero: await api.fetchHomepageHeroSection(), projectHighlights: await api.fetchLatestProjectHighlights() };
     const html = home.render({ homepageData });
     const sources = imageSources(html);
-    assert.equal(sources[0], expected);
+    assert.equal(sources[0], contentfulImageUrl(expected, 1200));
     assert.equal(sources.length, 2);
     assert.ok(sources.every(Boolean));
   }
@@ -235,7 +238,7 @@ test("project detail images and lightbox slides retain valid images and missing-
     const api = apiFor(async () => ({ items: [entry({ headerImage, gallery: [asset(), ...unusableAssets] })] }));
     const project = await api.fetchProjectBySlug("clean-water");
     const html = detail.render({ project, relatedProjects: [] });
-    assert.deepEqual(imageSources(html), [headerImage?.fields?.file?.url === "//images.ctfassets.net/test/water.jpg" ? imageUrl : "/logo.png", imageUrl, ...unusableAssets.map(() => "/logo.png")]);
+    assert.deepEqual(imageSources(html), [headerImage?.fields?.file?.url === "//images.ctfassets.net/test/water.jpg" ? contentfulImageUrl(imageUrl, 1200) : "/logo.png", contentfulImageUrl(imageUrl, 720), ...unusableAssets.map(() => "/logo.png")]);
     assert.deepEqual({ ...slides[0] }, { src: imageUrl, alt: imageMetadata.title, title: imageMetadata.title, description: imageMetadata.description });
     for (let index = 1; index < slides.length; index++) {
       assert.deepEqual({ ...slides[index] }, { src: "/logo.png", alt: `Clean Water - Photo ${index + 1}`, title: `Clean Water - Photo ${index + 1}`, description: "" });

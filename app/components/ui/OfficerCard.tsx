@@ -1,6 +1,7 @@
 import { Box, Heading, Text, Image } from "@chakra-ui/react";
 import type { Officer } from "~/lib/contentful-types";
 import { useState } from "react";
+import { responsiveImage } from "~/lib/contentful-image";
 
 type OfficerCardProps = {
   officer: Officer;
@@ -40,7 +41,9 @@ export function OfficerCard({
       {officer.photo?.url && !imageLoadError && (
         <Box aspectRatio="4 / 3" bg={currentColors.bg} overflow="hidden">
           <Image
-            src={officer.photo.url}
+            {...responsiveImage(officer.photo.url, [320, 640, 960], "(max-width: 767px) 100vw, 360px", officer.photo.width)}
+            loading="lazy"
+            decoding="async"
             alt={officer.name}
             boxSize="100%"
             objectFit="cover"

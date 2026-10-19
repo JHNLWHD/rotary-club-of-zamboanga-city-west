@@ -81,10 +81,9 @@ export default function Homepage() {
   const projects = homepageData?.projectHighlights || [];
   const latestProject = projects[0];
   const carouselImage = homepageData?.hero?.carouselImages?.find((image) => image?.url);
-  const heroImage = latestProject?.headerImage?.url
-    || carouselImage?.url
-    || homepageData?.hero?.backgroundImage?.url
-    || "/rotary-zc-west.jpg";
+  const heroAsset = latestProject?.headerImage?.url ? latestProject.headerImage
+    : carouselImage || homepageData?.hero?.backgroundImage;
+  const heroImage = heroAsset?.url || "/rotary-zc-west.jpg";
   const { contactData: contact } = useRouteLoaderData("root") as {
     contactData?: {
       meetingInfo?: MeetingInfo;
@@ -142,6 +141,7 @@ export default function Homepage() {
 
       <HeroSection
         image={heroImage}
+        imageWidth={heroAsset?.width}
         imageAlt={latestProject?.title || "Rotary Club of Zamboanga City West community service"}
         imageCaption={latestProject?.title}
         draftPreview={draftPreview}

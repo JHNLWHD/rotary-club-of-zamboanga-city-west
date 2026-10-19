@@ -36,3 +36,5 @@ The route SHALL export `meta` identifying “The Fortress” as the club publica
 
 - **WHEN** crawlers resolve metadata for `/the-fortress`
 - **THEN** the title and description SHALL identify the publication and club context
+
+Open Graph and Twitter image URLs SHALL use the request origin so each deployment serves its own bundled social image. The canonical URL SHALL stay on `https://rotaryzcwest.org/the-fortress`.

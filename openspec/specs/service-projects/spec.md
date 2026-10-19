@@ -32,6 +32,8 @@ The page SHALL render `PageHero` and a responsive grid of `ProjectCard` entries 
 - **WHEN** a project card image URL fails to load before or after browser hydration
 - **THEN** the card SHALL use its existing local fallback image, and a failure of that fallback MUST NOT trigger repeated source assignments
 
+Project cards SHALL request responsive WebP derivatives for supported Contentful photos and lazy-load their images. Width descriptors SHALL not exceed a known original width. Local, external, animated, and vector images SHALL keep their existing URLs. Failed responsive images SHALL clear `srcset` and `sizes` before selecting the local fallback.
+
 ### Requirement: Listing metadata references service projects index
 
 The route SHALL export `meta` with title and description for the service projects listing, Open Graph and Twitter fields, geo tags where present, and canonical URL `https://rotaryzcwest.org/service-projects`.
@@ -40,3 +42,5 @@ The route SHALL export `meta` with title and description for the service project
 
 - **WHEN** metadata is resolved for `/service-projects`
 - **THEN** the canonical href SHALL be the service-projects index on the production domain
+
+Public-mode social image URLs SHALL use the request origin so each deployment serves its own bundled image. Develop preview metadata SHALL remain noindex.

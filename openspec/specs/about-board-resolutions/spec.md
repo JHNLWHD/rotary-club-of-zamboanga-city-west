@@ -26,6 +26,8 @@ When the CMS returns an empty array, the UI SHALL treat that as “no published 
 
 The route SHALL export `meta` with title and description for board resolutions, Open Graph fields including `og:url`, and canonical URL `https://rotaryzcwest.org/about/board-resolutions`.
 
+The description and hero SHALL reflect the loaded archive. An empty archive SHALL state that no resolutions are published, direct readers to the club secretary, and return `noindex, follow`. An archive with records MAY return `index, follow`; the develop preview's global noindex restriction SHALL still apply.
+
 #### Scenario: SEO canonical
 
 - **WHEN** metadata is resolved for this route

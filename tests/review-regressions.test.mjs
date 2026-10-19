@@ -17,7 +17,8 @@ function load(path, imports = {}, globals = {}) {
   const exports = {};
   runInNewContext(outputText, {
     exports,
-    require: (id) => imports[id] ?? require(id),
+    URL,
+    require: (id) => imports[id] ?? (id.startsWith("~/lib/") ? load(`../app/lib/${id.slice(6)}.ts`) : require(id)),
     console: { error() {}, log() {} },
     ...globals,
   });
@@ -60,6 +61,17 @@ function projectRoute(getEntries, path = "../app/routes/service-projects.$slug.t
   };
 }
 
+test("rendered project structured data cannot close its script element from CMS text", async () => {
+  const title = 'Clean Water </script><script>alert("test")</script>';
+  const route = projectRoute(async () => ({ items: [{ sys: { id: "project-1" }, fields: { title, slug: "clean-water", date: "2026-10-01" } }] }));
+  const data = await route.loader({ params: { slug: "clean-water" } });
+  const html = route.render(data);
+  const scripts = [...html.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)];
+  assert.equal(scripts.length, 1);
+  assert.equal(JSON.parse(scripts[0][1])["@graph"][0].headline, title);
+  assert.doesNotMatch(html, /<script>alert/);
+});
+
 test("all-project fetch distinguishes empty records, published records, and CMS failure", async () => {
   const empty = await projectApi(async () => ({ items: [] })).fetchAllProjects();
   assert.equal(empty.length, 0);
@@ -74,7 +86,7 @@ test("all-project fetch distinguishes empty records, published records, and CMS 
 
 test("an empty project listing keeps HTTP 200 and its normal empty view", async () => {
   const route = projectRoute(async () => ({ items: [] }), "../app/routes/service-projects.tsx");
-  const response = await route.loader({});
+  const response = await route.loader({ request: { url: "https://rotaryzcwest.org/service-projects" } });
   assert.equal(response.init?.status ?? 200, 200);
   assert.equal(response.projects.length, 0);
   const html = route.render(response);
@@ -88,7 +100,7 @@ test("a successful project listing keeps project cards and HTTP 200", async () =
   const route = projectRoute(async () => ({
     items: [{ sys: { id: "project-1" }, fields: { title: "A real project", slug: "valid-project", location: "Zamboanga City", date: "2026-10-03" } }],
   }), "../app/routes/service-projects.tsx");
-  const response = await route.loader({});
+  const response = await route.loader({ request: { url: "https://rotaryzcwest.org/service-projects" } });
   assert.equal(response.init?.status ?? 200, 200);
   assert.equal(response.projects.length, 1);
   const html = route.render(response);
@@ -99,7 +111,7 @@ test("a successful project listing keeps project cards and HTTP 200", async () =
 
 test("a failed project listing returns 503 without claiming zero published records", async () => {
   const route = projectRoute(async () => { throw new Error("Private CMS error details"); }, "../app/routes/service-projects.tsx");
-  const response = await route.loader({});
+  const response = await route.loader({ request: { url: "https://rotaryzcwest.org/service-projects" } });
   assert.equal(response.init.status, 503);
   assert.equal(response.data.projects.length, 0);
   const metadata = route.meta({ data: response.data });
@@ -134,7 +146,7 @@ test("an empty project query keeps the successful static sitemap and cache polic
   assert.doesNotMatch(xml, /<lastmod>/);
 });
 
-test("a successful sitemap keeps escaped project URLs and valid source dates", async () => {
+test("a successful sitemap escapes URLs without treating activity dates as modifications", async () => {
   const route = projectRoute(async () => ({ items: [
     { sys: { id: "project-1" }, fields: { title: "A real project", slug: "valid-project", date: "2026-10-03" } },
     { sys: { id: "project-2" }, fields: { title: "Another project", slug: "a&b<'\">", date: "not a date" } },
@@ -147,8 +159,7 @@ test("a successful sitemap keeps escaped project URLs and valid source dates", a
   assert.match(xml, /<loc>https:\/\/rotaryzcwest\.org\/service-projects\/valid-project<\/loc>/);
   assert.match(xml, /<loc>https:\/\/rotaryzcwest\.org\/service-projects\/a&amp;b&lt;&apos;&quot;&gt;<\/loc>/);
   assert.equal((xml.match(/<url>/g) || []).length, 12);
-  assert.equal((xml.match(/<lastmod>/g) || []).length, 1);
-  assert.match(xml, /<lastmod>2026-10-03T00:00:00\.000Z<\/lastmod>/);
+  assert.doesNotMatch(xml, /<lastmod>/);
   assert.match(xml, /<\/urlset>$/);
 });
 

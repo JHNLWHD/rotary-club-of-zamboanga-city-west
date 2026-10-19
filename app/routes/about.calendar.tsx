@@ -4,6 +4,7 @@ import { useLoaderData } from "react-router";
 import { PageHero } from "../components/ui/PageHero";
 import { fetchAllEvents } from "../lib/contentful-api";
 import type { Event } from "../lib/contentful-types";
+import { responsiveImage } from "~/lib/contentful-image";
 
 type LoaderData = {
   upcomingEvents: Event[];
@@ -63,7 +64,7 @@ function EventCard({ event, archived = false }: { event: Event; archived?: boole
   return (
     <Box as="article" bg="white" border="1px solid" borderColor="gray.200" borderRadius="lg" overflow="hidden">
       {event.image?.url && (
-        <Image src={event.image.url} alt={event.title} w="full" h="210px" objectFit="cover" filter={archived ? "saturate(.75)" : undefined} />
+        <Image {...responsiveImage(event.image.url, [400, 800, 1200], "(max-width: 767px) 100vw, 560px", event.image.width)} loading="lazy" decoding="async" alt={event.title} w="full" h="210px" objectFit="cover" filter={archived ? "saturate(.75)" : undefined} />
       )}
       <Box p={{ base: 5, md: 6 }}>
         <Flex align="center" justify="space-between" gap={4} mb={4}>

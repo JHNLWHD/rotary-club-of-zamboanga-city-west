@@ -19,6 +19,7 @@ const draftPreview = import.meta.env.VITE_SERVICE_PROJECT_DRAFT_PREVIEW === 'tru
 type LoaderData = {
   projects: Project[];
   unavailable?: boolean;
+  socialImage?: string;
 };
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -26,6 +27,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     const allProjects = await fetchAllProjects();
     return { 
       projects: allProjects,
+      socialImage: new URL('/og/service-projects-redesign.jpg', request.url).href,
     };
   } catch (error) {
     console.error('Error loading projects data on server:', error);
@@ -36,6 +38,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   }
 }
 export function meta({ data }: Route.MetaArgs) {
+  const socialImage = (data as LoaderData | undefined)?.socialImage || 'https://rotaryzcwest.org/og-image.jpg';
   if ((data as LoaderData | undefined)?.unavailable) {
     return [
       { title: "Service Projects Temporarily Unavailable | Rotary Club of Zamboanga City West" },
@@ -62,7 +65,7 @@ export function meta({ data }: Route.MetaArgs) {
     { property: "og:description", content: "Review the club’s published project records with dates, locations, partners, and details." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/service-projects" },
-    { property: "og:image", content: "https://rotaryzcwest.org/og/service-projects-redesign.jpg" },
+    { property: "og:image", content: socialImage },
     { property: "og:image:width", content: "1200" },
     { property: "og:image:height", content: "630" },
     { property: "og:image:alt", content: "Rotary Club of Zamboanga City West service projects and community initiatives" },
@@ -72,7 +75,7 @@ export function meta({ data }: Route.MetaArgs) {
     { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: "Service Projects | Rotary Club of Zamboanga City West" },
     { name: "twitter:description", content: "Published project records from Rotary Club of Zamboanga City West." },
-    { name: "twitter:image", content: "https://rotaryzcwest.org/og/service-projects-redesign.jpg" },
+    { name: "twitter:image", content: socialImage },
     { name: "twitter:image:alt", content: "Rotary Club of Zamboanga City West — Service projects. Local work. Published records." },
     
     // Additional SEO tags

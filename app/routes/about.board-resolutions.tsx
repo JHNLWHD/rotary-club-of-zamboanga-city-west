@@ -15,6 +15,7 @@ import { PageHero } from "~/components/ui/PageHero";
 import { ComingSoon } from "~/components/ui/ComingSoon";
 import { useLoaderData } from "react-router";
 import { fetchBoardResolutions } from "~/lib/contentful-api";
+import type { Route } from "./+types/about.board-resolutions";
 
 export async function loader() {
   try {
@@ -30,15 +31,20 @@ export async function loader() {
   }
 }
 
-export function meta() {
+export function meta({ data }: Route.MetaArgs) {
+  const hasResolutions = Boolean(data?.boardResolutions?.length);
+  const description = hasResolutions
+    ? "Read the published board resolutions and governance documents of Rotary Club of Zamboanga City West."
+    : "No board resolutions are currently published. Contact the Rotary Club of Zamboanga City West secretary to request a governance record.";
   return [
     { title: "Board Resolutions | Rotary Club of Zamboanga City West" },
-    { name: "description", content: "Access official board resolutions and governance documents of Rotary Club of Zamboanga City West. View our club's official decisions and policy documents." },
+    { name: "description", content: description },
+    { name: "robots", content: hasResolutions ? "index, follow" : "noindex, follow" },
     { name: "keywords", content: "board resolutions, Rotary governance, club policies, official documents, Zamboanga City West" },
     
     // Open Graph tags
     { property: "og:title", content: "Board Resolutions | Rotary Club of Zamboanga City West" },
-    { property: "og:description", content: "Access official board resolutions and governance documents of our Rotary club." },
+    { property: "og:description", content: description },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/about/board-resolutions" },
     { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
@@ -68,7 +74,9 @@ export default function BoardResolutions() {
     <>
       <PageHero
         title="Board Resolutions"
-        description="Access official board resolutions and governance documents that guide our club's operations and community service initiatives."
+        description={boardResolutions.length
+          ? "Read the club’s published board resolutions and governance documents."
+          : "Contact the club secretary to request a governance record while the public archive is being prepared."}
       />
 
       <Container maxW="1200px" py={{ base: 12, md: 20 }}>

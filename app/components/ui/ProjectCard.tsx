@@ -2,6 +2,7 @@ import { Box, Flex, Heading, Image, Link, Text } from "@chakra-ui/react";
 import { ArrowUpRight, MapPin } from "lucide-react";
 import type { Project } from "~/lib/contentful-types";
 import { showProjectImageFallback } from "~/lib/project-image-fallback";
+import { responsiveImage } from "~/lib/contentful-image";
 
 export function ProjectCard({ project }: { project: Project }) {
   const year = project.date ? new Date(project.date).getUTCFullYear() : null;
@@ -28,7 +29,9 @@ export function ProjectCard({ project }: { project: Project }) {
       _motionReduce={{ transition: "none", _hover: { transform: "none" } }}
     >
       <Image
-        src={project.headerImage?.url ?? "/rotary-zc-west.jpg"}
+        {...responsiveImage(project.headerImage?.url ?? "/rotary-zc-west.jpg", [400, 800, 1200], "(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 450px", project.headerImage?.width)}
+        loading="lazy"
+        decoding="async"
         alt={project.title}
         ref={showProjectImageFallback}
         onError={({ currentTarget }) => showProjectImageFallback(currentTarget)}

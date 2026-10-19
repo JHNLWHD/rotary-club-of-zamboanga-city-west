@@ -39,6 +39,9 @@ import {
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from 'remark-gfm';
+import { responsiveImage } from "~/lib/contentful-image";
+import { projectImageAlt } from "~/lib/project-image-alt";
+import { projectStructuredData } from "~/lib/project-seo";
 
 type LoaderData = {
   project: Project | null;
@@ -163,13 +166,17 @@ export default function ProjectDetail() {
   // Lightbox slides - ensure consistent array processing
   const lightboxSlides = (project.gallery || []).map((image, index) => ({
     src: image?.url || "/logo.png",
-    alt: image?.title || `${project.title} - Photo ${index + 1}`,
-    title: image?.title || `${project.title} - Photo ${index + 1}`,
+    alt: projectImageAlt(image, project.title, index),
+    title: projectImageAlt(image, project.title, index),
     description: image?.description || "",
   }));
 
   return (
     <Box bg="#f7f5f0" minH="100vh" pt={{ base: 6, md: 10 }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(projectStructuredData(project)).replace(/</g, '\\u003c') }}
+      />
       {/* Main Content */}
       <Container maxW="1200px" pt={{ base: 4, md: 6 }} pb={8}>
         {/* Breadcrumb Navigation */}
@@ -189,12 +196,17 @@ export default function ProjectDetail() {
                 {/* Project Header Image */}
                 <Box overflow="hidden" position="relative">
                   <Image 
-                    src={project.headerImage?.url ?? "/logo.png"} 
+                    {...responsiveImage(project.headerImage?.url ?? "/logo.png", [640, 960, 1280, 1600], "(max-width: 1023px) 100vw, 760px", project.headerImage?.width)}
+                    loading="eager"
+                    fetchPriority="high"
                     alt={`${project.title} - ${projectYear}`}
                     width="100%" 
                     height="auto"
+                    aspectRatio={project.headerImage?.width && project.headerImage?.height ? project.headerImage.width / project.headerImage.height : 4 / 3}
                     objectFit="cover"
                     onError={(e) => { 
+                      e.currentTarget.removeAttribute("srcset");
+                      e.currentTarget.removeAttribute("sizes");
                       (e.target as HTMLImageElement).src = "/logo.png"; 
                     }}
                   />
@@ -376,12 +388,16 @@ export default function ProjectDetail() {
                           }}
                         >
                           <Image
-                            src={image?.url || "/logo.png"}
-                            alt={image?.title || `${project.title} - Photo ${index + 1}`}
+                            {...responsiveImage(image?.url || "/logo.png", [240, 480, 720], "(max-width: 767px) 50vw, 250px", image?.width)}
+                            loading="lazy"
+                            decoding="async"
+                            alt={projectImageAlt(image, project.title, index)}
                             width="100%"
                             height="200px"
                             objectFit="cover"
                             onError={(e) => {
+                              e.currentTarget.removeAttribute("srcset");
+                              e.currentTarget.removeAttribute("sizes");
                               (e.target as HTMLImageElement).src = "/logo.png";
                             }}
                           />

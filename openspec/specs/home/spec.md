@@ -47,6 +47,8 @@ The homepage SHALL render a concise sequence: proof-led hero, record-derived fac
 - **WHEN** the hero displays a project header at desktop or mobile width
 - **THEN** the whole image SHALL remain visible, including its title and logo, and the hero labels and caption SHALL remain outside the image
 
+The hero SHALL use responsive WebP derivatives for supported Contentful photos, with eager loading and high fetch priority. Its width descriptors SHALL not exceed a known original width. Project cards below the hero SHALL lazy-load their responsive images.
+
 #### Scenario: Develop draft preview is enabled
 
 - **WHEN** the develop branch build enables service-project draft preview

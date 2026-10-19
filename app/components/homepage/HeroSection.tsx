@@ -1,15 +1,17 @@
 import { Box, Flex, Heading, Image, Link, Text } from "@chakra-ui/react";
 import { ArrowRight } from "lucide-react";
 import { showProjectImageFallback } from "~/lib/project-image-fallback";
+import { responsiveImage } from "~/lib/contentful-image";
 
 type HeroSectionProps = {
   image: string;
+  imageWidth?: number;
   imageAlt: string;
   imageCaption?: string;
   draftPreview?: boolean;
 };
 
-export function HeroSection({ image, imageAlt, imageCaption, draftPreview = false }: HeroSectionProps) {
+export function HeroSection({ image, imageWidth, imageAlt, imageCaption, draftPreview = false }: HeroSectionProps) {
   return (
     <Box as="section" bg="brand.500" color="#f7f2e7">
       <Flex
@@ -92,7 +94,7 @@ export function HeroSection({ image, imageAlt, imageCaption, draftPreview = fals
             Latest project
           </Text>
           <Image
-            src={image}
+            {...responsiveImage(image, [640, 960, 1280, 1600], "(max-width: 1023px) 100vw, 600px", imageWidth)}
             alt={imageAlt}
             ref={showProjectImageFallback}
             onError={({ currentTarget }) => showProjectImageFallback(currentTarget)}
@@ -101,6 +103,7 @@ export function HeroSection({ image, imageAlt, imageCaption, draftPreview = fals
             aspectRatio={4 / 3}
             objectFit="contain"
             loading="eager"
+            fetchPriority="high"
           />
           {imageCaption && (
             <Box bg="#f7f2e7" color="brand.900" px={{ base: 4, md: 6 }} py={5}>
