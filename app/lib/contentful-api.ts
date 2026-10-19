@@ -1,5 +1,6 @@
 
 import { contentfulClient } from './contentful';
+import { getServiceProjectClient } from './service-project-contentful.server';
 import type { Asset, UnresolvedLink } from 'contentful';
 import type {
   StatItem, 
@@ -167,7 +168,7 @@ export async function fetchHomepageServiceAreasSection(): Promise<ServiceArea[] 
 
 export async function fetchFeaturedProjectHighlights(): Promise<Project[] | null> {
   try {
-    const contentfulResponse = await contentfulClient.getEntries({
+    const contentfulResponse = await getServiceProjectClient().getEntries({
       content_type: CONTENT_TYPES.SERVICE_PROJECT,
       'fields.isActive': true,
       'fields.isFeatured': true,
@@ -411,7 +412,7 @@ export async function fetchHomepageContactSection(): Promise<HomepageContact | n
 
 export async function fetchAllProjects(): Promise<Project[]> {
   try {
-    const contentfulResponse = await contentfulClient.getEntries({
+    const contentfulResponse = await getServiceProjectClient().getEntries({
       content_type: CONTENT_TYPES.SERVICE_PROJECT,
       'fields.isActive': true,
       order: ['-fields.date'],
@@ -456,7 +457,7 @@ export async function fetchAllEvents(): Promise<Event[] | null> {
 
 export async function fetchProjectBySlug(slug: string): Promise<Project | null> {
   try {
-    const contentfulResponse = await contentfulClient.getEntries({
+    const contentfulResponse = await getServiceProjectClient().getEntries({
       content_type: CONTENT_TYPES.SERVICE_PROJECT,
       'fields.isActive': true,
       'fields.slug': slug,

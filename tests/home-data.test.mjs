@@ -12,7 +12,7 @@ const { ChakraProvider, defaultSystem } = require("@chakra-ui/react");
 
 function load(path, imports = {}) {
   // Stub Vite's development flag so the real root module can run as CommonJS.
-  const source = readFileSync(new URL(path, import.meta.url), "utf8").replace("import.meta.env.DEV", "false");
+  const source = readFileSync(new URL(path, import.meta.url), "utf8").replaceAll("import.meta.env.DEV", "false").replaceAll("import.meta.env.VITE_SERVICE_PROJECT_DRAFT_PREVIEW", '"false"');
   const { outputText } = ts.transpileModule(source, {
     compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX },
   });
@@ -53,7 +53,10 @@ function homepage(homepageData = null, rootContact = contactData, api = {}) {
 }
 
 function contentfulApi(getEntries) {
-  return load("../app/lib/contentful-api.ts", { "./contentful": { contentfulClient: { getEntries } } });
+  return load("../app/lib/contentful-api.ts", {
+    "./contentful": { contentfulClient: { getEntries } },
+    "./service-project-contentful.server": { getServiceProjectClient: () => ({ getEntries }) },
+  });
 }
 
 function render(Component) {

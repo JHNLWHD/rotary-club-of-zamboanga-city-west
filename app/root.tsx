@@ -23,6 +23,11 @@ type LoaderData = {
   };
 };
 
+export const headers: Route.HeadersFunction | undefined =
+  import.meta.env.VITE_SERVICE_PROJECT_DRAFT_PREVIEW === 'true'
+    ? () => ({ 'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store' })
+    : undefined;
+
 export async function loader({ request }: Route.LoaderArgs): Promise<LoaderData> {
   try {
     const contactSection = await fetchHomepageContactSection();

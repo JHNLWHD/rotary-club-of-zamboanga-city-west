@@ -11,7 +11,7 @@ const require = createRequire(import.meta.url);
 const { ChakraProvider, defaultSystem } = require("@chakra-ui/react");
 
 function load(path, imports = {}, globals = {}) {
-  const { outputText } = ts.transpileModule(readFileSync(new URL(path, import.meta.url), "utf8"), {
+  const { outputText } = ts.transpileModule(readFileSync(new URL(path, import.meta.url), "utf8").replaceAll("import.meta.env.VITE_SERVICE_PROJECT_DRAFT_PREVIEW", '"false"'), {
     compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX },
   });
   const exports = {};
@@ -25,7 +25,10 @@ function load(path, imports = {}, globals = {}) {
 }
 
 function projectApi(getEntries) {
-  return load("../app/lib/contentful-api.ts", { "./contentful": { contentfulClient: { getEntries } } });
+  return load("../app/lib/contentful-api.ts", {
+    "./contentful": { contentfulClient: { getEntries } },
+    "./service-project-contentful.server": { getServiceProjectClient: () => ({ getEntries }) },
+  });
 }
 
 function projectRoute(getEntries, path = "../app/routes/service-projects.$slug.tsx") {

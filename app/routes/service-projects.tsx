@@ -14,6 +14,8 @@ import type { Route } from "./+types/service-projects";
 import type { Project } from "../lib/contentful-types";
 import { Users, Target } from "lucide-react";
 
+const draftPreview = import.meta.env.VITE_SERVICE_PROJECT_DRAFT_PREVIEW === 'true';
+
 type LoaderData = {
   projects: Project[];
   unavailable?: boolean;
@@ -38,6 +40,14 @@ export function meta({ data }: Route.MetaArgs) {
     return [
       { title: "Service Projects Temporarily Unavailable | Rotary Club of Zamboanga City West" },
       { name: "description", content: "Project records are temporarily unavailable. Please try again later." },
+      { name: "robots", content: "noindex, nofollow" },
+    ];
+  }
+
+  if (draftPreview) {
+    return [
+      { title: "Service Project Draft Preview | Rotary Club of Zamboanga City West" },
+      { name: "description", content: "Review the latest project drafts and header images before publication." },
       { name: "robots", content: "noindex, nofollow" },
     ];
   }
@@ -89,13 +99,15 @@ export default function ServiceProjects() {
   return (
     <Box>
       <PageHero
-        title="Our Service Projects"
-        description="Review the project records currently published by the club, including dates, locations, partners, and the details behind each handover."
+        title={draftPreview ? "Service Project Draft Preview" : "Our Service Projects"}
+        description={draftPreview
+          ? "Review the latest project drafts and header images. Changes shown in this preview have not been published to the public site."
+          : "Review the project records currently published by the club, including dates, locations, partners, and the details behind each handover."}
         stats={unavailable ? [] : [
           {
             icon: <Target size={24} color="white" />,
             value: projects.length.toString(),
-            label: "Published projects"
+            label: draftPreview ? "Projects in preview" : "Published projects"
           },
           {
             icon: <Users size={24} color="white" />,
@@ -153,7 +165,7 @@ export default function ServiceProjects() {
               </Text>
               {!unavailable && (
                 <Text color="gray.600" fontSize="sm">
-                  No project records are published on this page yet.
+                  {draftPreview ? "No project records are available in this preview yet." : "No project records are published on this page yet."}
                 </Text>
               )}
             </Box>

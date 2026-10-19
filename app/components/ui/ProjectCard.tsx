@@ -7,17 +7,39 @@ export function ProjectCard({ project }: { project: Project }) {
   const year = project.date ? new Date(project.date).getUTCFullYear() : null;
 
   return (
-    <Box as="article" bg="#f7f5f0" overflow="hidden" height="100%">
+    <Box
+      as="article"
+      bg="white"
+      border="1px solid"
+      borderColor="gray.200"
+      borderRadius="xl"
+      boxShadow="0 4px 12px rgba(8, 34, 71, 0.06), 0 18px 36px -24px rgba(8, 34, 71, 0.28)"
+      overflow="hidden"
+      height="100%"
+      display="flex"
+      flexDirection="column"
+      transition="transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease"
+      _hover={{
+        transform: "translateY(-4px)",
+        borderColor: "brand.200",
+        boxShadow: "0 8px 20px rgba(8, 34, 71, 0.08), 0 24px 44px -24px rgba(8, 34, 71, 0.32)",
+      }}
+      _focusWithin={{ borderColor: "brand.500" }}
+      _motionReduce={{ transition: "none", _hover: { transform: "none" } }}
+    >
       <Image
         src={project.headerImage?.url ?? "/rotary-zc-west.jpg"}
         alt={project.title}
         ref={showProjectImageFallback}
         onError={({ currentTarget }) => showProjectImageFallback(currentTarget)}
         w="full"
-        h={{ base: "260px", md: "300px" }}
+        h="auto"
+        aspectRatio={4 / 3}
         objectFit="cover"
+        borderBottom="1px solid"
+        borderColor="gray.100"
       />
-      <Flex direction="column" px={{ base: 0, md: 1 }} py={{ base: 5, md: 6 }} minH={{ base: "auto", md: "300px" }}>
+      <Flex direction="column" p={{ base: 5, md: 6 }} flex="1" minH={{ base: "auto", md: "300px" }}>
         <Flex direction={{ base: "column", md: "row" }} gap={3} align={{ base: "start", md: "center" }} color="gray.700" fontSize="xs" textTransform="uppercase" letterSpacing="0.12em" mb={5}>
           {Number.isFinite(year) && <Text>{year}</Text>}
           {project.location && (

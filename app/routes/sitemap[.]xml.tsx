@@ -23,6 +23,13 @@ const staticRoutes: SitemapEntry[] = [
 ];
 
 export async function loader() {
+  if (import.meta.env.VITE_SERVICE_PROJECT_DRAFT_PREVIEW === 'true') {
+    return new Response(null, {
+      status: 404,
+      headers: { 'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store' },
+    });
+  }
+
   let projectRoutes: SitemapEntry[] = [];
 
   try {
