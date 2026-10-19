@@ -79,8 +79,9 @@ export function HeroSection({ image, imageAlt, imageCaption, draftPreview = fals
                 Meet the club
               </Link>
             </Flex>
-            <Flex mt={8} justify="space-between" gap={4} fontSize="xs" letterSpacing="0.12em" textTransform="uppercase">
+            <Flex mt={8} direction={{ base: "column", sm: "row" }} align={{ base: "start", sm: "center" }} gap={{ base: 2, sm: 3 }} fontSize="xs" letterSpacing="0.12em" textTransform="uppercase">
               <Text color="rgba(247,242,231,.68)">Zamboanga City, Philippines</Text>
+              <Text aria-hidden="true" display={{ base: "none", sm: "block" }} color="rgba(247,242,231,.4)">·</Text>
               <Text color="rgba(247,242,231,.68)">Service Above Self</Text>
             </Flex>
           </Box>
