@@ -4,7 +4,6 @@ import {
   Meta,
   Outlet,
   Scripts,
-  useLocation,
   useLoaderData,
 } from "react-router";
 
@@ -16,20 +15,29 @@ import { GlobalLayout } from "./components/ui/GlobalLayout";
 import { fetchHomepageContactSection } from "./lib/contentful-api";
 import type { ContactInfo, MeetingInfo } from "./lib/contentful-types";
 import { Toaster } from "sonner";
+import { defaultSocialImage } from "~/lib/social-image";
 
 type LoaderData = {
+  siteOrigin: string;
   contactData?: {
     meetingInfo?: MeetingInfo;
     contactInfo?: ContactInfo;
   };
 };
 
+export const headers: Route.HeadersFunction | undefined =
+  import.meta.env.VITE_SERVICE_PROJECT_DRAFT_PREVIEW === 'true'
+    ? () => ({ 'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store' })
+    : undefined;
+
 export async function loader({ request }: Route.LoaderArgs): Promise<LoaderData> {
+  const siteOrigin = new URL(request.url).origin;
   try {
     const contactSection = await fetchHomepageContactSection();
     
     if (contactSection) {
       return {
+        siteOrigin,
         contactData: {
           meetingInfo: contactSection.meetingInfo,
           contactInfo: contactSection.contactInfo,
@@ -37,35 +45,35 @@ export async function loader({ request }: Route.LoaderArgs): Promise<LoaderData>
       };
     }
     
-    return { contactData: undefined };
+    return { siteOrigin, contactData: undefined };
   } catch (error) {
     console.error('Error loading contact data in root:', error);
-    return { contactData: undefined };
+    return { siteOrigin, contactData: undefined };
   }
 }
 
-export const meta: Route.MetaFunction = () => [
+export const meta: Route.MetaFunction = ({ matches }) => [
   { title: "Rotary Club of Zamboanga City West | Service Above Self" },
-  { name: "description", content: "Rotary Club of Zamboanga City West serves our community through meaningful projects focused on peacebuilding, education, healthcare, clean water, and community development. Service Above Self since 1979." },
+  { name: "description", content: "Rotary Club of Zamboanga City West publishes its community projects, club leadership, and Foundation giving records. Chartered June 2, 1971." },
   
   // Open Graph fallback tags
   { property: "og:title", content: "Rotary Club of Zamboanga City West | Service Above Self" },
   { property: "og:description", content: "Rotary Club of Zamboanga City West serves our community through meaningful projects focused on peacebuilding, education, healthcare, clean water, and community development." },
   { property: "og:type", content: "website" },
   { property: "og:url", content: "https://rotaryzcwest.org" },
-  { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
+  { property: "og:image", content: defaultSocialImage(matches) },
   { property: "og:image:width", content: "1200" },
   { property: "og:image:height", content: "630" },
-  { property: "og:image:alt", content: "Rotary Club of Zamboanga City West community service projects" },
+  { property: "og:image:alt", content: "Rotary Club of Zamboanga City West — Service, in full view." },
   { property: "og:site_name", content: "Rotary Club of Zamboanga City West" },
   { property: "og:locale", content: "en_US" },
   
   // Twitter Card fallback tags
   { name: "twitter:card", content: "summary_large_image" },
   { name: "twitter:title", content: "Rotary Club of Zamboanga City West | Service Above Self" },
-  { name: "twitter:description", content: "Rotary Club of Zamboanga City West serves our community through meaningful projects. Service Above Self since 1979." },
-  { name: "twitter:image", content: "https://rotaryzcwest.org/og-image.jpg" },
-  { name: "twitter:image:alt", content: "Rotary Club of Zamboanga City West community service projects" },
+  { name: "twitter:description", content: "Local service and documented impact since 1971." },
+  { name: "twitter:image", content: defaultSocialImage(matches) },
+  { name: "twitter:image:alt", content: "Rotary Club of Zamboanga City West — Service, in full view." },
 ];
 
 export const links: Route.LinksFunction = () => [
@@ -77,11 +85,7 @@ export const links: Route.LinksFunction = () => [
   },
   {
     rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap",
+    href: "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap",
   },
   { rel: "stylesheet", href: stylesheet },
 ];
@@ -104,14 +108,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const location = useLocation();
   const { contactData } = useLoaderData() as LoaderData;
-  const isIndexPage = location.pathname === "/";
 
   return (
     <Provider>
       <PHProvider>
-        <GlobalLayout transparentHeader={isIndexPage} contactData={contactData}>
+        <GlobalLayout contactData={contactData}>
             <Outlet />
         </GlobalLayout>
         <Toaster position="top-right" richColors />

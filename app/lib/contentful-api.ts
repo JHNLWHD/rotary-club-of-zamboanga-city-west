@@ -1,5 +1,7 @@
 
 import { contentfulClient } from './contentful';
+import { getServiceProjectClient } from './service-project-contentful.server';
+import type { Asset, UnresolvedLink } from 'contentful';
 import type {
   StatItem, 
   ServiceArea,
@@ -16,7 +18,8 @@ import type {
   InteractClubOfZamboangaCityWest,
   ClubLeadership,
   BoardResolution,
-  FortressIssue
+  FortressIssue,
+  ProcessedAsset
 } from './contentful-types';
 import slugify from 'slugify';
 
@@ -45,23 +48,35 @@ function extractContentfulEntryFields<T>(contentfulEntry: any): T {
   };
 }
 
-type ProcessedAsset = {
-  url: string;
-  title: string;
-  description: string;
-  width?: number;
-  height?: number;
-} | null;
+type RawContentfulAsset = Asset<undefined> | UnresolvedLink<'Asset'> | null | undefined;
 
-function buildContentfulAssetMetadata(contentfulAsset: any): ProcessedAsset {
-  if (!contentfulAsset) return null;
+type RawProjectFields = Omit<Project, 'headerImage' | 'gallery' | 'slug'> & {
+  headerImage?: RawContentfulAsset;
+  gallery?: RawContentfulAsset[];
+  slug?: string;
+};
+
+function buildContentfulAssetMetadata(contentfulAsset: unknown): ProcessedAsset {
+  const fields = (contentfulAsset as Asset<undefined> | null | undefined)?.fields;
+  const url = fields?.file?.url;
+  if (typeof url !== 'string' || !url.trim()) return null;
   
   return {
-    url: contentfulAsset?.fields?.file?.url ? `https:${contentfulAsset.fields.file.url}` : '',
-    title: contentfulAsset.fields?.title || '',
-    description: contentfulAsset.fields?.description || '',
-    width: contentfulAsset.fields?.file?.details?.image?.width,
-    height: contentfulAsset.fields?.file?.details?.image?.height,
+    url: url.startsWith('//') ? `https:${url}` : url,
+    title: fields?.title || '',
+    description: fields?.description || '',
+    width: fields?.file?.details?.image?.width,
+    height: fields?.file?.details?.image?.height,
+  };
+}
+
+function normalizeProject(projectEntry: any): Project {
+  const projectFields = extractContentfulEntryFields<RawProjectFields>(projectEntry);
+  return {
+    ...projectFields,
+    headerImage: buildContentfulAssetMetadata(projectFields.headerImage),
+    gallery: projectFields.gallery?.map(buildContentfulAssetMetadata) || [],
+    slug: `/service-projects/${projectFields.slug || slugify(projectFields.title, { lower: true })}`,
   };
 }
 
@@ -151,12 +166,11 @@ export async function fetchHomepageServiceAreasSection(): Promise<ServiceArea[] 
   }
 }
 
-export async function fetchFeaturedProjectHighlights(): Promise<Project[] | null> {
+export async function fetchLatestProjectHighlights(): Promise<Project[] | null> {
   try {
-    const contentfulResponse = await contentfulClient.getEntries({
+    const contentfulResponse = await getServiceProjectClient().getEntries({
       content_type: CONTENT_TYPES.SERVICE_PROJECT,
       'fields.isActive': true,
-      'fields.isFeatured': true,
       limit: 3,
       order: ['-fields.date'],
     });
@@ -165,17 +179,9 @@ export async function fetchFeaturedProjectHighlights(): Promise<Project[] | null
       return [];
     }
 
-    return contentfulResponse.items.map((projectEntry) => {
-      const projectFields = extractContentfulEntryFields<Project>(projectEntry);
-      return {
-        ...projectFields,
-        headerImage: buildContentfulAssetMetadata(projectFields.headerImage),
-        gallery: projectFields.gallery?.map((image: any) => buildContentfulAssetMetadata(image)) || [],
-        slug: `/service-projects/${projectFields.slug || slugify(projectFields.title, { lower: true })}`,
-      };
-    });
+    return contentfulResponse.items.map(normalizeProject);
   } catch (error) {
-    console.error('Error fetching featured project highlights:', error);
+    console.error('Error fetching latest project highlights:', error);
     return [];
   }
 }
@@ -403,9 +409,9 @@ export async function fetchHomepageContactSection(): Promise<HomepageContact | n
   }
 }
 
-export async function fetchAllProjects(): Promise<Project[] | null> {
+export async function fetchAllProjects(): Promise<Project[]> {
   try {
-    const contentfulResponse = await contentfulClient.getEntries({
+    const contentfulResponse = await getServiceProjectClient().getEntries({
       content_type: CONTENT_TYPES.SERVICE_PROJECT,
       'fields.isActive': true,
       order: ['-fields.date'],
@@ -415,18 +421,10 @@ export async function fetchAllProjects(): Promise<Project[] | null> {
       return [];
     }
 
-    return contentfulResponse.items.map((projectEntry) => {
-      const projectFields = extractContentfulEntryFields<Project>(projectEntry);
-      return {
-        ...projectFields,
-        headerImage: buildContentfulAssetMetadata(projectFields.headerImage),
-        gallery: projectFields.gallery?.map((image: any) => buildContentfulAssetMetadata(image)) || [],
-        slug: `/service-projects/${projectFields.slug || slugify(projectFields.title, { lower: true })}`,
-      };
-    });
+    return contentfulResponse.items.map(normalizeProject);
   } catch (error) {
     console.error('Error fetching all projects:', error);
-    return [];
+    throw error;
   }
 }
 
@@ -458,7 +456,7 @@ export async function fetchAllEvents(): Promise<Event[] | null> {
 
 export async function fetchProjectBySlug(slug: string): Promise<Project | null> {
   try {
-    const contentfulResponse = await contentfulClient.getEntries({
+    const contentfulResponse = await getServiceProjectClient().getEntries({
       content_type: CONTENT_TYPES.SERVICE_PROJECT,
       'fields.isActive': true,
       'fields.slug': slug,
@@ -469,19 +467,12 @@ export async function fetchProjectBySlug(slug: string): Promise<Project | null> 
       return null;
     }
     const projectEntry = contentfulResponse.items[0];
-    const projectFields = extractContentfulEntryFields<Project>(projectEntry);
-    
-    const processedProject = {
-      ...projectFields,
-      headerImage: buildContentfulAssetMetadata(projectFields.headerImage),
-      gallery: projectFields.gallery?.map((image: any) => buildContentfulAssetMetadata(image)) || [],
-      slug: `/service-projects/${projectFields.slug || slugify(projectFields.title, { lower: true })}`,
-    };
+    const processedProject = normalizeProject(projectEntry);
     console.log(processedProject);
     return processedProject;
   } catch (error) {
     console.error('Error fetching project by slug:', error);
-    return null;
+    throw error;
   }
 }
 
@@ -489,30 +480,15 @@ export async function fetchAllHomepageSections() {
   try {
     const [
       heroSection,
-      statisticsSection,
-      serviceAreasSection,
       projectHighlightsSection,
-      eventsSection,
-      officersSection,
-      contactSection,
     ] = await Promise.all([
       fetchHomepageHeroSection(),
-      fetchHomepageStatisticsSection(),
-      fetchHomepageServiceAreasSection(),
-      fetchFeaturedProjectHighlights(),
-      fetchFeaturedEvents(),
-      fetchFeaturedOfficers(),
-      fetchHomepageContactSection(),
+      fetchLatestProjectHighlights(),
     ]);
 
     const result = {
       hero: heroSection,
-      stats: statisticsSection,
-      serviceAreas: serviceAreasSection,
       projectHighlights: projectHighlightsSection,
-      events: eventsSection,
-      officers: officersSection,
-      contact: contactSection,
     };
 
     return result;
@@ -613,7 +589,7 @@ export async function fetchBoardResolutions(): Promise<BoardResolution[]> {
     return boardResolutions;
   } catch (error) {
     console.error('Error fetching board resolutions:', error);
-    return [];
+    throw error;
   }
 }
 
@@ -643,4 +619,4 @@ export async function fetchTheFortress(): Promise<FortressIssue[]> {
     console.error('Error fetching The Fortress:', error);
     return [];
   }
-} 
+}

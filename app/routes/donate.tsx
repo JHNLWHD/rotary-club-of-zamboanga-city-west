@@ -1,74 +1,38 @@
-import {
-  Box,
-  Heading,
-  Text,
-  Container,
-  Stack,
-} from "@chakra-ui/react";
+import { Box, Container, Flex, Heading, Link, Text } from "@chakra-ui/react";
+import { ArrowRight, ShieldCheck } from "lucide-react";
+import { PageHero } from "~/components/ui/PageHero";
 
 export function meta() {
   return [
-    { title: "Donate | Support Rotary Club of Zamboanga City West" },
-    { name: "description", content: "Support our community service projects by making a donation to Rotary Club of Zamboanga City West. Your contribution helps us serve communities in need." },
-    { name: "keywords", content: "donate Rotary, support community service, charitable donation, Zamboanga City, humanitarian aid" },
-    
-    // Open Graph tags
-    { property: "og:title", content: "Donate | Support Rotary Club of Zamboanga City West" },
-    { property: "og:description", content: "Support our community service projects by making a donation." },
-    { property: "og:type", content: "website" },
-    { property: "og:url", content: "https://rotaryzcwest.org/donate" },
-    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
-    
-    // Canonical URL
-    { rel: "canonical", href: "https://rotaryzcwest.org/donate" },
+    { title: "Giving Inquiries | Rotary Club of Zamboanga City West" },
+    { name: "description", content: "Contact Rotary Club of Zamboanga City West to ask about verified project-specific giving opportunities." },
+    { name: "robots", content: "noindex, follow" },
+    { tagName: "link", rel: "canonical", href: "https://rotaryzcwest.org/donate" },
   ];
 }
 
 export default function Donate() {
   return (
-    <Container maxW="1200px" py={{ base: 12, md: 20 }}>
-      <Stack gap={8} textAlign="center" align="center">
-        <Box>
-          <Heading 
-            as="h1" 
-            fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }} 
-            fontWeight="bold" 
-            color="gray.900"
-            mb={4}
-          >
-            Support Our Mission
-          </Heading>
-          <Text 
-            fontSize={{ base: "lg", md: "xl" }} 
-            color="gray.600" 
-            maxW="600px" 
-            mx="auto"
-            lineHeight="relaxed"
-          >
-            Your generous donation helps us continue our mission of service above self and makes a lasting impact in communities across Zamboanga City.
+    <>
+      <PageHero
+        title="Support a verified project"
+        description="The club does not currently publish an online payment flow on this website. Contact us first to confirm an active project, receiving account, and acknowledgment process."
+      />
+      <Container maxW="900px" py={{ base: 12, md: 20 }} px={{ base: 4, md: 8 }}>
+        <Box bg="white" border="1px solid" borderColor="gray.200" borderRadius="lg" p={{ base: 6, md: 9 }}>
+          <Box color="brand.700" mb={5} aria-hidden="true"><ShieldCheck size={36} strokeWidth={1.5} /></Box>
+          <Heading as="h2" color="#082b49" fontSize={{ base: "2xl", md: "3xl" }}>Confirm before sending funds</Heading>
+          <Text color="gray.700" lineHeight="1.8" mt={4}>
+            For your protection, do not send money based on an unofficial message or an unverified account number. Ask the club to confirm the project and payment details directly.
           </Text>
+          <Flex direction={{ base: "column", sm: "row" }} gap={3} mt={8}>
+            <Link href="/contact" display="inline-flex" alignItems="center" justifyContent="center" gap={2} bg="brand.700" color="white" px={6} py={3.5} borderRadius="md" fontWeight="bold" _hover={{ bg: "brand.800", textDecoration: "none" }}>
+              Contact the club <ArrowRight size={18} aria-hidden="true" />
+            </Link>
+            <Link href="/service-projects" textAlign="center" color="brand.700" px={6} py={3.5} fontWeight="bold">Review projects</Link>
+          </Flex>
         </Box>
-
-        <Box 
-          bg="green.50" 
-          p={8} 
-          borderRadius="xl" 
-          border="1px solid" 
-          borderColor="green.200"
-          w="full" 
-          maxW="500px"
-        >
-          <Heading as="h2" fontSize="xl" color="gray.900" mb={4}>
-            Make a Difference
-          </Heading>
-          <Text color="gray.700" mb={4}>
-            Every peso counts towards building schools, providing clean water, supporting healthcare initiatives, and creating lasting positive change in our community.
-          </Text>
-          <Text color="gray.600" fontSize="sm">
-            Secure donation options and project-specific giving opportunities will be available here soon.
-          </Text>
-        </Box>
-      </Stack>
-    </Container>
+      </Container>
+    </>
   );
-} 
+}

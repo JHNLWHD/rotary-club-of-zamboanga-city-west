@@ -1,3 +1,4 @@
+import { defaultSocialImage } from "~/lib/social-image";
 import {
   Box,
   Container,
@@ -13,89 +14,61 @@ import {
 import { ExternalLink, FileText, Calendar, Hash } from "lucide-react";
 import { PageHero } from "~/components/ui/PageHero";
 import { ComingSoon } from "~/components/ui/ComingSoon";
-import { useLoaderData } from "react-router";
-import type { LoaderFunctionArgs } from "react-router";
+import { data, useLoaderData } from "react-router";
 import { fetchBoardResolutions } from "~/lib/contentful-api";
-import type { BoardResolution } from "~/lib/contentful-types";
+import type { Route } from "./+types/about.board-resolutions";
 
-// Fallback board resolutions data when CMS is unavailable
-const fallbackBoardResolutions: BoardResolution[] = [
-  {
-    resolutionNumber: "2024-001",
-    title: "Approval of Annual Budget for Fiscal Year 2024-2025",
-    dateSigned: new Date("2024-07-15"),
-    googleDriveLink: "https://drive.google.com/file/d/example1/view"
-  },
-  {
-    resolutionNumber: "2024-002",
-    title: "Establishment of Community Service Projects Committee",
-    dateSigned: new Date("2024-08-03"),
-    googleDriveLink: "https://drive.google.com/file/d/example2/view"
-  },
-  {
-    resolutionNumber: "2024-003",
-    title: "Amendment to Club Bylaws Section 3.2",
-    dateSigned: new Date("2024-09-12"),
-    googleDriveLink: "https://drive.google.com/file/d/example3/view"
-  },
-  {
-    resolutionNumber: "2024-004",
-    title: "Approval of Partnership with Local Schools for Literacy Program",
-    dateSigned: new Date("2024-10-08"),
-    googleDriveLink: "https://drive.google.com/file/d/example4/view"
-  },
-  {
-    resolutionNumber: "2024-005",
-    title: "Establishment of Youth Leadership Development Fund",
-    dateSigned: new Date("2024-11-20"),
-    googleDriveLink: "https://drive.google.com/file/d/example5/view"
-  },
-  {
-    resolutionNumber: "2024-006",
-    title: "Approval of International Service Project in Partnership with District 3860",
-    dateSigned: new Date("2024-12-05"),
-    googleDriveLink: "https://drive.google.com/file/d/example6/view"
-  }
-];
-
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader() {
   try {
     const boardResolutionsFromCms = await fetchBoardResolutions();
-    
-    // Use CMS data if available, otherwise return empty array to show ComingSoon
-    // Fallback data is only used in case of actual errors
     return {
-      boardResolutions: boardResolutionsFromCms,
+      boardResolutions: boardResolutionsFromCms || [],
+      unavailable: false,
     };
   } catch (error) {
     console.error('Error loading board resolutions:', error);
-    // Return fallback data only when there's an actual error
-    return {
-      boardResolutions: fallbackBoardResolutions,
-    };
+    return data({
+      boardResolutions: [],
+      unavailable: true,
+    }, { status: 503, headers: { "Cache-Control": "no-store" } });
   }
 }
 
-export function meta() {
+export const headers: Route.HeadersFunction = ({ loaderHeaders, parentHeaders }) => {
+  const responseHeaders = new Headers(parentHeaders);
+  const cacheControl = loaderHeaders.get("Cache-Control");
+  if (cacheControl) responseHeaders.set("Cache-Control", cacheControl);
+  return responseHeaders;
+};
+
+export function meta({ data, matches }: Route.MetaArgs) {
+  const hasResolutions = Boolean(data?.boardResolutions?.length);
+  const unavailable = data?.unavailable;
+  const description = unavailable
+    ? "Board resolutions are temporarily unavailable. Please try again later."
+    : hasResolutions
+    ? "Read the published board resolutions and governance documents of Rotary Club of Zamboanga City West."
+    : "No board resolutions are currently published. Contact the Rotary Club of Zamboanga City West secretary to request a governance record.";
   return [
     { title: "Board Resolutions | Rotary Club of Zamboanga City West" },
-    { name: "description", content: "Access official board resolutions and governance documents of Rotary Club of Zamboanga City West. View our club's official decisions and policy documents." },
+    { name: "description", content: description },
+    { name: "robots", content: unavailable || hasResolutions ? "index, follow" : "noindex, follow" },
     { name: "keywords", content: "board resolutions, Rotary governance, club policies, official documents, Zamboanga City West" },
     
     // Open Graph tags
     { property: "og:title", content: "Board Resolutions | Rotary Club of Zamboanga City West" },
-    { property: "og:description", content: "Access official board resolutions and governance documents of our Rotary club." },
+    { property: "og:description", content: description },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/about/board-resolutions" },
-    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
+    { property: "og:image", content: defaultSocialImage(matches) },
     
     // Canonical URL
-    { rel: "canonical", href: "https://rotaryzcwest.org/about/board-resolutions" },
+    { tagName: "link", rel: "canonical", href: "https://rotaryzcwest.org/about/board-resolutions" },
   ];
 }
 
 export default function BoardResolutions() {
-  const { boardResolutions } = useLoaderData<typeof loader>();
+  const { boardResolutions, unavailable } = useLoaderData<typeof loader>();
   
   const handleResolutionClick = (link: string) => {
     window.open(link, '_blank', 'noopener,noreferrer');
@@ -114,7 +87,11 @@ export default function BoardResolutions() {
     <>
       <PageHero
         title="Board Resolutions"
-        description="Access official board resolutions and governance documents that guide our club's operations and community service initiatives."
+        description={unavailable
+          ? "Board resolutions are temporarily unavailable. Please try again later."
+          : boardResolutions.length
+          ? "Read the club’s published board resolutions and governance documents."
+          : "Contact the club secretary to request a governance record while the public archive is being prepared."}
       />
 
       <Container maxW="1200px" py={{ base: 12, md: 20 }}>
@@ -131,7 +108,17 @@ export default function BoardResolutions() {
           </Box>
 
           {/* Board Resolutions Grid or Coming Soon */}
-          {boardResolutions.length > 0 ? (
+          {unavailable ? (
+            <Box role="status">
+              <ComingSoon
+                title="Board resolutions are temporarily unavailable"
+                message="Please try again later or contact the club secretary to request a document."
+                colorScheme="brand"
+                size="lg"
+                maxWidth="600px"
+              />
+            </Box>
+          ) : boardResolutions.length > 0 ? (
             <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
               {boardResolutions.map((resolution, index) => (
                 <Box 
@@ -200,8 +187,8 @@ export default function BoardResolutions() {
             </SimpleGrid>
           ) : (
             <ComingSoon
-              title="📋 Board Resolutions Coming Soon"
-              message="Official board resolutions and governance documents will be available here soon. Check back for updates on our club's official decisions and policies."
+              title="No resolutions are currently published"
+              message="The site will show only governance records supplied through the club's content system. Contact the club secretary to request a document."
               colorScheme="brand"
               size="lg"
               maxWidth="600px"

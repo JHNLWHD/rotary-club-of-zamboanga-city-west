@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Box, 
-  Button, 
-  Flex, 
-  Heading, 
-  Text, 
-  Input, 
-  Grid, 
-  VStack, 
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Text,
+  Input,
+  Grid,
+  VStack,
   HStack,
-  IconButton 
+  IconButton,
+  Dialog,
+  Portal
 } from '@chakra-ui/react';
 import { X, Copy } from 'lucide-react';
 import { toast } from 'sonner';
@@ -50,7 +52,7 @@ function ShareModal({ isOpen, onClose, content, contentType }: ShareModalProps) 
     setIsMounted(true);
   }, []);
 
-  if (!isOpen || !content) return null;
+  if (!content) return null;
 
   const copyToClipboard = async () => {
     try {
@@ -79,9 +81,9 @@ function ShareModal({ isOpen, onClose, content, contentType }: ShareModalProps) 
       // Return a consistent fallback for SSR
       return 'Loading...';
     }
-    return new Date(date).toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'long', 
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
       day: 'numeric',
       timeZone: 'UTC'
     });
@@ -107,106 +109,103 @@ function ShareModal({ isOpen, onClose, content, contentType }: ShareModalProps) 
   };
 
   return (
-    <Box 
-      position="fixed"
-      top={0}
-      left={0}
-      right={0}
-      bottom={0}
-      bg="blackAlpha.500"
-      zIndex={1000}
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      p={4}
-      onClick={onClose}
-    >
-      <Box 
-        bg="white" 
-        borderRadius="lg" 
-        p={6} 
-        maxW="md" 
-        w="full"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <Flex justify="space-between" align="center" mb={4}>
-          <Heading as="h3" size="md">{getShareTitle()}</Heading>
-          <IconButton
-            aria-label="Close"
-            variant="ghost"
-            size="sm"
-            onClick={onClose}
+    <Dialog.Root open={isOpen} onOpenChange={({ open }) => { if (!open) onClose(); }} placement="center" lazyMount unmountOnExit>
+      <Portal>
+        <Dialog.Backdrop />
+        <Dialog.Positioner p={4}>
+          <Dialog.Content
+            bg="white"
+            borderRadius="lg"
+            p={6}
+            maxW="md"
+            w="full"
           >
-            <X size={16} />
-          </IconButton>
-        </Flex>
-        
-        <VStack gap={4} align="stretch">
-          <Box>
-            <Text fontSize="sm" color="gray.600" mb={3}>Share on social media:</Text>
-            <Grid templateColumns="repeat(5, 1fr)" gap={3}>
-              <FacebookShareButton
-                url={content.shareableLink}
-                hashtag="#RotaryZamboangaCityWest"
-              >
-                <FacebookIcon size={40} round />
-              </FacebookShareButton>
-              
-              <TwitterShareButton
-                url={content.shareableLink}
-                title={`${content.title} - ${content.description}`}
-                hashtags={['RotaryZamboangaCityWest', contentType === 'event' ? 'RotaryEvent' : 'RotaryProject', 'ServiceAboveSelf']}
-              >
-                <TwitterIcon size={40} round />
-              </TwitterShareButton>
-              
-              <WhatsappShareButton
-                url={content.shareableLink}
-                title={getWhatsappMessage()}
-              >
-                <WhatsappIcon size={40} round />
-              </WhatsappShareButton>
-              
-              <TelegramShareButton
-                url={content.shareableLink}
-                title={`${content.title} - ${content.description}`}
-              >
-                <TelegramIcon size={40} round />
-              </TelegramShareButton>
-              
-              <EmailShareButton
-                url={content.shareableLink}
-                subject={getEmailSubject()}
-                body={getEmailBody()}
-              >
-                <EmailIcon size={40} round />
-              </EmailShareButton>
-            </Grid>
-          </Box>
-          
-          <Box borderTop="1px solid" borderColor="gray.200" pt={4}>
-            <Text fontSize="sm" color="gray.600" mb={2}>Or copy link:</Text>
-            <HStack gap={2}>
-              <Input
-                value={content.shareableLink}
-                readOnly
-                fontSize="sm"
-                bg="gray.50"
-                flex={1}
-              />
-              <Button
-                variant="outline"
+            <Flex justify="space-between" align="center" mb={4}>
+              <Dialog.Title asChild><Heading as="h2" size="md">{getShareTitle()}</Heading></Dialog.Title>
+              <IconButton
+                aria-label="Close"
+                variant="ghost"
                 size="sm"
-                onClick={copyToClipboard}
+                onClick={onClose}
               >
-                <Copy size={16} />
-                Copy
-              </Button>
-            </HStack>
-          </Box>
-        </VStack>
-      </Box>
-    </Box>
+                <X size={16} />
+              </IconButton>
+            </Flex>
+
+            <VStack gap={4} align="stretch">
+              <Box>
+                <Text fontSize="sm" color="gray.600" mb={3}>Share on social media:</Text>
+                <Grid templateColumns="repeat(5, 1fr)" gap={2}>
+                  <FacebookShareButton
+                    aria-label="Share on Facebook"
+                    url={content.shareableLink}
+                    hashtag="#RotaryZamboangaCityWest"
+                  >
+                    <FacebookIcon size={40} round />
+                  </FacebookShareButton>
+
+                  <TwitterShareButton
+                    aria-label="Share on X"
+                    url={content.shareableLink}
+                    title={`${content.title} - ${content.description}`}
+                    hashtags={['RotaryZamboangaCityWest', contentType === 'event' ? 'RotaryEvent' : 'RotaryProject', 'ServiceAboveSelf']}
+                  >
+                    <TwitterIcon size={40} round />
+                  </TwitterShareButton>
+
+                  <WhatsappShareButton
+                    aria-label="Share on WhatsApp"
+                    url={content.shareableLink}
+                    title={getWhatsappMessage()}
+                  >
+                    <WhatsappIcon size={40} round />
+                  </WhatsappShareButton>
+
+                  <TelegramShareButton
+                    aria-label="Share on Telegram"
+                    url={content.shareableLink}
+                    title={`${content.title} - ${content.description}`}
+                  >
+                    <TelegramIcon size={40} round />
+                  </TelegramShareButton>
+
+                  <EmailShareButton
+                    aria-label="Share by email"
+                    url={content.shareableLink}
+                    subject={getEmailSubject()}
+                    body={getEmailBody()}
+                  >
+                    <EmailIcon size={40} round />
+                  </EmailShareButton>
+                </Grid>
+              </Box>
+
+              <Box borderTop="1px solid" borderColor="gray.200" pt={4}>
+                <Text fontSize="sm" color="gray.600" mb={2}>Or copy link:</Text>
+                <HStack gap={2}>
+                  <Input
+                    aria-label="Share link"
+                    value={content.shareableLink}
+                    readOnly
+                    fontSize="sm"
+                    bg="gray.50"
+                    flex={1}
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={copyToClipboard}
+                  >
+                    <Copy size={16} />
+                    Copy
+                  </Button>
+                </HStack>
+              </Box>
+            </VStack>
+          </Dialog.Content>
+        </Dialog.Positioner>
+      </Portal>
+    </Dialog.Root>
   );
 }
 
