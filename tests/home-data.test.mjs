@@ -20,7 +20,7 @@ function load(path, imports = {}, preview = false) {
   runInNewContext(outputText, {
     exports,
     URL,
-    require: (id) => imports[id] ?? (id === "~/lib/contentful-image" ? load("../app/lib/contentful-image.ts") : require(id)),
+    require: (id) => imports[id] ?? (id.startsWith("~/lib/") ? load(`../app/lib/${id.slice(6)}.ts`) : require(id)),
     console: { error() {}, log() {} },
   });
   return exports;
@@ -84,7 +84,7 @@ test("initial homepage loaders query only hero, latest projects, and root contac
     "./components/ui/GlobalLayout": {},
     sonner: {},
   });
-  const [rootData, homeData] = await Promise.all([root.loader({}), homepage(null, null, api).loader({})]);
+  const [rootData, homeData] = await Promise.all([root.loader({ request: { url: "https://rotaryzcwest.org/" } }), homepage(null, null, api).loader({})]);
   assert.equal(queries.length, 3);
   assert.deepEqual(queries.map((query) => query.content_type).sort(), ["homepageContact", "homepageHero", "serviceProject"]);
   for (const query of queries) assert.equal(query["fields.isActive"], true);
@@ -134,7 +134,7 @@ test("homepage draft preview labels unpublished project content and blocks index
   assert.match(html, /Project \/ Draft preview/);
   assert.match(html, /Latest projects \/ Draft preview/);
   assert.doesNotMatch(html, /Project \/ Published|Published initiatives/);
-  assert.equal(route.meta().find((tag) => tag.name === "robots").content, "noindex, nofollow");
+  assert.equal(route.meta({ matches: [] }).find((tag) => tag.name === "robots").content, "noindex, nofollow");
 });
 
 test("dedicated content reads remain available outside the homepage aggregate", async () => {

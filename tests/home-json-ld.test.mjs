@@ -18,6 +18,7 @@ const imports = {
   "@chakra-ui/react": { Box: "div", Flex: "div", Heading: "h2", Link: "a", Text: "p" },
   "lucide-react": { ArrowUpRight: () => null },
   "../lib/contentful-api": {},
+  "~/lib/social-image": {},
 };
 for (const name of ["ContactSection", "HeroSection", "ProjectHighlightsSection", "StatsSection"]) {
   imports[`../components/homepage/${name}`] = { [name]: () => null };

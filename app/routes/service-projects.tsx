@@ -1,3 +1,4 @@
+import { defaultSocialImage } from "~/lib/social-image";
 import {
   Box,
   Heading,
@@ -37,8 +38,8 @@ export async function loader({ request }: Route.LoaderArgs) {
     }, { status: 503 });
   }
 }
-export function meta({ data }: Route.MetaArgs) {
-  const socialImage = (data as LoaderData | undefined)?.socialImage || 'https://rotaryzcwest.org/og-image.jpg';
+export function meta({ data, matches }: Route.MetaArgs) {
+  const socialImage = (data as LoaderData | undefined)?.socialImage || defaultSocialImage(matches);
   if ((data as LoaderData | undefined)?.unavailable) {
     return [
       { title: "Service Projects Temporarily Unavailable | Rotary Club of Zamboanga City West" },

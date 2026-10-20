@@ -8,18 +8,66 @@ import ts from "typescript";
 const require = createRequire(import.meta.url);
 function load(path, imports = {}) {
   const source = readFileSync(new URL(path, import.meta.url), "utf8")
-    .replaceAll("import.meta.env.VITE_SERVICE_PROJECT_DRAFT_PREVIEW", '"false"');
+    .replaceAll("import.meta.env.VITE_SERVICE_PROJECT_DRAFT_PREVIEW", '"false"')
+    .replaceAll("import.meta.env.DEV", "false");
   const { outputText } = ts.transpileModule(source, {
     compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX },
   });
   const exports = {};
   runInNewContext(outputText, {
     exports, URL,
-    require: (id) => imports[id] ?? require(id),
+    require: (id) => imports[id]
+      ?? (id.startsWith("~/lib/") ? load(`../app/lib/${id.slice(6)}.ts`) : require(id)),
     console: { error() {} },
   });
   return exports;
 }
+
+test("shared social images follow the request origin across routes, including when contact data is unavailable", async () => {
+  const rootImports = {
+    "./app.css?url": {},
+    "./components/ui/Provider": {},
+    "./components/ui/PostHogProvider": {},
+    "./components/ui/GlobalLayout": {},
+  };
+  const routeImports = {
+    "~/lib/contentful-api": {},
+    "../lib/contentful-api": {},
+    "~/components/ui/PageHero": {}, "../components/ui/PageHero": {},
+    "~/components/ui/OfficerCard": {}, "~/components/ui/ComingSoon": {},
+    "../components/ui/ComingSoon": {}, "~/components/ui/ButtonLink": {},
+    "~/components/ui/MarkdownProse": {},
+    "~/data/foundation-giving-definition-of-terms": {},
+    "./thank-you": {},
+  };
+  for (const name of ["ContactSection", "HeroSection", "ProjectHighlightsSection", "StatsSection"]) {
+    routeImports[`../components/homepage/${name}`] = {};
+  }
+  const routes = ["home_", "_index", "about.history", "about.leadership", "about.calendar", "about.board-resolutions",
+    "about.foundation-giving", "contact", "new-generation.interact-zamboanga-city-west", "new-generation.rotaract-southern-city-colleges"]
+    .map((path) => [path, load(`../app/routes/${path}.tsx`, routeImports)]);
+  for (const origin of ["https://develop--rotaryzcwest.netlify.app", "https://deploy-preview-8--rotaryzcwest.netlify.app", "https://rotaryzcwest.org"]) {
+    for (const outcome of ["success", "empty", "failure"]) {
+      const root = load("../app/root.tsx", { ...rootImports, "./lib/contentful-api": {
+        fetchHomepageContactSection: async () => {
+          if (outcome === "failure") throw new Error("CMS unavailable");
+          return outcome === "success" ? { contactInfo: { email: "club@example.org" } } : null;
+        },
+      } });
+      const data = await root.loader({ request: { url: `${origin}/about/history` } });
+      const matches = [{ id: "root", data }];
+      for (const [path, route] of [["root", root], ...routes]) {
+        const metadata = route.meta({ data: path === "root" ? data : undefined, matches });
+        assert.equal(metadata.find((tag) => tag.property === "og:image").content,
+          `${origin}/og-image.jpg?v=redesign-2026`, `${path}, ${origin}, ${outcome}`);
+        const twitter = metadata.find((tag) => tag.name === "twitter:image");
+        if (twitter) assert.equal(twitter.content, `${origin}/og-image.jpg?v=redesign-2026`);
+        const canonical = metadata.find((tag) => tag.rel === "canonical");
+        if (canonical) assert.equal(new URL(canonical.href).origin, "https://rotaryzcwest.org");
+      }
+    }
+  }
+});
 
 const { contentfulImageUrl, responsiveImage } = load("../app/lib/contentful-image.ts");
 const photo = "https://images.ctfassets.net/space/asset/photo.jpg";

@@ -103,6 +103,21 @@ test("successful board archive queries preserve records, empty states, and their
   }
 });
 
+test("project social metadata keeps its CMS photo and uses the serving site's artwork only as a fallback", () => {
+  const route = projectRoute(async () => ({ items: [] }));
+  for (const siteOrigin of ["https://develop--rotaryzcwest.netlify.app", "https://rotaryzcwest.org"]) {
+    for (const headerImage of [null, { url: "https://images.ctfassets.net/space/project/header.jpg" }]) {
+      const metadata = route.meta({
+        data: { project: { title: "Clean Water", slug: "/service-projects/clean-water", shortDescription: "Water supply project", headerImage } },
+        matches: [{ id: "root", data: { siteOrigin } }],
+      });
+      assert.equal(metadata.find((tag) => tag.property === "og:image").content,
+        headerImage?.url || `${siteOrigin}/og-image.jpg?v=redesign-2026`);
+      assert.equal(metadata.find((tag) => tag.rel === "canonical").href, "https://rotaryzcwest.org/service-projects/clean-water");
+    }
+  }
+});
+
 test("rendered project structured data cannot close its script element from CMS text", async () => {
   const title = 'Clean Water </script><script>alert("test")</script>';
   const route = projectRoute(async () => ({ items: [{ sys: { id: "project-1" }, fields: { title, slug: "clean-water", date: "2026-10-01" } }] }));

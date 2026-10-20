@@ -1,3 +1,4 @@
+import { defaultSocialImage } from "~/lib/social-image";
 import {
   Box,
   Container,
@@ -81,7 +82,7 @@ export async function loader({ params }: Route.LoaderArgs) {
   }
 }
 
-export function meta({ data }: Route.MetaArgs) {
+export function meta({ data, matches }: Route.MetaArgs) {
   const loaderData = data ? (data as unknown as LoaderData) : null;
   const project = loaderData?.project;
   
@@ -103,7 +104,7 @@ export function meta({ data }: Route.MetaArgs) {
     { property: "og:description", content: project.shortDescription },
     { property: "og:type", content: "article" },
     { property: "og:url", content: `https://rotaryzcwest.org${project.slug}` },
-    { property: "og:image", content: project.headerImage?.url || "https://rotaryzcwest.org/og-image.jpg" },
+    { property: "og:image", content: project.headerImage?.url || defaultSocialImage(matches) },
     
     // Canonical URL
     { tagName: "link", rel: "canonical", href: `https://rotaryzcwest.org${project.slug}` },

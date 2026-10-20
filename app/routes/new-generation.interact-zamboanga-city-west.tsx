@@ -1,3 +1,4 @@
+import { defaultSocialImage } from "~/lib/social-image";
 import { Box, Container, Heading, Text, SimpleGrid, VStack, HStack, Badge, Button, Image, Flex, Link as ChakraLink } from "@chakra-ui/react";
 import { Calendar, Users, Heart, Target, Award, Globe, BookOpen, Lightbulb, Star, Facebook } from "lucide-react";
 import { PageHero } from "~/components/ui/PageHero";
@@ -9,7 +10,7 @@ import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { fetchInteractClubOfZamboangaCityWest } from "~/lib/contentful-api";
 import type { InteractClubOfZamboangaCityWest } from "~/lib/contentful-types";
 
-export const meta: MetaFunction = () => {
+export const meta: MetaFunction = ({ matches }) => {
   return [
     { title: "Interact Club of Zamboanga City West | Building Tomorrow's Leaders Today" },
     { 
@@ -24,14 +25,14 @@ export const meta: MetaFunction = () => {
     },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/new-generation/interact-zamboanga-city-west" },
-    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
+    { property: "og:image", content: defaultSocialImage(matches) },
     { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: "Interact Club of Zamboanga City West" },
     { 
       name: "twitter:description", 
       content: "Building tomorrow's leaders today at the Interact Club of Zamboanga City West. Inspiring high school students through leadership development, community service, and innovation." 
     },
-    { name: "twitter:image", content: "https://rotaryzcwest.org/og-image.jpg" },
+    { name: "twitter:image", content: defaultSocialImage(matches) },
     { name: "robots", content: "index, follow" },
     { name: "author", content: "Rotary Club of Zamboanga City West" },
     { tagName: "link", rel: "canonical", href: "https://rotaryzcwest.org/new-generation/interact-zamboanga-city-west" },

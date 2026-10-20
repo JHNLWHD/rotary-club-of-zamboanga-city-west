@@ -1,7 +1,9 @@
+import { defaultSocialImage } from "~/lib/social-image";
+import type { MetaArgs } from "react-router";
 import { Box, Container, Heading, SimpleGrid, Text } from "@chakra-ui/react";
 import { PageHero } from "~/components/ui/PageHero";
 
-export function meta() {
+export function meta({ matches }: MetaArgs) {
   return [
     { title: "Club History | Rotary Club of Zamboanga City West" },
     { name: "description", content: "Rotary Club of Zamboanga City West was chartered on June 2, 1971. Review the verified founding fact while the club’s fuller historical archive is prepared." },
@@ -10,7 +12,7 @@ export function meta() {
     { property: "og:description", content: "Chartered June 2, 1971 in Zamboanga City." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/about/history" },
-    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
+    { property: "og:image", content: defaultSocialImage(matches) },
     { tagName: "link", rel: "canonical", href: "https://rotaryzcwest.org/about/history" },
   ];
 }

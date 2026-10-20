@@ -1,3 +1,4 @@
+import { defaultSocialImage } from "~/lib/social-image";
 import {
   Box,
   Container,
@@ -40,7 +41,7 @@ export const headers: Route.HeadersFunction = ({ loaderHeaders, parentHeaders })
   return responseHeaders;
 };
 
-export function meta({ data }: Route.MetaArgs) {
+export function meta({ data, matches }: Route.MetaArgs) {
   const hasResolutions = Boolean(data?.boardResolutions?.length);
   const unavailable = data?.unavailable;
   const description = unavailable
@@ -59,7 +60,7 @@ export function meta({ data }: Route.MetaArgs) {
     { property: "og:description", content: description },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/about/board-resolutions" },
-    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
+    { property: "og:image", content: defaultSocialImage(matches) },
     
     // Canonical URL
     { tagName: "link", rel: "canonical", href: "https://rotaryzcwest.org/about/board-resolutions" },

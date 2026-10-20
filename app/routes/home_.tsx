@@ -1,3 +1,5 @@
+import { defaultSocialImage } from "~/lib/social-image";
+import type { MetaArgs } from "react-router";
 import { Box, Flex, Heading, Link, Text } from "@chakra-ui/react";
 import { ArrowUpRight } from "lucide-react";
 import { useLoaderData, useRouteLoaderData } from "react-router";
@@ -49,7 +51,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   }
 }
 
-export function meta() {
+export function meta({ matches }: MetaArgs) {
   return [
     { title: "Rotary Club of Zamboanga City West | Local Service, Documented Impact" },
     { name: "description", content: "Explore the documented community projects, leadership, and Foundation giving of Rotary Club of Zamboanga City West, chartered in 1971." },
@@ -60,7 +62,7 @@ export function meta() {
     { property: "og:description", content: "Explore the club’s documented community projects, leadership, and Foundation giving." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org" },
-    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
+    { property: "og:image", content: defaultSocialImage(matches) },
     { property: "og:image:width", content: "1200" },
     { property: "og:image:height", content: "630" },
     { property: "og:image:alt", content: "Rotary Club of Zamboanga City West" },
@@ -68,7 +70,7 @@ export function meta() {
     { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: "Rotary Club of Zamboanga City West" },
     { name: "twitter:description", content: "Local service. Documented impact." },
-    { name: "twitter:image", content: "https://rotaryzcwest.org/og-image.jpg" },
+    { name: "twitter:image", content: defaultSocialImage(matches) },
     { name: "theme-color", content: "#17458f" },
     { name: "geo.region", content: "PH-ZAM" },
     { name: "geo.placename", content: "Zamboanga City" },

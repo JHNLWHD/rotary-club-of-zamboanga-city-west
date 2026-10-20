@@ -14,7 +14,10 @@ function load(path, imports = {}) {
     compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX },
   });
   const exports = {};
-  runInNewContext(outputText, { exports, require: (id) => imports[id] ?? require(id) });
+  runInNewContext(outputText, {
+    exports, URL,
+    require: (id) => imports[id] ?? (id.startsWith("~/lib/") ? load(`../app/lib/${id.slice(6)}.ts`) : require(id)),
+  });
   return exports;
 }
 

@@ -1,3 +1,5 @@
+import { defaultSocialImage } from "~/lib/social-image";
+import type { MetaArgs } from "react-router";
 import { Box, Container, Flex, Heading, Image, SimpleGrid, Stack, Text } from "@chakra-ui/react";
 import { Archive, CalendarDays, MapPin } from "lucide-react";
 import { useLoaderData } from "react-router";
@@ -37,7 +39,7 @@ export async function loader(): Promise<LoaderData> {
   }
 }
 
-export function meta() {
+export function meta({ matches }: MetaArgs) {
   return [
     { title: "Calendar of Activities | Rotary Club of Zamboanga City West" },
     { name: "description", content: "Review upcoming and past Rotary Club of Zamboanga City West activities, with dated events clearly separated from the archive." },
@@ -46,7 +48,7 @@ export function meta() {
     { property: "og:description", content: "Upcoming activities and a clearly labeled event archive." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/about/calendar" },
-    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
+    { property: "og:image", content: defaultSocialImage(matches) },
     { tagName: "link", rel: "canonical", href: "https://rotaryzcwest.org/about/calendar" },
   ];
 }

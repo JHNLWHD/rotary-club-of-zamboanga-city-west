@@ -1,3 +1,5 @@
+import { defaultSocialImage } from "~/lib/social-image";
+import type { MetaArgs } from "react-router";
 import {
   Box,
   Flex,
@@ -16,7 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { Globe, Users, Target, Heart, MapPin, Phone, Mail, Clock, Facebook, Construction, Calendar, Camera, Handshake } from "lucide-react";
 
-export function meta() {
+export function meta({ matches }: MetaArgs) {
   return [
     { title: "Website Under Construction | Rotary Club of Zamboanga City West" },
     { name: "description", content: "Our new website is coming soon! Rotary Club of Zamboanga City West is working on an improved digital experience. Stay tuned for updates on our community service projects." },
@@ -28,7 +30,7 @@ export function meta() {
     { property: "og:description", content: "Our new website is coming soon! Stay tuned for updates on our community service projects in Zamboanga City." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org" },
-    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
+    { property: "og:image", content: defaultSocialImage(matches) },
     
   ];
 }

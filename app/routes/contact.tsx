@@ -1,3 +1,5 @@
+import { defaultSocialImage } from "~/lib/social-image";
+import type { MetaArgs } from "react-router";
 import { Box, Container } from "@chakra-ui/react";
 import { ContactSection } from "../components/homepage/ContactSection";
 import { ComingSoon } from "../components/ui/ComingSoon";
@@ -5,7 +7,7 @@ import { useRouteLoaderData, useSearchParams } from "react-router";
 import ThankYou from "./thank-you";
 import type { ContactInfo, MeetingInfo } from "~/lib/contentful-types";
 
-export function meta() {
+export function meta({ matches }: MetaArgs) {
   return [
     { title: "Contact Us | Rotary Club of Zamboanga City West" },
     { name: "description", content: "Get in touch with Rotary Club of Zamboanga City West. Join our mission of service above self in Zamboanga City, Philippines." },
@@ -16,7 +18,7 @@ export function meta() {
     { property: "og:description", content: "Get in touch with Rotary Club of Zamboanga City West." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/contact" },
-    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
+    { property: "og:image", content: defaultSocialImage(matches) },
     
     // Canonical URL
     { tagName: "link", rel: "canonical", href: "https://rotaryzcwest.org/contact" },

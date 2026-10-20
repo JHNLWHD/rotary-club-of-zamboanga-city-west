@@ -1,5 +1,5 @@
 [build]
-command = "npm run build"
+command = "npm run check && npm run build"
 publish = "build/client"
 
 [dev]
@@ -19,7 +19,7 @@ force = false
 
 # Environment settings
 [build.environment]
-NODE_VERSION = "18"
+NODE_VERSION = "22"
 
 # Forms configuration
 [forms]

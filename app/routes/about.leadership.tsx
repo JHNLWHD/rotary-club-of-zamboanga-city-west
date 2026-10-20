@@ -1,3 +1,5 @@
+import { defaultSocialImage } from "~/lib/social-image";
+import type { MetaArgs } from "react-router";
 import {
   Box,
   Heading,
@@ -48,7 +50,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   }
 }
 
-export function meta() {
+export function meta({ matches }: MetaArgs) {
   return [
     { title: "Club Leadership | Rotary Club of Zamboanga City West" },
     { name: "description", content: "Review the Rotary Club of Zamboanga City West leadership roster published for Rotary Year 2025-2026." },
@@ -59,7 +61,7 @@ export function meta() {
     { property: "og:description", content: "Published club leadership roster for Rotary Year 2025-2026." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/about/leadership" },
-    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
+    { property: "og:image", content: defaultSocialImage(matches) },
     
     // Canonical URL
     { tagName: "link", rel: "canonical", href: "https://rotaryzcwest.org/about/leadership" },

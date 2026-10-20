@@ -72,3 +72,10 @@ The route SHALL export a `meta` function that sets document title, description, 
 
 - **WHEN** a client or crawler requests metadata for `/`
 - **THEN** the returned meta tags SHALL include a primary title containing the club name, the verified 1971 charter reference where used, `og:url`, and an actual canonical link descriptor for the production home URL
+
+#### Scenario: Sharing a preview page
+
+- **WHEN** a page uses the shared club social image
+- **THEN** its Open Graph and Twitter image URLs SHALL use the serving origin from the root loader and the current artwork version, including when contact data is empty or unavailable
+- **AND** canonical and `og:url` values SHALL continue to identify the public website
+- **AND** project-specific Contentful images and dedicated archive covers SHALL remain in use where available

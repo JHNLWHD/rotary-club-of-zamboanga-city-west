@@ -1,3 +1,5 @@
+import { defaultSocialImage } from "~/lib/social-image";
+import type { MetaArgs } from "react-router";
 import {
   Box,
   Heading,
@@ -32,7 +34,7 @@ import {
   foundationGivingDefinitionOfTermsPolioPlusMarkdown,
 } from "~/data/foundation-giving-definition-of-terms";
 
-export function meta() {
+export function meta({ matches }: MetaArgs) {
   return [
     { title: "The Rotary Foundation Giving | Rotary Club of Zamboanga City West" },
     { name: "description", content: "Review the Rotary Club of Zamboanga City West Foundation giving records by Rotary Year and fund type." },
@@ -42,11 +44,11 @@ export function meta() {
     { property: "og:description", content: "Published club giving records by Rotary Year and fund type." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/about/foundation-giving" },
-    { property: "og:image", content: "https://rotaryzcwest.org/og-image.jpg" },
+    { property: "og:image", content: defaultSocialImage(matches) },
     { property: "og:image:width", content: "1200" },
     { property: "og:image:height", content: "630" },
     { name: "twitter:card", content: "summary_large_image" },
-    { name: "twitter:image", content: "https://rotaryzcwest.org/og-image.jpg" },
+    { name: "twitter:image", content: defaultSocialImage(matches) },
 
     { tagName: "link", rel: "canonical", href: "https://rotaryzcwest.org/about/foundation-giving" },
   ];

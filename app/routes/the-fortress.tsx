@@ -1,3 +1,4 @@
+import { defaultSocialImage } from "~/lib/social-image";
 import { Box, Button, Container, Dialog, Flex, Heading, Link, Portal, SimpleGrid, Text } from "@chakra-ui/react";
 import { lazy, Suspense, useRef, useState } from "react";
 import { useLoaderData } from "react-router";
@@ -43,8 +44,8 @@ export async function loader({ request }: Route.LoaderArgs) {
   }
 }
 
-export function meta({ data }: Route.MetaArgs) {
-  const socialImage = data?.socialImage || 'https://rotaryzcwest.org/og-image.jpg';
+export function meta({ data, matches }: Route.MetaArgs) {
+  const socialImage = data?.socialImage || defaultSocialImage(matches);
   return [
     { title: "The Fortress | Official Publication of Rotary Club of Zamboanga City West" },
     { name: "description", content: "Read The Fortress, the club’s publication of project updates, member stories, and fellowship in Zamboanga City." },
