@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Box,
   Button,
@@ -47,6 +47,7 @@ type ShareModalProps = {
 
 function ShareModal({ isOpen, onClose, content, contentType }: ShareModalProps) {
   const [isMounted, setIsMounted] = useState(false);
+  const shareLinkInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setIsMounted(true);
@@ -60,13 +61,9 @@ function ShareModal({ isOpen, onClose, content, contentType }: ShareModalProps) 
         await navigator.clipboard.writeText(content.shareableLink);
         toast.success(`${contentType === 'event' ? 'Event' : 'Project'} link copied to clipboard!`);
       } else {
-        // Fallback for browsers without clipboard API
-        const textArea = document.createElement('textarea');
-        textArea.value = content.shareableLink;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
+        if (!shareLinkInput.current) throw new Error('Share link is unavailable');
+        shareLinkInput.current.select();
+        if (!document.execCommand('copy')) throw new Error('Copy command failed');
         toast.success(`${contentType === 'event' ? 'Event' : 'Project'} link copied to clipboard!`);
       }
     } catch (error) {
@@ -184,6 +181,7 @@ function ShareModal({ isOpen, onClose, content, contentType }: ShareModalProps) 
                 <Text fontSize="sm" color="gray.600" mb={2}>Or copy link:</Text>
                 <HStack gap={2}>
                   <Input
+                    ref={shareLinkInput}
                     aria-label="Share link"
                     value={content.shareableLink}
                     readOnly
