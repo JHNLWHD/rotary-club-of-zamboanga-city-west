@@ -1,5 +1,14 @@
 import type { Officer } from "./contentful-types";
 
+// A banner can date the whole roster only when every assignment agrees.
+export function getRosterRotaryYear(roster: readonly { rotaryYear?: string }[]): string | null {
+  const year = roster[0]?.rotaryYear;
+  if (typeof year !== "string" || !/^\d{4}-\d{4}$/.test(year)) return null;
+  const [start, end] = year.split("-").map(Number);
+  if (end !== start + 1) return null;
+  return roster.every(person => person.rotaryYear === year) ? year : null;
+}
+
 /**
  * Get the priority order for a given officer role
  * @param role - The officer role string

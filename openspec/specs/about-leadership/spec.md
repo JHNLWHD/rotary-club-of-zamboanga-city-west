@@ -20,7 +20,7 @@ The route loader SHALL fetch officers and Rotary Ann records in parallel (`fetch
 
 ### Requirement: Page presents leadership content with hierarchy
 
-The page SHALL render leadership content using shared presentation components (for example `PageHero`, `OfficerCard`, and `ComingSoon` where applicable), sort or group officers according to the club’s role hierarchy utilities, and visibly label the roster as the published Rotary Year 2025-2026 archive rather than implying it is current.
+The page SHALL render leadership content using shared presentation components (for example `PageHero`, `OfficerCard`, and `ComingSoon` where applicable), sort or group officers according to the club’s role hierarchy utilities, and label the lists as published rosters. Officer and Rotary Ann records SHALL provide an optional `rotaryYear` field in Contentful, using `YYYY-YYYY` for consecutive years.
 
 #### Scenario: Non-empty roster
 
@@ -31,12 +31,21 @@ Entries without a usable photo SHALL use a compact text layout without a large p
 
 #### Scenario: Visitor checks roster currency
 
-- **WHEN** a user views the leadership page after that Rotary Year
-- **THEN** the page SHALL state the roster year and direct the user to contact the club for current-year confirmation
+- **WHEN** all published officer executive and director assignments have the same valid Rotary Year
+- **THEN** their banner SHALL show that Contentful year, without claiming it is the current year
+- **AND** adviser records SHALL remain separate from that dated roster
+- **AND** the Rotary Ann banner SHALL derive its year independently from its executive and director assignments
+
+#### Scenario: Roster year is unknown
+
+- **WHEN** a roster is empty or has missing, invalid, or mixed Rotary Years
+- **THEN** its banner SHALL show neutral text and SHALL NOT infer a year from the clock or unrelated Contentful records
 
 ### Requirement: Metadata identifies the leadership page
 
 The route SHALL export `meta` tags including page title and description focused on club leadership, plus Open Graph fields and a canonical URL for `https://rotaryzcwest.org/about/leadership`.
+
+The description and Open Graph description SHALL include a Rotary Year only when both rosters have the same confirmed year. Otherwise, they SHALL use a description without a year.
 
 #### Scenario: Canonical leadership URL
 

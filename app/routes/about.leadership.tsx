@@ -1,5 +1,4 @@
 import { defaultSocialImage } from "~/lib/social-image";
-import type { MetaArgs } from "react-router";
 import {
   Box,
   Heading,
@@ -14,11 +13,13 @@ import { OfficerCard } from "~/components/ui/OfficerCard";
 import { ComingSoon } from "~/components/ui/ComingSoon";
 import type { Officer, RotaryAnns } from "~/lib/contentful-types";
 import { fetchAllOfficers, fetchAllRotaryAnns } from "~/lib/contentful-api";
-import { sortOfficersByRoleHierarchy } from "~/lib/officer-utils";
+import { getRosterRotaryYear, sortOfficersByRoleHierarchy } from "~/lib/officer-utils";
 import type { Route } from "./+types/about.leadership";
 import { Users, Target, Award } from "lucide-react";
 
 type LoaderData = {
+  officerRotaryYear: string | null;
+  annsRotaryYear: string | null;
   officers: {
     executives: Officer[];
     directors: Officer[];
@@ -37,28 +38,39 @@ export async function loader({ request }: Route.LoaderArgs) {
       fetchAllRotaryAnns()
     ]);
 
+    const officers = allOfficers || { executives: [], directors: [], advisers: [] };
+    const rotaryAnns = allRotaryAnns || { executives: [], directors: [] };
     return {
-      officers: allOfficers || { executives: [], directors: [], advisers: [] },
-      rotaryAnns: allRotaryAnns || { executives: [], directors: [] }
+      officers,
+      rotaryAnns,
+      officerRotaryYear: getRosterRotaryYear([...officers.executives, ...officers.directors]),
+      annsRotaryYear: getRosterRotaryYear([...rotaryAnns.executives, ...rotaryAnns.directors]),
     };
   } catch (error) {
     console.error('Error loading leadership data on server:', error);
     return {
+      officerRotaryYear: null,
+      annsRotaryYear: null,
       officers: { executives: [], directors: [], advisers: [] },
       rotaryAnns: { executives: [], directors: [] }
     };
   }
 }
 
-export function meta({ matches }: MetaArgs) {
+export function meta({ data, matches }: Route.MetaArgs) {
+  const sharedYear = data?.officerRotaryYear && data.officerRotaryYear === data.annsRotaryYear
+    ? data.officerRotaryYear : null;
+  const description = sharedYear
+    ? `Review the Rotary Club of Zamboanga City West leadership roster published for Rotary Year ${sharedYear}.`
+    : "Review the published club officer and Rotary Ann rosters of the Rotary Club of Zamboanga City West.";
   return [
     { title: "Club Leadership | Rotary Club of Zamboanga City West" },
-    { name: "description", content: "Review the Rotary Club of Zamboanga City West leadership roster published for Rotary Year 2025-2026." },
+    { name: "description", content: description },
     { name: "keywords", content: "Rotary leadership, club officers, board members, Zamboanga City, Rotary West" },
     
     // Open Graph tags
     { property: "og:title", content: "Club Leadership | Rotary Club of Zamboanga City West" },
-    { property: "og:description", content: "Published club leadership roster for Rotary Year 2025-2026." },
+    { property: "og:description", content: description },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://rotaryzcwest.org/about/leadership" },
     { property: "og:image", content: defaultSocialImage(matches) },
@@ -70,7 +82,7 @@ export function meta({ matches }: MetaArgs) {
 
 
 export default function ClubLeadership() {
-  const { officers, rotaryAnns } = useLoaderData<LoaderData>();
+  const { officers, rotaryAnns, officerRotaryYear, annsRotaryYear } = useLoaderData<LoaderData>();
   
   // Sort executives by role priority using utility function
   const sortedExecutives = sortOfficersByRoleHierarchy(officers.executives);
@@ -101,7 +113,7 @@ export default function ClubLeadership() {
     <>
       <PageHero
         title="Club Leadership"
-        description="Browse the leadership roster currently published by the club. The Rotary Year is stated clearly so an older roster is never presented as current."
+        description="Browse the club officer and Rotary Ann rosters. Each roster shows the Rotary Year supplied by the club."
         stats={leadershipStats}
       />
       
@@ -119,14 +131,14 @@ export default function ClubLeadership() {
               mb={3}
             >
               <Text fontWeight="bold" fontSize="xs" letterSpacing="0.12em" textTransform="uppercase">
-                Published archive
+                Published roster
               </Text>
             </Box>
             <Text fontSize="xl" color="#082b49" fontWeight="bold">
-              Rotary Year 2025–2026
+              {officerRotaryYear ? `Rotary Year ${officerRotaryYear.replace("-", "–")}` : "Rotary Year not provided"}
             </Text>
             <Text fontSize="sm" color="gray.700" mt={2}>
-              Contact the club to confirm leadership for the current Rotary Year.
+              {officerRotaryYear ? "Year shown for the published club officers and directors." : "Contact the club to confirm the year for this roster."}
             </Text>
           </Box>
 
@@ -220,7 +232,7 @@ export default function ClubLeadership() {
               </Text>
             </Box>
             <Text fontSize="md" color="gray.600" fontWeight="medium">
-              Rotary Year 2025–2026 archive
+              {annsRotaryYear ? `Rotary Year ${annsRotaryYear.replace("-", "–")}` : "Rotary Year not provided"}
             </Text>
           </Box>
         )}
