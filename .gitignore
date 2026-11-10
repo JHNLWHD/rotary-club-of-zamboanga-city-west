@@ -9,3 +9,7 @@
 .netlify
 
 .env
+
+# Keep local agent artifacts private; share repository skills only.
+/.agents/*
+!/.agents/skills/

@@ -1,267 +1,123 @@
-import { Box, Flex, VStack, Heading, Text, Input, Textarea, Button, Image, Link } from "@chakra-ui/react";
-import { SectionHeader } from "../ui/SectionHeader";
+import { Box, Button, Flex, Heading, Input, Link, Stack, Text, Textarea } from "@chakra-ui/react";
+import { ArrowRight } from "lucide-react";
 import type { ContactInfo, MeetingInfo } from "~/lib/contentful-types";
-import { CalendarIcon, FacebookIcon, MailIcon, MapPinIcon } from "lucide-react";
 
 type ContactSectionProps = {
-  meetingInfo: MeetingInfo
-  contactInfo: ContactInfo
+  meetingInfo: MeetingInfo;
+  contactInfo: ContactInfo;
+  headingAs?: "h1" | "h2";
 };
 
-export function ContactSection({ meetingInfo, contactInfo }: ContactSectionProps): React.JSX.Element {
+const labelStyle = {
+  display: "block",
+  color: "#082247",
+  fontSize: "0.7rem",
+  fontWeight: 700,
+  letterSpacing: "0.16em",
+  marginBottom: "0.65rem",
+  textTransform: "uppercase" as const,
+};
+
+export function ContactSection({ meetingInfo, contactInfo, headingAs = "h2" }: ContactSectionProps): React.JSX.Element {
+  const formHeadingAs = headingAs === "h1" ? "h2" : "h3";
+
   return (
-    <Box as="section" py={20} bgGradient="linear(to-b, gray.50, white)" id="contact">
-      <Box maxW="1200px" mx="auto" px={{ base: 4, md: 8 }}>
-        <SectionHeader 
-          subtitle="Contact Us"
-          title="Join the Conversation"
-          description="Interested in our projects or inspired to join our mission? We’d love to hear from you and connect on how we can make a difference together."
-        />
-
-        <Flex direction={{ base: "column", lg: "row" }} gap={12}>
-          <Box 
-            flex={1} 
-            bg="white" 
-            borderRadius="2xl" 
-            p={8} 
-            boxShadow="0 8px 25px rgba(0,0,0,0.08)"
-            border="1px solid"
-            borderColor="gray.100"
-          >
-            <Heading as="h3" fontSize="xl" color="gray.900" mb={6} fontWeight="bold">
-              Send us a Message
-            </Heading>
-            <form
-              name="contact"
-              method="POST"
-              data-netlify="true"
-              data-netlify-honeypot="bot-field"
-              action="/thank-you"
+    <Box as="section" bg="#f2f0ea" id="contact">
+      <Flex
+        maxW="1400px"
+        mx="auto"
+        direction={{ base: "column", lg: "row" }}
+        minH={{ lg: "760px" }}
+      >
+        <Flex
+          flex="0 0 48%"
+          direction="column"
+          justify="space-between"
+          p={{ base: 6, md: 10, lg: 12 }}
+        >
+          <Box>
+            <Flex align="center" gap={4} mb={{ base: 8, md: 10 }}>
+              <Box w="28px" h="2px" bg="brand.600" />
+              <Text fontSize="xs" fontWeight="bold" letterSpacing="0.18em" textTransform="uppercase">
+                Contact / The Great West
+              </Text>
+            </Flex>
+            <Heading
+              as={headingAs}
+              color="brand.900"
+              fontSize={{ base: "4xl", md: "5xl", xl: "6xl" }}
+              fontWeight="semibold"
+              letterSpacing="-0.025em"
+              lineHeight="1.12"
+              maxW="650px"
             >
-              <input type="hidden" name="form-name" value="contact" />
-              
-              <Box display="none">
-                <label>
-                  Don't fill this out if you're human: <input name="bot-field" />
-                </label>
-              </Box>
-
-              <VStack gap={4} align="stretch">
-                <Input 
-                  name="name"
-                  placeholder="Your Name" 
-                  bg="gray.50" 
-                  color="gray.900"
-                  border="2px solid"
-                  borderColor="gray.200"
-                  borderRadius="lg"
-                  px={4}
-                  py={4}
-                  height="auto"
-                  required
-                  _focus={{ 
-                    borderColor: "brand.500", 
-                    bg: "white",
-                    boxShadow: "0 0 0 1px var(--chakra-colors-brand-500)"
-                  }}
-                  _hover={{ borderColor: "gray.300" }}
-                  _placeholder={{ color: "gray.500" }}
-                />
-                <Input 
-                  name="email"
-                  placeholder="Your Email Address" 
-                  type="email"
-                  bg="gray.50" 
-                  color="gray.900"
-                  border="2px solid"
-                  borderColor="gray.200"
-                  borderRadius="lg"
-                  px={4}
-                  py={4}
-                  height="auto"
-                  required
-                  _focus={{ 
-                    borderColor: "brand.500", 
-                    bg: "white",
-                    boxShadow: "0 0 0 1px var(--chakra-colors-brand-500)"
-                  }}
-                  _hover={{ borderColor: "gray.300" }}
-                  _placeholder={{ color: "gray.500" }}
-                />
-                <Textarea 
-                  name="message"
-                  placeholder="Tell us about your inquiry or how you'd like to get involved..." 
-                  bg="gray.50" 
-                  color="gray.900"
-                  border="2px solid"
-                  borderColor="gray.200"
-                  borderRadius="lg"
-                  px={4}
-                  py={4}
-                  rows={5}
-                  resize="vertical"
-                  required
-                  _focus={{ 
-                    borderColor: "brand.500", 
-                    bg: "white",
-                    boxShadow: "0 0 0 1px var(--chakra-colors-brand-500)"
-                  }}
-                  _hover={{ borderColor: "gray.300" }}
-                  _placeholder={{ color: "gray.500" }}
-                />
-                <Button
-                  type="submit"
-                  bg="brand.500"
-                  color="white"
-                  _hover={{ 
-                    bg: "brand.600", 
-                    transform: "translateY(-2px)",
-                    boxShadow: "0 8px 25px rgba(0,93,170,0.3)"
-                  }}
-                  borderRadius="lg"
-                  px={8}
-                  py={4}
-                  fontSize="md"
-                  fontWeight="bold"
-                  w="full"
-                  transition="all 0.3s ease"
-                  boxShadow="0 4px 15px rgba(0,93,170,0.2)"
-                  _active={{
-                    bg: "brand.700",
-                    transform: "translateY(0px)"
-                  }}
-                  _focus={{
-                    bg: "brand.500",
-                    boxShadow: "0 0 0 3px rgba(0,93,170,0.3)"
-                  }}
-                >
-                  Send Message
-                </Button>
-              </VStack>
-            </form>
+              Start with a real need.
+            </Heading>
+            <Text color="gray.700" fontSize={{ base: "md", md: "lg" }} lineHeight="1.7" maxW="560px" mt={7}>
+              Ask about a project, propose a partnership, attend a meeting, or learn how membership works. Specific messages are easier to route.
+            </Text>
           </Box>
 
-          {/* Meeting & Contact Details */}
-          <Box flex={1} display="flex" flexDirection="column" gap={6}>
-            {/* Meeting Information Card */}
-            <Box 
-              bg="white" 
-              borderRadius="2xl" 
-              p={8} 
-              boxShadow="0 8px 25px rgba(0,0,0,0.08)"
-              border="1px solid"
-              borderColor="gray.100"
-            >
-              <Heading as="h3" fontSize="xl" color="gray.900" mb={6} fontWeight="bold">
-                Join Our Monthly Meetings
-              </Heading>
-              <VStack align="start" gap={4}>
-                <Flex align="center" gap={3}>
-                  <Box 
-                    bgGradient="linear(to-br, blue.100, blue.200)"
-                    borderRadius="lg" 
-                    p={2}
-                    border="2px solid"
-                    borderColor="blue.300"
-                  >
-                    <CalendarIcon color="blue" />
-                  </Box>
-                  <Box>
-                    <Text fontWeight="bold" color="gray.900" fontSize="md">
-                      {meetingInfo.day}
-                    </Text>
-                    <Text color="gray.600" fontSize="sm">
-                      {meetingInfo.time}
-                    </Text>
-                  </Box>
-                </Flex>
-                <Flex align="start" gap={3}>
-                  <Box 
-                    bgGradient="linear(to-br, green.100, green.200)"
-                    borderRadius="lg" 
-                    p={2}
-                    border="2px solid"
-                    borderColor="green.300"
-                    mt={1}
-                  >
-                    <MapPinIcon color="green" />
-                  </Box>
-                  <Box>
-                    <Text fontWeight="bold" color="gray.900" fontSize="md">
-                      {meetingInfo.location}
-                    </Text>
-                    <Text color="gray.600" fontSize="sm" lineHeight="relaxed">
-                      {meetingInfo.address}
-                    </Text>
-                  </Box>
-                </Flex>
-              </VStack>
-            </Box>
-
-            {/* Contact Information Card */}
-            <Box 
-              bg="white" 
-              borderRadius="2xl" 
-              p={8} 
-              boxShadow="0 8px 25px rgba(0,0,0,0.08)"
-              border="1px solid"
-              borderColor="gray.100"
-            >
-              <Heading as="h3" fontSize="xl" color="gray.900" mb={6} fontWeight="bold">
-                Contact Information
-              </Heading>
-              <VStack align="start" gap={4}>
-                <Flex align="center" gap={3}>
-                  <Box 
-                    bgGradient="linear(to-br, red.100, red.200)"
-                    borderRadius="lg" 
-                    p={2}
-                    border="2px solid"
-                    borderColor="red.300"
-                  >
-                    <MailIcon color="red" />
-                  </Box>
-                  <Box>
-                    <Text fontWeight="bold" color="gray.900" fontSize="md">
-                      {contactInfo.email}
-                    </Text>
-                    <Text color="gray.600" fontSize="sm">
-                      We'll respond within 24 hours
-                    </Text>
-                  </Box>
-                </Flex>
-                <Flex align="center" gap={3}>
-                  <Box 
-                    bgGradient="linear(to-br, blue.100, blue.200)"
-                    borderRadius="lg" 
-                    p={2}
-                    border="2px solid"
-                    borderColor="blue.300"
-                  >
-                    <FacebookIcon color="blue" />
-                  </Box>
-                  <Box>
-                    <Link 
-                      href={contactInfo.facebookUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      fontWeight="bold" 
-                      color="blue.600" 
-                      fontSize="md"
-                      _hover={{ color: "blue.700", textDecoration: "underline" }}
-                    >
-                      {contactInfo.facebookHandle}
-                    </Link>
-                    <Text color="gray.600" fontSize="sm">
-                      Follow us for updates
-                    </Text>
-                  </Box>
-                </Flex>
-              </VStack>
-            </Box>
+          <Box mt={{ base: 12, lg: 16 }} borderTop="1px solid" borderColor="brand.900">
+            <Flex py={4} borderBottom="1px solid" borderColor="#b9b7b0" justify="space-between" gap={6} direction={{ base: "column", sm: "row" }}>
+              <Text fontSize="xs" letterSpacing="0.12em" textTransform="uppercase" fontWeight="bold">Meeting</Text>
+              <Text textAlign={{ sm: "right" }} fontWeight="semibold">{meetingInfo.day} · {meetingInfo.time}</Text>
+            </Flex>
+            <Flex py={4} borderBottom="1px solid" borderColor="#b9b7b0" justify="space-between" gap={6} direction={{ base: "column", sm: "row" }}>
+              <Text fontSize="xs" letterSpacing="0.12em" textTransform="uppercase" fontWeight="bold">Venue</Text>
+              <Text textAlign={{ sm: "right" }} maxW="380px">{meetingInfo.location}<br />{meetingInfo.address}</Text>
+            </Flex>
+            <Flex py={4} borderBottom="1px solid" borderColor="#b9b7b0" justify="space-between" gap={6} direction={{ base: "column", sm: "row" }}>
+              <Text fontSize="xs" letterSpacing="0.12em" textTransform="uppercase" fontWeight="bold">Direct</Text>
+              <Link href={`mailto:${contactInfo.email}`} color="brand.700" fontWeight="bold">{contactInfo.email}</Link>
+            </Flex>
+            <Flex py={4} justify="space-between" gap={6} direction={{ base: "column", sm: "row" }}>
+              <Text fontSize="xs" letterSpacing="0.12em" textTransform="uppercase" fontWeight="bold">Updates</Text>
+              <Link href={contactInfo.facebookUrl} target="_blank" rel="noopener noreferrer" color="brand.700" fontWeight="bold">
+                {contactInfo.facebookHandle}
+              </Link>
+            </Flex>
           </Box>
         </Flex>
-      </Box>
+
+        <Flex flex="1" align="center" p={{ base: 6, md: 10, lg: 12 }} bg="#f7f5f0">
+          <Box w="full">
+            <Text color="brand.700" fontSize="xs" fontWeight="bold" letterSpacing="0.18em" textTransform="uppercase" mb={4}>
+              Inquiry form
+            </Text>
+            <Heading as={formHeadingAs} color="brand.900" fontSize={{ base: "2xl", md: "3xl" }} letterSpacing="-0.03em" mb={8}>
+              Write to the club.
+            </Heading>
+
+            <form name="contact" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" action="/thank-you">
+              <input type="hidden" name="form-name" value="contact" />
+              <Box display="none">
+                <label>Do not fill this in: <input name="bot-field" /></label>
+              </Box>
+
+              <Stack gap={6}>
+                <Flex direction={{ base: "column", md: "row" }} gap={5}>
+                  <Box flex="1">
+                    <label htmlFor="contact-name" style={labelStyle}>Name</label>
+                    <Input id="contact-name" name="name" autoComplete="name" bg="white" border="1px solid" borderColor="#b9b7b0" h="56px" px={4} required />
+                  </Box>
+                  <Box flex="1">
+                    <label htmlFor="contact-email" style={labelStyle}>Email address</label>
+                    <Input id="contact-email" name="email" type="email" autoComplete="email" bg="white" border="1px solid" borderColor="#b9b7b0" h="56px" px={4} required />
+                  </Box>
+                </Flex>
+                <Box>
+                  <label htmlFor="contact-message" style={labelStyle}>What would you like to discuss?</label>
+                  <Textarea id="contact-message" name="message" bg="white" border="1px solid" borderColor="#b9b7b0" rows={8} p={4} resize="vertical" required />
+                </Box>
+                <Button type="submit" bg="#0067c8" color="white" h="58px" px={7} w="full" display="inline-flex" justifyContent="space-between" _hover={{ bg: "brand.700" }}>
+                  Send your inquiry <ArrowRight size={19} aria-hidden="true" />
+                </Button>
+              </Stack>
+            </form>
+          </Box>
+        </Flex>
+      </Flex>
     </Box>
   );
-} 
+}

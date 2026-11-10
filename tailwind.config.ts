@@ -6,7 +6,8 @@ export default {
     extend: {
       fontFamily: {
         sans: [
-          '"Inter"',
+          '"Open Sans"',
+          "Arial",
           "ui-sans-serif",
           "system-ui",
           "sans-serif",

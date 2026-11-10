@@ -15,7 +15,7 @@ The route SHALL render a full-page layout with Rotary Club of Zamboanga City Wes
 
 ### Requirement: Metadata describes the construction state
 
-The route SHALL export a `meta` function whose title and description clearly state that the site or experience is under construction, with Open Graph fields suitable for link previews.
+The route SHALL export a `meta` function whose title and description clearly state that the experience is under construction, with Open Graph fields suitable for link previews and `robots` set to `noindex, nofollow`.
 
 #### Scenario: Social preview
 

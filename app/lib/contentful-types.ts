@@ -74,6 +74,7 @@ export type Event = {
 
 export type Officer = {
   name: string;
+  rotaryYear?: string;
   role: string;
   designation: string;
   type: 'Executive' | 'Director' | 'Adviser';
@@ -91,6 +92,7 @@ export type ClubLeadership = {
 
 export type RotaryAnns = {
   name: string;
+  rotaryYear?: string;
   role: string;
   designation: string;
   type: 'Executive' | 'Director';

@@ -1,6 +1,6 @@
 ## Purpose
 
-Define the behavior of `/about/history` (`app/routes/about.history.tsx`): the club history area of the site. The route combines a standard page hero with a “coming soon” style body until full historical content is authored in the UI.
+Define the behavior of `/about/history` (`app/routes/about.history.tsx`): a factual club-history page anchored to the verified June 2, 1971 charter date while the full source-backed archive is prepared.
 
 ## Requirements
 
@@ -13,11 +13,11 @@ The route SHALL export a `meta` function with title and description referencing 
 - **WHEN** metadata is resolved for `/about/history`
 - **THEN** the canonical href SHALL point at the production history URL
 
-### Requirement: History page uses shared hero and placeholder content pattern
+### Requirement: History page separates verified history from work in progress
 
-The page SHALL render `PageHero` with history-oriented messaging and SHALL use `ComingSoon` (or equivalent) for the main content region when detailed history content is not yet presented.
+The page SHALL render `PageHero`, prominently state the June 2, 1971 charter date, and explain that the extended timeline is being assembled. It SHALL NOT publish a contradictory founding year or a hard-coded elapsed-year claim.
 
 #### Scenario: Default visit
 
 - **WHEN** a user opens `/about/history`
-- **THEN** they SHALL see a consistent hero and a clear placeholder indicating expanded history content is forthcoming
+- **THEN** they SHALL see the verified charter fact and a transparent archive-in-progress notice

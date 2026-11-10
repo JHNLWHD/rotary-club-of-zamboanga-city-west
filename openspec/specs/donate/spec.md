@@ -1,21 +1,21 @@
 ## Purpose
 
-Define the behavior of `/donate` (`app/routes/donate.tsx`): the donations landing page that explains how to support the club financially, with static marketing copy and SEO metadata for the donate URL.
+Define the behavior of `/donate` (`app/routes/donate.tsx`): a cautious giving-inquiry page used while the club has no verified online payment flow published on the website.
 
 ## Requirements
 
-### Requirement: Donate page presents support messaging
+### Requirement: Donate page requires direct verification
 
-The page SHALL render a clear primary heading and supporting copy inviting donations for community service, using the shared container width and vertical spacing patterns of the site.
+The page SHALL state that no online payment flow is currently published, warn visitors to confirm project and receiving-account details, and link to the contact and project pages.
 
 #### Scenario: Visitor opens donate
 
 - **WHEN** a user navigates to `/donate`
-- **THEN** they SHALL see donation-oriented content with an identifiable `h1` and explanatory text
+- **THEN** they SHALL see an identifiable `h1`, a verification warning, and no account number or unsupported payment instruction
 
-### Requirement: Donate metadata supports discovery and previews
+### Requirement: Donate metadata avoids search promotion while incomplete
 
-The route SHALL export `meta` with title and description focused on donating to the club, Open Graph fields, and canonical URL `https://rotaryzcwest.org/donate`.
+The route SHALL export `meta` with an accurate giving-inquiry title and description, canonical URL `https://rotaryzcwest.org/donate`, and `robots` set to `noindex, follow` while no verified payment flow exists.
 
 #### Scenario: Canonical donate URL
 

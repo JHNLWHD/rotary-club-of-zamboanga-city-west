@@ -1,123 +1,45 @@
-import {
-  Box,
-  Flex,
-  Heading,
-  Text,
-  Stack,
-  Link,
-  Container,
-} from "@chakra-ui/react";
-import { AlertTriangle, Facebook, Phone, Mail } from "lucide-react";
+import { Box, Container, Flex, Heading, Link, Text } from "@chakra-ui/react";
+import { ArrowLeft, FileQuestion } from "lucide-react";
+import { data } from "react-router";
+
+export function loader() {
+  return data(null, { status: 404 });
+}
 
 export function meta() {
   return [
     { title: "Page Not Found | Rotary Club of Zamboanga City West" },
-    { name: "description", content: "The page you're looking for doesn't exist. Return to our homepage or contact us for assistance." },
+    { name: "description", content: "The requested page could not be found." },
     { name: "robots", content: "noindex, nofollow" },
-    
-    // Open Graph tags
-    { property: "og:title", content: "Page Not Found | Rotary Club of Zamboanga City West" },
-    { property: "og:description", content: "The page you're looking for doesn't exist. Return to our homepage or contact us for assistance." },
-    { property: "og:type", content: "website" },
-    { property: "og:url", content: "https://rotaryzcwest.org" },
-    
-    // Canonical URL
-    { rel: "canonical", href: "https://rotaryzcwest.org" },
   ];
 }
 
 export default function NotFound() {
   return (
-    <Container maxW="800px" py={{ base: 12, md: 20 }}>
-      <Stack gap={8} textAlign="center" align="center">
-        {/* 404 Icon */}
-        <Box
-          bg="red.100"
-          borderRadius="full"
-          p={6}
-          border="3px solid"
-          borderColor="red.400"
-        >
-          <AlertTriangle size={64} color="#E53E3E" />
+    <Box bg="white">
+      <Container maxW="900px" py={{ base: 16, md: 24 }} px={{ base: 4, md: 8 }}>
+        <Box color="brand.700" mb={6} aria-hidden="true">
+          <FileQuestion size={48} strokeWidth={1.5} />
         </Box>
-
-        {/* Error Message */}
-        <Stack gap={4} align="center">
-          <Heading 
-            as="h1" 
-            fontSize={{ base: "4xl", md: "5xl", lg: "6xl" }} 
-            fontWeight="bold" 
-            color="gray.900"
-            lineHeight="shorter"
-          >
-            4<Text as="span" color="brand.500">0</Text>4
-          </Heading>
-          <Heading 
-            as="h2" 
-            fontSize={{ base: "2xl", md: "3xl" }} 
-            fontWeight="bold" 
-            color="gray.800"
-            lineHeight="shorter"
-          >
-            Page Not Found
-          </Heading>
-          <Text 
-            fontSize={{ base: "lg", md: "xl" }} 
-            color="gray.600" 
-            maxW="600px" 
-            lineHeight="relaxed"
-          >
-            Oops! The page you're looking for doesn't exist. It might have been moved, deleted, or you entered the wrong URL.
-          </Text>
-        </Stack>
-
-        {/* Contact Info */}
-        <Box 
-          bg="white" 
-          p={6} 
-          borderRadius="xl" 
-          boxShadow="sm"
-          border="1px solid" 
-          borderColor="gray.200"
-          w="full" 
-          maxW="500px"
-        >
-          <Text fontSize="md" fontWeight="bold" color="gray.900" mb={4} textAlign="center">
-            Need Help? Contact Us
-          </Text>
-          
-          <Stack gap={3}>
-            <Flex align="center" gap={3} justify="center">
-              <Phone size={18} color="#3182CE" />
-              <Text color="gray.700" fontSize="sm">0926 430 4580</Text>
-            </Flex>
-            
-            <Flex align="center" gap={3} justify="center">
-              <Mail size={18} color="#3182CE" />
-              <Text color="gray.700" fontSize="sm">rotaryzcwest@gmail.com</Text>
-            </Flex>
-            
-            <Flex align="center" gap={3} justify="center">
-              <Facebook size={18} color="#1877F2" />
-              <Link 
-                href="https://www.facebook.com/RCZCwest" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                color="blue.600" 
-                fontSize="sm"
-                _hover={{ textDecoration: "underline" }}
-              >
-                Facebook Page
-              </Link>
-            </Flex>
-          </Stack>
-        </Box>
-
-        {/* Footer Notice */}
-        <Text fontSize="sm" color="gray.500" textAlign="center" maxW="400px">
-          If you believe this is an error, please contact us and we'll help you find what you're looking for.
+        <Text color="brand.700" fontSize="xs" fontWeight="bold" letterSpacing="0.16em" textTransform="uppercase" mb={3}>Error 404</Text>
+        <Heading as="h1" color="#082b49" fontSize={{ base: "4xl", md: "6xl" }} letterSpacing="-0.04em" lineHeight="1.05">
+          This page could not be found.
+        </Heading>
+        <Text color="gray.700" fontSize={{ base: "md", md: "lg" }} lineHeight="1.8" maxW="650px" mt={6}>
+          The link may be outdated or the address may be incorrect. Return home, review the club’s projects, or contact us if you need help finding a record.
         </Text>
-      </Stack>
-    </Container>
+        <Flex direction={{ base: "column", sm: "row" }} gap={3} mt={9}>
+          <Link href="/" display="inline-flex" alignItems="center" justifyContent="center" gap={2} bg="brand.700" color="white" px={6} py={3.5} borderRadius="md" fontWeight="bold" _hover={{ bg: "brand.800", textDecoration: "none" }}>
+            <ArrowLeft size={18} aria-hidden="true" /> Return home
+          </Link>
+          <Link href="/service-projects" textAlign="center" color="brand.700" px={6} py={3.5} border="1px solid" borderColor="brand.700" borderRadius="md" fontWeight="bold" _hover={{ bg: "brand.50", textDecoration: "none" }}>
+            Browse projects
+          </Link>
+        </Flex>
+        <Text color="gray.600" fontSize="sm" mt={8}>
+          Need help? <Link href="mailto:rotaryzcwest@gmail.com" color="brand.700" fontWeight="bold">rotaryzcwest@gmail.com</Link>
+        </Text>
+      </Container>
+    </Box>
   );
-} 
+}
