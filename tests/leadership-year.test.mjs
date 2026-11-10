@@ -24,12 +24,15 @@ function load(path, imports = {}) {
   return exports;
 }
 
-async function leadership(entries, fail = false) {
+async function leadership(entries, fail = false, failedOfficerType) {
   const api = load("../app/lib/contentful-api.ts", {
-    "./contentful": { contentfulClient: { getEntries: async query => ({
-      items: entries.filter(entry => entry.sys.contentType.sys.id === query.content_type && entry.fields.isActive &&
-        (!query["fields.type"] || entry.fields.type === query["fields.type"])),
-    }) } },
+    "./contentful": { contentfulClient: { getEntries: async query => {
+      if (query.content_type === "officers" && query["fields.type"] === failedOfficerType) {
+        throw new Error("Officer group unavailable");
+      }
+      return { items: entries.filter(entry => entry.sys.contentType.sys.id === query.content_type && entry.fields.isActive &&
+        (!query["fields.type"] || entry.fields.type === query["fields.type"])) };
+    } } },
     "./service-project-contentful.server": {},
   });
   let data;
@@ -101,5 +104,36 @@ test("empty and failed leadership loads show neutral year text", async () => {
     assert.match(html, /Roster being prepared/);
     assert.doesNotMatch(html, /Rotary Year \d{4}/);
     assert.doesNotMatch(tags.find(tag => tag.name === "description").content, /Rotary Year \d{4}/);
+  }
+});
+
+test("a failed officer role request keeps the surviving roster but cannot confirm its year", async () => {
+  for (const failedType of ["Executive", "Director"]) {
+    const { html, tags, data } = await leadership([
+      person("officers", "Executive", "2026-2027"),
+      person("officers", "Director", "2026-2027"),
+      person("rotaryAnns", "Executive", "2026-2027"),
+    ], false, failedType);
+    assert.equal(data.officerRotaryYear, null);
+    assert.match(html, /Rotary Year not provided/);
+    assert.equal((html.match(/Rotary Year 2026–2027/g) || []).length, 1, "Only the confirmed Ann roster may show the year");
+    assert.match(html, failedType === "Executive" ? /officers Director/ : /officers Executive/);
+    for (const tag of tags.filter(tag => tag.name === "description" || tag.property === "og:description")) {
+      assert.doesNotMatch(tag.content, /2026-2027/);
+    }
+  }
+});
+
+test("confirmed empty role groups and unavailable advisers do not prevent a known roster year", async () => {
+  for (const emptyType of ["Executive", "Director", "Adviser"]) {
+    const entries = [
+      person("officers", "Executive", "2026-2027"),
+      person("officers", "Director", "2026-2027"),
+      person("rotaryAnns", "Executive", "2026-2027"),
+    ].filter(entry => entry.sys.contentType.sys.id !== "officers" || entry.fields.type !== emptyType);
+    const { html, tags, data } = await leadership(entries, false, emptyType === "Adviser" ? "Adviser" : undefined);
+    assert.equal(data.officerRotaryYear, "2026-2027");
+    assert.equal((html.match(/Rotary Year 2026–2027/g) || []).length, 2);
+    assert.match(tags.find(tag => tag.name === "description").content, /2026-2027/);
   }
 });

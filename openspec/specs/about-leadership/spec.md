@@ -41,6 +41,13 @@ Entries without a usable photo SHALL use a compact text layout without a large p
 - **WHEN** a roster is empty or has missing, invalid, or mixed Rotary Years
 - **THEN** its banner SHALL show neutral text and SHALL NOT infer a year from the clock or unrelated Contentful records
 
+#### Scenario: One officer role query is unavailable
+
+- **WHEN** the executive or director Contentful query fails
+- **THEN** the page SHALL keep successfully loaded groups visible
+- **AND** the officer banner and shared metadata SHALL NOT confirm a Rotary Year from the incomplete roster
+- **AND** a failed request SHALL remain distinct from a successful query with no entries until the route decides the roster year
+
 ### Requirement: Metadata identifies the leadership page
 
 The route SHALL export `meta` tags including page title and description focused on club leadership, plus Open Graph fields and a canonical URL for `https://rotaryzcwest.org/about/leadership`.

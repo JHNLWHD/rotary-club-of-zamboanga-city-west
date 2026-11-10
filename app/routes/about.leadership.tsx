@@ -38,12 +38,18 @@ export async function loader({ request }: Route.LoaderArgs) {
       fetchAllRotaryAnns()
     ]);
 
-    const officers = allOfficers || { executives: [], directors: [], advisers: [] };
+    const officers = {
+      executives: allOfficers?.executives || [],
+      directors: allOfficers?.directors || [],
+      advisers: allOfficers?.advisers || [],
+    };
     const rotaryAnns = allRotaryAnns || { executives: [], directors: [] };
     return {
       officers,
       rotaryAnns,
-      officerRotaryYear: getRosterRotaryYear([...officers.executives, ...officers.directors]),
+      officerRotaryYear: allOfficers?.executives && allOfficers.directors
+        ? getRosterRotaryYear([...allOfficers.executives, ...allOfficers.directors])
+        : null,
       annsRotaryYear: getRosterRotaryYear([...rotaryAnns.executives, ...rotaryAnns.directors]),
     };
   } catch (error) {

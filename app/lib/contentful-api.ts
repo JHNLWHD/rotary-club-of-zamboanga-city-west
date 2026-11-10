@@ -269,7 +269,7 @@ export async function fetchOfficersByType(type: 'Executive' | 'Director' | 'Advi
     return processedOfficers;
   } catch (error) {
     console.error(`Error fetching ${type} officers:`, error);
-    return [];
+    return null;
   }
 }
 
@@ -302,8 +302,8 @@ export async function fetchRotaryAnnsByType(type: 'Executive' | 'Director'): Pro
 }
 
 export async function fetchAllOfficers(): Promise<{ 
-  executives: Officer[], 
-  directors: Officer[], 
+  executives: Officer[] | null,
+  directors: Officer[] | null,
   advisers: Officer[] 
 } | null> {
   try {
@@ -314,8 +314,8 @@ export async function fetchAllOfficers(): Promise<{
     ]);
 
     return {
-      executives: executives || [],
-      directors: directors || [],
+      executives,
+      directors,
       advisers: advisers || []
     };
   } catch (error) {
